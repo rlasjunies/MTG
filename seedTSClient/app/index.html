@@ -1,0 +1,32 @@
+﻿<!doctype html>
+<html class="no-js">
+<head>
+    <meta charset="utf-8">
+    <title></title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width">
+
+    <link href="../styles/toastr.min.css" rel="stylesheet" />
+    <link href="../styles/bootswatch-superhero.css" rel="stylesheet" />
+    <link href="../styles/main.css" rel="stylesheet" />
+    <base href="/">
+</head>
+<body ng-app="app">
+    <div class="container">
+        <div ng-include="'app/views/header/header.html'"></div>
+        <div ui-view></div>
+        <div class="footer">
+            <p><span class="glyphicon glyphicon-heart"></span>seedTS from Richard Lasjunies</p>
+        </div>
+    </div>
+
+    <script src="../Scripts/jquery-1.11.1.min.js"></script>
+    <script src="../Scripts/angular.js"></script>
+    <script src="../Scripts/angular-ui-router.min.js"></script>
+    <script src="../Scripts/bootstrap.min.js"></script>
+    <script src="../Scripts/toastr.min.js"></script>
+    <script src="../Scripts/satellizer.js"></script>
+
+    <script src="../Scripts/app.js"></script>
+</body>
+</html>

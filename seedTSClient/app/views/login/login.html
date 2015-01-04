@@ -1,0 +1,17 @@
+
+<div class="jumbotron">
+    <form name="register" class="form-signin" ng-submit="vm.submit()" novalidate>
+        <h1 class="form-signin-heading text-muted">Sign In</h1>
+
+        <input name="email" type="email" ng-model="vm.email" class="form-control" placeholder="Email address" required="" autofocus="">
+        <p class="help-block" ng-show="register.email.$dirty && register.email.$invalid">Please enter a proper email.</p>
+
+        <input name="password" type="password" ng-model="vm.password" class="form-control" placeholder="Password" required>
+
+        <button ng-disabled="register.$invalid" class="btn btn-lg btn-primary btn-block" type="submit">Login</button>
+        <br />
+        <a class="text-muted pull-right"  ui-sref="register">Create account</a>
+        <button ng-click="vm.authenticate('google')" class="btn btn-lg btn-info btn-block" type="button">Google</button>
+        <button ng-click="vm.authenticate('facebook')" class="btn btn-lg btn-info btn-block" type="button">Facebook</button>
+    </form>
+</div>

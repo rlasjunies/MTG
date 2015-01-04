@@ -1,0 +1,6 @@
+C:\Dev\seedTS\seedTSClient2\bin\seedTSClient2.dll.config
+C:\Dev\seedTS\seedTSClient2\bin\seedTSClient2.dll
+C:\Dev\seedTS\seedTSClient2\bin\seedTSClient2.pdb
+C:\Dev\seedTS\seedTSClient2\obj\Release\seedTSClient2.dll
+C:\Dev\seedTS\seedTSClient2\obj\Release\seedTSClient2.pdb
+C:\Dev\seedTS\seedTSClient2\obj\Release\seedTSClient2.csprojResolveAssemblyReference.cache

@@ -1,0 +1,11 @@
+﻿<h3>Site Settings</h3>
+<form>
+    Title: <input type="text" name="title" ng-model="vm.siteSettings.title" required />
+    <br />
+    Description: <input type="text" name="description" ng-model="vm.siteSettings.description" required />
+    <br />
+    Theme: <select ng-model="vm.siteSettings.themeName"
+                   ng-options="themeNameOption for themeNameOption in vm.themeNames"></select>
+    <br />
+    <button type="submit" ng-click="vm.save()">Save</button>
+</form>

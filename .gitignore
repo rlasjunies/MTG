@@ -1,3 +1,10 @@
+packages
+config.*
+node_modules
+data
+.tscache
+Debug
+
 # Windows image file caches
 Thumbs.db
 ehthumbs.db

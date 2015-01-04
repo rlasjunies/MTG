@@ -1,0 +1,22 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2013
+VisualStudioVersion = 12.0.31101.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "seedTSServer", "seedTSServer.njsproj", "{F9BFD71C-109C-459E-825F-91DF6697736A}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{F9BFD71C-109C-459E-825F-91DF6697736A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F9BFD71C-109C-459E-825F-91DF6697736A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F9BFD71C-109C-459E-825F-91DF6697736A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F9BFD71C-109C-459E-825F-91DF6697736A}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal
