@@ -5,16 +5,16 @@ var jobsModelLib = require("../models/jobsModel");
 var jobsDataLib = require("../api/jobs/jobsData");
 var $Config = require("../services/config");
 var $ConfigSecret = require("../services/configSecret");
-// import Promise = require("bluebird");
-// import mongoose = require("mongoose");
+var $log = require("../services/logger");
+$log.setLevels(1);
 var expect = chai.expect;
 process.env.NODE_ENV = process.env.NODE_ENV || "development";
 describe("get jobs", function () {
     var jobs;
     before(function (done) {
-        console.log("process.env:" + process.env);
-        console.log("$Config.dbConnectString[process.env]" + $Config.dbConnectString[process.env]);
-        console.log("$Config.dbConnectString[process.env].replace('XXXXXX', $ConfigSecret.db[process.env]):" + $Config.dbConnectString[process.env].replace("XXXXXX", $ConfigSecret.db[process.env]));
+        $log.debug("process.env:" + process.env.NODE_ENV);
+        $log.debug("$Config.dbConnectString[process.env.NODE_ENV]" + $Config.dbConnectString[process.env.NODE_ENV]);
+        $log.debug("$Config.dbConnectString[process.env.NODE_ENV].replace('XXXXXX', $ConfigSecret.db[process.env.NODE_ENV]):" + $Config.dbConnectString[process.env.NODE_ENV].replace("XXXXXX", $ConfigSecret.db[process.env.NODE_ENV]));
         xDbLib.connectDB($Config.dbConnectString[process.env.NODE_ENV].replace("XXXXXX", $ConfigSecret.db[process.env.NODE_ENV])).then(jobsDataLib.resetJobs).then(jobsDataLib.populate).then(jobsModelLib.findJobs).then(function (collection) {
             jobs = collection;
             done();

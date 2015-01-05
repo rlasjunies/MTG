@@ -8,31 +8,21 @@
 // should.exist(res.headers["set-cookie"]);
 // should.not.exist(res.headers["set-cookie"]);
 // resp.redirects.should.eql(["http://localhost:4000/simple"]);
+import $log = require("../services/logger");
 
 import chai = require("chai");
-// import Promise = require("bluebird");
-// import request = require("supertest");
 import sa = require("superagent");
 import express = require("express");
 import xDBLib = require("../services/db");
-// import xConfig = require("../services/config");
 import bodyParser = require("body-parser");
 
-var app = express();
-app.use(bodyParser.json());
-
-// import server = require("../server");
-// var app = server.app;
-
 var expect = chai.expect;
+// var should = chai.should()
 var url: string = "http://localhost:3000";
 
-// import srv = require("../server");
-// var app = srv.app;
-// xDBLib.connect();
-import xJobsModel = require("../models/jobsModel");
-import xJobsRoutes = require("../api/jobs/jobsRoutes");
-xJobsRoutes.routes(app);
+import $JobsModel = require("../models/jobsModel");
+// import xJobsRoutes = require("../api/jobs/jobsRoutes");
+
 var agent = sa.agent();
 var token: string;
 describe("jobs", () => {
@@ -43,12 +33,13 @@ describe("jobs", () => {
                 .post(url + "/auth/login")
                 .send({ email: "test@g.c", password: "1234" })
                 .end(function (err, res) {
+                    //res.should.have.
                     // expect(res.status).to.equals(200);
                     // agent.head ["authorization"] = "hjkl";
-                    console.log("................." + res);
+                    $log.debug("................." + res);
                     var loginAnswer = JSON.parse(res.text);
                     token = loginAnswer.token;
-                    console.log("token:<<<<<<<<<<<<" + token);
+                    $log.debug("token:<<<<<<<<<<<<" + token);
                     // res.text.should.include("Dashboard");
                     // this.timeout(2000);
                     // console.log("logged!!!!!!");
@@ -78,19 +69,19 @@ describe("jobs", () => {
             //    });
             // });
 
-            console.log("Token:>>>>>>>>>>>>>>>>>>>>>>>>" + token);
+            $log.debug("Token:>>>>>>>>>>>>>>>>>>>>>>>>" + token);
             agent.get(url + "/api/jobs")
                 .set("authorization", token)
                 .send("")
             // .expect("Content-Type", /json/)
                 .end((err, resp) => {
 
-                    console.log("Response:" + JSON.stringify(resp));
+                    $log.debug("Response:" + JSON.stringify(resp));
                     expect(err).equals(null);
                     expect(resp.status).equals(200); // res.should.have.status(200);
 
                     // console.log("respJob.body:" + JSON.stringify(resp.body));
-                    var doc = <xJobsModel.IJobDocument[]>resp.body;
+                    var doc = <$JobsModel.IJobDocument[]>resp.body;
 
                     expect(doc).to.be.a("Array");
 

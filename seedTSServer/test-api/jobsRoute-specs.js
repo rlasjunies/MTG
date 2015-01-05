@@ -8,34 +8,27 @@
 // should.exist(res.headers["set-cookie"]);
 // should.not.exist(res.headers["set-cookie"]);
 // resp.redirects.should.eql(["http://localhost:4000/simple"]);
+var $log = require("../services/logger");
 var chai = require("chai");
-// import Promise = require("bluebird");
-// import request = require("supertest");
 var sa = require("superagent");
-var express = require("express");
 var xDBLib = require("../services/db");
-// import xConfig = require("../services/config");
-var bodyParser = require("body-parser");
-var app = express();
-app.use(bodyParser.json());
-// import server = require("../server");
-// var app = server.app;
 var expect = chai.expect;
+// var should = chai.should()
 var url = "http://localhost:3000";
-var xJobsRoutes = require("../api/jobs/jobsRoutes");
-xJobsRoutes.routes(app);
+// import xJobsRoutes = require("../api/jobs/jobsRoutes");
 var agent = sa.agent();
 var token;
 describe("jobs", function () {
     before(function (done) {
         this.timeout(10000);
         agent.post(url + "/auth/login").send({ email: "test@g.c", password: "1234" }).end(function (err, res) {
+            //res.should.have.
             // expect(res.status).to.equals(200);
             // agent.head ["authorization"] = "hjkl";
-            console.log("................." + res);
+            $log.debug("................." + res);
             var loginAnswer = JSON.parse(res.text);
             token = loginAnswer.token;
-            console.log("token:<<<<<<<<<<<<" + token);
+            $log.debug("token:<<<<<<<<<<<<" + token);
             // res.text.should.include("Dashboard");
             // this.timeout(2000);
             // console.log("logged!!!!!!");
@@ -61,9 +54,9 @@ describe("jobs", function () {
             //        it("should create a user session", loginUser(agent));
             //    });
             // });
-            console.log("Token:>>>>>>>>>>>>>>>>>>>>>>>>" + token);
+            $log.debug("Token:>>>>>>>>>>>>>>>>>>>>>>>>" + token);
             agent.get(url + "/api/jobs").set("authorization", token).send("").end(function (err, resp) {
-                console.log("Response:" + JSON.stringify(resp));
+                $log.debug("Response:" + JSON.stringify(resp));
                 expect(err).equals(null);
                 expect(resp.status).equals(200); // res.should.have.status(200);
                 // console.log("respJob.body:" + JSON.stringify(resp.body));
