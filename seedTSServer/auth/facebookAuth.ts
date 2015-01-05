@@ -2,7 +2,7 @@
 import request = require("request");
 import express = require("express");
 
-import libConfig = require("../services/config");
+import $ConfigSecret = require("../services/configSecret");
 import libUser = require("../models/user");
 import libToken = require("./token");
 
@@ -19,7 +19,7 @@ export function facebookAuth (expReq: express.Request, expRes:express.Response) 
     var params = {
         client_id: expReq.body.clientId,
         redirect_uri: expReq.body.redirectUri,
-        client_secret: libConfig.FACEBOOK_SECRET,
+        client_secret: $ConfigSecret.FACEBOOK_SECRET,
         code: expReq.body.code
     };
 

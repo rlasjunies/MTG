@@ -1,5 +1,5 @@
 packages
-config.*
+configSecret.*
 node_modules
 data
 .tscache

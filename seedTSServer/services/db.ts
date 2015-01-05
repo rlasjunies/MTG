@@ -1,7 +1,8 @@
 ﻿import mongoose = require("mongoose");
-// import jobModel = require("../jobs/jobsModel");
 import Promise = require("bluebird");
-import xConfig = require("./config");
+import $Config = require("./config");
+import $ConfigSecret = require("./configSecret");
+import $log = require("./logger");
 
 export interface IDb {
     test(): void;
@@ -9,36 +10,15 @@ export interface IDb {
 export var connectDB = Promise.promisify(mongoose.connect, mongoose);
 
 export function connect() {
-    connectDB(xConfig.MONGOLAB_CONNECT_STRING)
+    $log.debug("process.env:" + process.env.NODE_ENV);
+    $log.debug("$Config.dbConnectString[process.env]" + $Config.dbConnectString[process.env.NODE_ENV]);
+    $log.debug("$Config.dbConnectString[process.env].replace('XXXXXX', $ConfigSecret.db[process.env.NODE_ENV]):"
+        + $Config.dbConnectString[process.env.NODE_ENV].replace("XXXXXX", $ConfigSecret.db[process.env]));
+
+    connectDB($Config.dbConnectString[process.env.NODE_ENV].replace("XXXXXX", $ConfigSecret.db[process.env.NODE_ENV]))
         .then(() => {
-            console.log("Connected to DB!");
+            $log.info("Connected to DB!");
         });
 }
 
-// export function disConnect() : Function {
-//    return Promise.promisify(mongoose.disconnect, mongoose);
-// }
-
 export var disConnectDB = Promise.promisify(mongoose.disconnect, mongoose);
-
-// export class db {
-//    constructor(dbName:string){
-//        mongoose.connect(""+dbName, (err) => {
-//            if (err) {
-//                throw err;
-//            }
-//            console.log("mongodb connected!");
-//            jobModel.populate();
-//                //.then(() => {
-//                //    console.log("populating finished!");
-//                //})
-//                //.catch((err) => {
-//                //    console.log("populating error!");
-//                //});
-//        });
-//    }
-
-//    public disconnect() {
-//        mongoose.disconnect();
-//    }
-// }

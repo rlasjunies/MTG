@@ -1,7 +1,7 @@
 var libRequest = require("request");
 var libUser = require("../models/user");
 var libToken = require("./token");
-var libConfig = require("../services/config");
+var $ConfigSecret = require("../services/configSecret");
 // TODO how to define an interface more precise
 // We need to define IGoogleProfile as return of this requestGet
 // export interface request {//extends request.RequestAPI{
@@ -19,7 +19,7 @@ function googleAuth(expReq, expRes) {
             client_id: tsBody.clientId,
             redirect_uri: tsBody.redirectUri,
             grant_type: "authorization_code",
-            client_secret: libConfig.GOOGLE_SECRET
+            client_secret: $ConfigSecret.GOOGLE_SECRET
         }
     };
     libRequest.post(opt, function (err, response, token) {

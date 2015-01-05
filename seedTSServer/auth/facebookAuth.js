@@ -1,6 +1,6 @@
 var qs = require("querystring");
 var request = require("request");
-var libConfig = require("../services/config");
+var $ConfigSecret = require("../services/configSecret");
 var libUser = require("../models/user");
 var libToken = require("./token");
 function facebookAuth(expReq, expRes) {
@@ -9,7 +9,7 @@ function facebookAuth(expReq, expRes) {
     var params = {
         client_id: expReq.body.clientId,
         redirect_uri: expReq.body.redirectUri,
-        client_secret: libConfig.FACEBOOK_SECRET,
+        client_secret: $ConfigSecret.FACEBOOK_SECRET,
         code: expReq.body.code
     };
     request.get({

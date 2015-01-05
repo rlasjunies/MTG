@@ -6,7 +6,7 @@ import ts = require("./google.typesafe");
 import libRequest = require("request");
 import libUser = require("../models/user");
 import libToken = require("./token");
-import libConfig = require("../services/config");
+import $ConfigSecret = require("../services/configSecret");
 
 interface IGoogleProfile {
     sub: string; // GoogleID
@@ -33,7 +33,7 @@ export function googleAuth(expReq: express.Request, expRes: express.Response) {
             client_id: tsBody.clientId,
             redirect_uri: tsBody.redirectUri,
             grant_type: "authorization_code",
-            client_secret: libConfig.GOOGLE_SECRET
+            client_secret: $ConfigSecret.GOOGLE_SECRET
         }
     };
 

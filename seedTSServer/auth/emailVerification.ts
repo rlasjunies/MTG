@@ -4,7 +4,8 @@ import jwt = require("jwt-simple");
 import fs = require("fs");
 import nodemailer = require("nodemailer");
 
-import xConfig = require("../services/config");
+import $ConfigSecret = require("../services/configSecret");
+import $Config = require("../services/config");
 import xUser = require("../models/user");
 
 // import smtpTransport = require("nodemailer-smtp-transport");
@@ -25,13 +26,13 @@ export function send(email, res) {
         sub: email
     };
 
-    var token = jwt.encode(payload, xConfig.EMAIL_SECRET);
+    var token = jwt.encode(payload, $ConfigSecret.EMAIL_SECRET);
 
     var nSMTPTransportOptions: NodemailerSMTPTransportOptions = {
         service: "Gmail",
         auth: {
             user: "rlasjunies@gmail.com",
-            pass: xConfig.SMTP_PASS
+            pass: $ConfigSecret.SMTP_PASS
         }
     };
 
@@ -56,7 +57,7 @@ export function send(email, res) {
 export function verify(req:express.Request, res:express.Response, next) {
     var token = req.query.token;
 
-    var payload : IPayload = jwt.decode(token, xConfig.EMAIL_SECRET);
+    var payload : IPayload = jwt.decode(token, $ConfigSecret.EMAIL_SECRET);
 
     var email = payload.sub;
 
@@ -83,7 +84,7 @@ export function verify(req:express.Request, res:express.Response, next) {
                 return res.status(500);
             }
 
-            return res.redirect(xConfig.APP_URL);
+            return res.redirect($Config.appUrl[process.env]);
         });
 
     });

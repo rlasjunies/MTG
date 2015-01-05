@@ -1,9 +1,10 @@
 // import Promise = require("bluebird");
 var jwt = require("jwt-simple");
+var $log = require("../../services/logger");
 var xJobModel = require("../../models/jobsModel");
-var xConfig = require("../../services/config");
+var xConfigSecret = require("../../services/configSecret");
 function routes(app) {
-    console.log("Jobs - init routes");
+    $log.debug("Jobs - init routes");
     app.route("/api/jobs").post(function (req, res, next) {
         var job = xJobModel.jobModel();
         var newJob = new job(req.body);
@@ -32,10 +33,10 @@ function routes(app) {
         }
         else {
             console.log("req.headers['authorization']" + req.headers["authorization"]);
-            //var token = req.headers["authorization"].split(" ")[1];
+            // var token = req.headers["authorization"].split(" ")[1];
             var token = req.headers["authorization"];
             console.log("token:" + token);
-            var payload = jwt.decode(token, xConfig.JWT_SECRET);
+            var payload = jwt.decode(token, xConfigSecret.JWT_SECRET);
             if (!payload.sub) {
                 return res.status(401).send({ message: "Authentication failed" });
             }

@@ -1,6 +1,6 @@
 var jwt = require("jwt-simple");
 var moment = require("moment");
-var config = require("../services/config");
+var $configSecret = require("../services/configSecret");
 function createSendToken(user, res) {
     var payload = {
         sub: user.id,
@@ -8,7 +8,7 @@ function createSendToken(user, res) {
         // expiration should be renewed everytime the user, is doing somehitng!!!
         exp: moment().add(1, "minutes").unix()
     };
-    var token = jwt.encode(payload, config.JWT_SECRET);
+    var token = jwt.encode(payload, $configSecret.JWT_SECRET);
     // RL- attention changement
     return res.status(200).send({
         user: user.toJSON(),

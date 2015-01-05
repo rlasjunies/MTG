@@ -8,14 +8,38 @@ import xAuthLocal = require("./auth/localAuth");
 import xAuthFacebook = require("./auth/facebookAuth");
 import xAuthGoogle = require("./auth/googleAuth");
 import xEmailVerif = require("./auth/emailVerification");
-import xDb = require("./services/db");
+import $log = require("./services/logger");
 
 export var app = express();
+process.env.NODE_ENV = process.env.NODE_ENV || "development";
+
+import xDb = require("./services/db");
 xDb.connect();
 
 app.use(bodyparser.json());
 app.use(passport.initialize());
-app.use(morgan("dev"));
+
+morgan.token("statuscolorized", (expReq, expRes) : string => {
+    var color = 32; // green
+    var status = expRes.statusCode;
+    if (status >= 500) color = 31; // red
+    else if (status >= 400) color = 33; // yellow
+    else if (status >= 300) color = 36; // cyan
+    return "\x1b[" + color + "m:" + status +"\x1b[0m";
+});
+app.use(morgan(":date[iso] :method :url :statuscolorized :response-time ms - :res[content-length]"));
+//app.use(morgan("dev"));
+
+//app.use(morgan(function (req, res) {
+//    var color = 32; // green
+//    var status = res.statusCode;
+//    if (status >= 500) color = 31; // red
+//    else if (status >= 400) color = 33; // yellow
+//    else if (status >= 300) color = 36; // cyan
+//    ('\x1b[0m:method :url \x1b[' + color + 'm:status \x1b[0m:response-time ms - :res[content-length]\x1b[0m');
+//    return ;
+//}));
+
 
 passport.serializeUser((user, done: (err: any, id: any) => void) => {
     done(null, user.id);
@@ -37,7 +61,6 @@ app.post("/auth/login", passport.authenticate("local-login"),  xAuthLocal.login)
 app.post("/auth/facebook", xAuthFacebook.facebookAuth);
 app.post("/auth/google", xAuthGoogle.googleAuth);
 
-// app.get("/api/jobs", xJobs.routes);
 import xJobsGet = require("./api/jobs/jobsRoutes");
 xJobsGet.routes(app);
 
@@ -47,13 +70,11 @@ app.use("/app", express.static(__dirname + "/../seedTSClient/app"));
 app.use("/styles", express.static(__dirname + "/../seedTSClient/styles"));
 app.use("/fonts", express.static(__dirname + "/../seedTSClient/fonts"));
 
-var env = process.env.NODE_ENV || "development";
-if ("development" === env) {
+if (process.env.NODE_ENV === "development") {
     // configure stuff here
 }
 
 app.get("*", (req: express.Request, res: express.Response, next) => {
-    // res.render("/index.html");
     res.redirect("/app/index.html");
 });
 
@@ -61,5 +82,5 @@ if (!process.env.PORT) { process.env.PORT = 3000; }
 
 var srv = app.listen(process.env.PORT, process.env.IP);
 srv.on("listening", () => {
-    console.log("webserver listening http requests on:" + process.env.PORT);
+    $log.info("webserver listening http requests on:" + process.env.PORT);
 });

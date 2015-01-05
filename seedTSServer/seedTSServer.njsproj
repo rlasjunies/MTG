@@ -52,7 +52,10 @@
     <TypeScriptCompile Include="Scripts\typings\selenium-webdriver\selenium-webdriver.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\superagent\superagent.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\supertest\supertest.d.ts" />
+    <TypeScriptCompile Include="Scripts\typings\winston-extend.ts" />
+    <TypeScriptCompile Include="Scripts\typings\winston\winston.d.ts" />
     <TypeScriptCompile Include="services\config.ts" />
+    <TypeScriptCompile Include="services\configSecret.ts" />
     <TypeScriptCompile Include="services\db.ts" />
     <TypeScriptCompile Include="auth\emailVerification.ts" />
     <TypeScriptCompile Include="auth\facebookAuth.ts" />
@@ -80,6 +83,7 @@
     <TypeScriptCompile Include="Scripts\typings\request\request.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\underscore\underscore.d.ts" />
     <TypeScriptCompile Include="server.ts" />
+    <TypeScriptCompile Include="services\logger.ts" />
     <TypeScriptCompile Include="test-api\jobs-data-specs.ts" />
     <TypeScriptCompile Include="test-api\jobs-service-specs.ts" />
     <TypeScriptCompile Include="test-api\jobsRoute-specs.ts" />
@@ -101,6 +105,7 @@
     <Folder Include="Scripts\typings\selenium-webdriver\" />
     <Folder Include="Scripts\typings\superagent\" />
     <Folder Include="Scripts\typings\supertest\" />
+    <Folder Include="Scripts\typings\winston\" />
     <Folder Include="services\" />
     <Folder Include="auth\" />
     <Folder Include="models\" />

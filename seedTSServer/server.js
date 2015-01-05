@@ -7,12 +7,35 @@ var xAuthLocal = require("./auth/localAuth");
 var xAuthFacebook = require("./auth/facebookAuth");
 var xAuthGoogle = require("./auth/googleAuth");
 var xEmailVerif = require("./auth/emailVerification");
-var xDb = require("./services/db");
+var $log = require("./services/logger");
 exports.app = express();
+process.env.NODE_ENV = process.env.NODE_ENV || "development";
+var xDb = require("./services/db");
 xDb.connect();
 exports.app.use(bodyparser.json());
 exports.app.use(passport.initialize());
-exports.app.use(morgan("dev"));
+morgan.token("statuscolorized", function (expReq, expRes) {
+    var color = 32; // green
+    var status = expRes.statusCode;
+    if (status >= 500)
+        color = 31; // red
+    else if (status >= 400)
+        color = 33; // yellow
+    else if (status >= 300)
+        color = 36; // cyan
+    return "\x1b[" + color + "m:" + status + "\x1b[0m";
+});
+exports.app.use(morgan(":date[iso] :method :url :statuscolorized :response-time ms - :res[content-length]"));
+//app.use(morgan("dev"));
+//app.use(morgan(function (req, res) {
+//    var color = 32; // green
+//    var status = res.statusCode;
+//    if (status >= 500) color = 31; // red
+//    else if (status >= 400) color = 33; // yellow
+//    else if (status >= 300) color = 36; // cyan
+//    ('\x1b[0m:method :url \x1b[' + color + 'm:status \x1b[0m:response-time ms - :res[content-length]\x1b[0m');
+//    return ;
+//}));
 passport.serializeUser(function (user, done) {
     done(null, user.id);
 });
@@ -29,7 +52,6 @@ exports.app.get("/auth/verifyemail", xEmailVerif.verify);
 exports.app.post("/auth/login", passport.authenticate("local-login"), xAuthLocal.login);
 exports.app.post("/auth/facebook", xAuthFacebook.facebookAuth);
 exports.app.post("/auth/google", xAuthGoogle.googleAuth);
-// app.get("/api/jobs", xJobs.routes);
 var xJobsGet = require("./api/jobs/jobsRoutes");
 xJobsGet.routes(exports.app);
 exports.app.use("/", express.static(__dirname + "/../seedTSClient/app"));
@@ -37,11 +59,9 @@ exports.app.use("/Scripts", express.static(__dirname + "/../seedTSClient/Scripts
 exports.app.use("/app", express.static(__dirname + "/../seedTSClient/app"));
 exports.app.use("/styles", express.static(__dirname + "/../seedTSClient/styles"));
 exports.app.use("/fonts", express.static(__dirname + "/../seedTSClient/fonts"));
-var env = process.env.NODE_ENV || "development";
-if ("development" === env) {
+if (process.env.NODE_ENV === "development") {
 }
 exports.app.get("*", function (req, res, next) {
-    // res.render("/index.html");
     res.redirect("/app/index.html");
 });
 if (!process.env.PORT) {
@@ -49,6 +69,6 @@ if (!process.env.PORT) {
 }
 var srv = exports.app.listen(process.env.PORT, process.env.IP);
 srv.on("listening", function () {
-    console.log("webserver listening http requests on:" + process.env.PORT);
+    $log.info("webserver listening http requests on:" + process.env.PORT);
 });
 //# sourceMappingURL=server.js.map

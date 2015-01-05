@@ -1,6 +1,6 @@
 ﻿import jwt = require("jwt-simple");
 import moment = require("moment");
-import config = require("../services/config");
+import $configSecret = require("../services/configSecret");
 
 export function createSendToken(user, res) {
     var payload = {
@@ -10,7 +10,7 @@ export function createSendToken(user, res) {
         exp: moment().add(1, "minutes").unix()
     };
 
-    var token = jwt.encode(payload, config.JWT_SECRET);
+    var token = jwt.encode(payload, $configSecret.JWT_SECRET);
 
     // RL- attention changement
     return res.status(200).send({

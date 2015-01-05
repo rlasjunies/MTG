@@ -2,18 +2,19 @@ var _ = require("underscore");
 var jwt = require("jwt-simple");
 var fs = require("fs");
 var nodemailer = require("nodemailer");
-var xConfig = require("../services/config");
+var $ConfigSecret = require("../services/configSecret");
+var $Config = require("../services/config");
 var xUser = require("../models/user");
 function send(email, res) {
     var payload = {
         sub: email
     };
-    var token = jwt.encode(payload, xConfig.EMAIL_SECRET);
+    var token = jwt.encode(payload, $ConfigSecret.EMAIL_SECRET);
     var nSMTPTransportOptions = {
         service: "Gmail",
         auth: {
             user: "rlasjunies@gmail.com",
-            pass: xConfig.SMTP_PASS
+            pass: $ConfigSecret.SMTP_PASS
         }
     };
     var transporter = nodemailer.createTransport(nSMTPTransportOptions);
@@ -33,7 +34,7 @@ function send(email, res) {
 exports.send = send;
 function verify(req, res, next) {
     var token = req.query.token;
-    var payload = jwt.decode(token, xConfig.EMAIL_SECRET);
+    var payload = jwt.decode(token, $ConfigSecret.EMAIL_SECRET);
     var email = payload.sub;
     if (!email) {
         return handleError(res);
@@ -53,7 +54,7 @@ function verify(req, res, next) {
             if (err) {
                 return res.status(500);
             }
-            return res.redirect(xConfig.APP_URL);
+            return res.redirect($Config.appUrl[process.env]);
         });
     });
 }
