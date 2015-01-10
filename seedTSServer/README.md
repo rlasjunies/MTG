@@ -23,7 +23,9 @@ tests:
 
 MongoDB commands lines:
 
-"c:\program files\MongoDB 2.6 Standard\bin\mongo"  //Start the mongo console
+//Start the mongo console
+
+"c:\program files\MongoDB 2.6 Standard\bin\mongo"  
 
 show dbs   //shows the database avaialable
 
@@ -85,3 +87,21 @@ git push -u github master
 heroku ps:scale web=1
 
 https://afternoon-everglades-8738.herokuapp.com/
+
+
+
+
+
+
+HTTP Verb       Path                Module Method       Description
+GET             /users              index               Lists users
+//GET             /users/new          new                 The form to create a newuser
+POST            /users              create              Processes new user form submission
+GET             /users/:id          show                Shows user with ID :id
+//GET             /users/:id/edit     edit                Form to edit user with ID :id
+PUT             /users/:id          update              Processes user edit form submission
+DELETE          /users/:id          destroy             Deletes user with ID :id
+
+#Debug Mocha tests
+
+C:\Users\Richard\AppData\Roaming\npm\node_modules\mocha\bin\mocha "C:\Dev\seedTS\seedTSServer\test-api\**\*-specs.js"

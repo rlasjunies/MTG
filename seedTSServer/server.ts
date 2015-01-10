@@ -4,7 +4,7 @@ import morgan = require("morgan");
 import passport = require("passport");
 
 import xLocalStrategy = require("./auth/localStrategy");
-import xAuthLocal = require("./auth/localAuth");
+import $AuthLocal = require("./auth/localAuth");
 import xAuthFacebook = require("./auth/facebookAuth");
 import xAuthGoogle = require("./auth/googleAuth");
 import xEmailVerif = require("./auth/emailVerification");
@@ -19,14 +19,15 @@ xDb.connect();
 app.use(bodyparser.json());
 app.use(passport.initialize());
 
-morgan.token("statuscolorized", (expReq, expRes) : string => {
+morgan.token("statuscolorized", (expReq, expRes): string => {
     var color = 32; // green
     var status = expRes.statusCode;
-    if (status >= 500) color = 31; // red
-    else if (status >= 400) color = 33; // yellow
-    else if (status >= 300) color = 36; // cyan
+    if (status >= 500) { color = 31; } // red
+    else if (status >= 400) {color = 33;} // yellow
+    else if (status >= 300) {color = 36;} // cyan
     return "\x1b[" + color + "m:" + status +"\x1b[0m";
 });
+
 app.use(morgan(":date[iso] :method :url :statuscolorized :response-time ms - :res[content-length]"));
 //app.use(morgan("dev"));
 
@@ -55,20 +56,24 @@ app.use(function (req: express.Request, res: express.Response, next) {
 passport.use("local-register", xLocalStrategy.register());
 passport.use("local-login", xLocalStrategy.login());
 
-app.post("/auth/register", passport.authenticate("local-register"), xAuthLocal.register);
+app.post("/auth/register", passport.authenticate("local-register"), $AuthLocal.register);
 app.get("/auth/verifyemail", xEmailVerif.verify);
-app.post("/auth/login", passport.authenticate("local-login"),  xAuthLocal.login);
+app.post("/auth/login", passport.authenticate("local-login"),  $AuthLocal.login);
 app.post("/auth/facebook", xAuthFacebook.facebookAuth);
 app.post("/auth/google", xAuthGoogle.googleAuth);
 
-import xJobsGet = require("./api/jobs/jobsRoutes");
-xJobsGet.routes(app);
+import $PaintsRoutes = require("./api/paints/paintsRoutes");
+app.post("/api/paints", $AuthLocal.authenticationCheck, $PaintsRoutes.create);
+app.get("/api/paints/:id?", $AuthLocal.authenticationCheck, $PaintsRoutes.find);
+app.delete("/api/paints/:id?", $AuthLocal.authenticationCheck, $PaintsRoutes.remove);
+app.put("/api/paints/:id?", $AuthLocal.authenticationCheck, $PaintsRoutes.update);
 
 app.use("/", express.static(__dirname + "/../seedTSClient/app"));
 app.use("/Scripts", express.static(__dirname + "/../seedTSClient/Scripts"));
 app.use("/app", express.static(__dirname + "/../seedTSClient/app"));
 app.use("/styles", express.static(__dirname + "/../seedTSClient/styles"));
 app.use("/fonts", express.static(__dirname + "/../seedTSClient/fonts"));
+
 
 if (process.env.NODE_ENV === "development") {
     // configure stuff here

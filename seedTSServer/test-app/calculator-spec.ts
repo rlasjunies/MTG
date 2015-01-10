@@ -1,6 +1,6 @@
 import chai = require("chai");
 import chaiAsPromised = require("chai-as-promised");
-chai.use(chaiAsPromised); 
+chai.use(chaiAsPromised);
 var expect = chai.expect;
 
 describe("angularjs homepage", function () {
@@ -16,7 +16,7 @@ describe("angularjs homepage", function () {
   it("should have a title", function() {
     expect(browser.getTitle()).to.eventually.equal("Super Calculator");
   });
-   
+
   it("should add one and two", function() {
     firstNumber.sendKeys("1");
     secondNumber.sendKeys("2");
@@ -33,4 +33,4 @@ describe("angularjs homepage", function () {
       goButton.click();
     expect(latestResult.getText()).to.eventually.be.equal("10");
   });
-}); 
+});

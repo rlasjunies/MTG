@@ -12,6 +12,7 @@
 
 /// <reference path="../node/node.d.ts" />
 
+
 declare module Express {
 
     // These open interfaces may be extended in an application-specific manner via declaration merging.
@@ -120,6 +121,17 @@ declare module "express" {
 
         interface Errback { (err: Error): void; }
 
+        interface IRouteParamId extends RequestParamHandler {
+            id: string;
+        }
+
+        interface IRouteParamEmpty extends RequestParamHandler {
+        }
+
+        interface xRequest<T> extends Request {
+            params: T;
+        }
+        
         interface Request extends http.ServerRequest, Express.Request {
 
             /**
@@ -1056,7 +1068,7 @@ declare module "express" {
             createServer(): Application;
 
             application: any;
-
+            
             request: Request;
 
             response: Response;

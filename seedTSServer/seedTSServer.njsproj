@@ -5,6 +5,8 @@
     <VSToolsPath Condition="'$(VSToolsPath)' == ''">$(MSBuildExtensionsPath32)\Microsoft\VisualStudio\v$(VisualStudioVersion)</VSToolsPath>
     <Name>seedTSServer</Name>
     <RootNamespace>seedTS</RootNamespace>
+    <NodeExeArguments>
+    </NodeExeArguments>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -26,7 +28,7 @@
     <TypeScriptSourceMap>true</TypeScriptSourceMap>
     <TypeScriptModuleKind>CommonJS</TypeScriptModuleKind>
     <EnableTypeScript>true</EnableTypeScript>
-    <StartWebBrowser>True</StartWebBrowser>
+    <StartWebBrowser>False</StartWebBrowser>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <DebugSymbols>true</DebugSymbols>
@@ -37,19 +39,27 @@
   <ItemGroup>
     <Content Include="test-api\run.bat" />
     <Content Include="test-app\run.bat" />
-    <TypeScriptCompile Include="api\jobs\jobsData.ts" />
-    <TypeScriptCompile Include="models\jobsModel.ts" />
-    <TypeScriptCompile Include="api\jobs\jobsRoutes.ts" />
+    <TypeScriptCompile Include="api\paints\paintsData.ts" />
+    <TypeScriptCompile Include="models\aboutMe.ts" />
+    <TypeScriptCompile Include="models\contacts.ts" />
+    <TypeScriptCompile Include="models\journals.ts" />
+    <TypeScriptCompile Include="models\news.ts" />
+    <TypeScriptCompile Include="models\paints.ts" />
+    <TypeScriptCompile Include="api\paints\paintsRoutes.ts" />
+    <TypeScriptCompile Include="models\pictureModel.ts" />
     <TypeScriptCompile Include="Scripts\typings\angular-protractor\angular-protractor.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\bluebird\bluebird.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\chai-as-promised\chai-as-promised.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\chai-should-missing.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\chai\chai.d.ts" />
+    <TypeScriptCompile Include="Scripts\typings\express-ext.d.ts" />
+    <TypeScriptCompile Include="Scripts\typings\faker.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\form-data\form-data.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\mocha\mocha.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\mongoose-missing.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\morgan\morgan.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\selenium-webdriver\selenium-webdriver.d.ts" />
+    <TypeScriptCompile Include="Scripts\typings\sprintf\sprintf.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\superagent\superagent.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\supertest\supertest.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\winston-extend.ts" />
@@ -84,9 +94,7 @@
     <TypeScriptCompile Include="Scripts\typings\underscore\underscore.d.ts" />
     <TypeScriptCompile Include="server.ts" />
     <TypeScriptCompile Include="services\logger.ts" />
-    <TypeScriptCompile Include="test-api\jobs-data-specs.ts" />
-    <TypeScriptCompile Include="test-api\jobs-service-specs.ts" />
-    <TypeScriptCompile Include="test-api\jobsRoute-specs.ts" />
+    <TypeScriptCompile Include="test-api\paintsRoute-specs.ts" />
     <TypeScriptCompile Include="test-app\calculator-spec.ts" />
     <TypeScriptCompile Include="test-app\jobs-checks.ts" />
     <TypeScriptCompile Include="test-app\_config.ts" />
@@ -94,7 +102,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="api\" />
-    <Folder Include="api\jobs\" />
+    <Folder Include="api\paints\" />
     <Folder Include="Scripts\typings\angular-protractor\" />
     <Folder Include="Scripts\typings\bluebird\" />
     <Folder Include="Scripts\typings\chai-as-promised\" />
@@ -103,6 +111,7 @@
     <Folder Include="Scripts\typings\mocha\" />
     <Folder Include="Scripts\typings\morgan\" />
     <Folder Include="Scripts\typings\selenium-webdriver\" />
+    <Folder Include="Scripts\typings\sprintf\" />
     <Folder Include="Scripts\typings\superagent\" />
     <Folder Include="Scripts\typings\supertest\" />
     <Folder Include="Scripts\typings\winston\" />

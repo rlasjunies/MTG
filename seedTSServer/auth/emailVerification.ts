@@ -1,4 +1,4 @@
-﻿import express = require("express");
+﻿import e = require("express");
 import _ = require("underscore");
 import jwt = require("jwt-simple");
 import fs = require("fs");
@@ -54,7 +54,7 @@ export function send(email, res) {
     });
 }
 
-export function verify(req:express.Request, res:express.Response, next) {
+export function verify(req: e.xRequest<e.IRouteParamEmpty>, res:e.Response, next) {
     var token = req.query.token;
 
     var payload : IPayload = jwt.decode(token, $ConfigSecret.EMAIL_SECRET);
@@ -91,7 +91,7 @@ export function verify(req:express.Request, res:express.Response, next) {
 
 }
 
-function handleError(res:express.Response) {
+function handleError(res:e.Response) {
     return res.status(401).send({
         message:"Authenitication failed, enable to verify the email"
     });

@@ -1,6 +1,8 @@
 ﻿import passport_local = require("passport-local");
 import libuser = require("../models/user");
+import $log = require("../services/logger");
 
+var moduleName = "localStratregy - ";
 var strategyOptions = { usernameField: "email" };
 export function login() {
     return new passport_local.Strategy(strategyOptions, (username, password, done) => {
@@ -24,7 +26,7 @@ export function login() {
                     return done(null, false, { message: "Wrong email / password" });
                 }
 
-                console.log("User: %s logged in", dbUser.email);
+                $log.info("User: %s logged in", dbUser.email);
                 return done(null, dbUser);
             });
         });
