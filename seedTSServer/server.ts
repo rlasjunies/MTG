@@ -70,6 +70,7 @@ app.put("/api/paints/:id?", $AuthLocal.authenticationCheck, $PaintsRoutes.update
 
 app.use("/", express.static(__dirname + "/../seedTSClient/app"));
 app.use("/Scripts", express.static(__dirname + "/../seedTSClient/Scripts"));
+app.use("/bower_components", express.static(__dirname + "/../seedTSClient/bower_components"));
 app.use("/app", express.static(__dirname + "/../seedTSClient/app"));
 app.use("/styles", express.static(__dirname + "/../seedTSClient/styles"));
 app.use("/fonts", express.static(__dirname + "/../seedTSClient/fonts"));

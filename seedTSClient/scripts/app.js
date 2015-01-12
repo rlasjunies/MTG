@@ -2,6 +2,7 @@ var app;
 (function (app) {
     "use strict";
     angular.module("app", [
+        "ngMaterial",
         "satellizer",
         "ui.router"
     ]);
@@ -294,36 +295,36 @@ var app;
 (function (app) {
     var views;
     (function (views) {
-        var jobs;
-        (function (_jobs) {
+        var paints;
+        (function (_paints) {
             "use strict";
-            var JobsController = (function () {
-                function JobsController($scope, $http, CST_API_URL, NotificationService) {
+            var PaintsController = (function () {
+                function PaintsController($scope, $http, CST_API_URL, NotificationService) {
                     var _this = this;
                     this.$scope = $scope;
                     this.$http = $http;
                     this.CST_API_URL = CST_API_URL;
                     this.NotificationService = NotificationService;
-                    this.jobs = [];
-                    $http.get(this.CST_API_URL + "/jobs").error(function (err) {
-                        _this.NotificationService.error("Error message: \n" + JSON.stringify(err), "Cannot load jobs resources:");
-                    }).success(function (jobs) {
-                        _this.jobs = jobs;
+                    this.paints = [];
+                    $http.get(this.CST_API_URL + "/paints").error(function (err) {
+                        _this.NotificationService.error("Error message: \n" + JSON.stringify(err), "Cannot load paints resources:");
+                    }).success(function (paints) {
+                        _this.paints = paints;
                     });
-                    console.log("JobsController: Constructor");
-                    console.log(JSON.stringify(this.jobs));
+                    console.log("PaintsController: Constructor");
+                    console.log(JSON.stringify(this.paints));
                 }
-                JobsController.$inject = [
+                PaintsController.$inject = [
                     "$scope",
                     "$http",
                     "CST_API_URL",
                     "NotificationService"
                 ];
-                return JobsController;
+                return PaintsController;
             })();
-            _jobs.JobsController = JobsController;
-            angular.module("app").controller("app.views.jobs.JobsController", app.views.jobs.JobsController);
-        })(jobs = views.jobs || (views.jobs = {}));
+            _paints.PaintsController = PaintsController;
+            angular.module("app").controller("app.views.paints.PaintsController", app.views.paints.PaintsController);
+        })(paints = views.paints || (views.paints = {}));
     })(views = app.views || (app.views = {}));
 })(app || (app = {}));
 var app;
@@ -528,23 +529,39 @@ var app;
 (function (app) {
     var views;
     (function (views) {
-        var jobs;
-        (function (jobs) {
+        var index;
+        (function (index) {
             "use strict";
-            route.$inject = [
-                "$stateProvider"
-            ];
-            function route($stateProvider) {
-                $stateProvider.state("jobs", {
-                    url: "/jobs",
-                    templateUrl: "app/views/jobs/jobs.html",
-                    controller: "app.views.jobs.JobsController",
-                    controllerAs: "vm"
-                });
-            }
-            ;
-            angular.module("app").config(route);
-        })(jobs = views.jobs || (views.jobs = {}));
+            var IndexController = (function () {
+                function IndexController($scope, $auth, $mdSidenav, $log) {
+                    this.$scope = $scope;
+                    this.$auth = $auth;
+                    this.$mdSidenav = $mdSidenav;
+                    this.$log = $log;
+                    this.isAuthenticated = this.$auth.isAuthenticated;
+                    console.log("IndexController: Constructor");
+                }
+                IndexController.prototype.toggleLeft = function () {
+                    this.$mdSidenav("left").toggle().then(function () {
+                        this.$log.debug("toggle left is done");
+                    });
+                };
+                IndexController.prototype.toggleRight = function () {
+                    this.$mdSidenav("right").toggle().then(function () {
+                        this.$log.debug("toggle RIGHT is done");
+                    });
+                };
+                IndexController.$inject = [
+                    "$scope",
+                    "$auth",
+                    "$mdSidenav",
+                    "$log"
+                ];
+                return IndexController;
+            })();
+            index.IndexController = IndexController;
+            angular.module("app").controller("app.views.index.IndexController", app.views.index.IndexController);
+        })(index = views.index || (views.index = {}));
     })(views = app.views || (app.views = {}));
 })(app || (app = {}));
 var app;
@@ -639,6 +656,29 @@ var app;
 (function (app) {
     var views;
     (function (views) {
+        var paints;
+        (function (paints) {
+            "use strict";
+            route.$inject = [
+                "$stateProvider"
+            ];
+            function route($stateProvider) {
+                $stateProvider.state("paints", {
+                    url: "/paints",
+                    templateUrl: "app/views/paints/paints.html",
+                    controller: "app.views.paints.PaintsController",
+                    controllerAs: "vm"
+                });
+            }
+            ;
+            angular.module("app").config(route);
+        })(paints = views.paints || (views.paints = {}));
+    })(views = app.views || (app.views = {}));
+})(app || (app = {}));
+var app;
+(function (app) {
+    var views;
+    (function (views) {
         var register;
         (function (register) {
             "use strict";
@@ -656,6 +696,40 @@ var app;
             ;
             angular.module("app").config(route);
         })(register = views.register || (views.register = {}));
+    })(views = app.views || (app.views = {}));
+})(app || (app = {}));
+var app;
+(function (app) {
+    var views;
+    (function (views) {
+        var sidenav;
+        (function (sidenav) {
+            "use strict";
+            var SidenavController = (function () {
+                function SidenavController($scope, $auth, $mdSidenav, $log) {
+                    this.$scope = $scope;
+                    this.$auth = $auth;
+                    this.$mdSidenav = $mdSidenav;
+                    this.$log = $log;
+                    this.isAuthenticated = this.$auth.isAuthenticated;
+                    console.log("SidenavController: Constructor");
+                }
+                SidenavController.prototype.close = function () {
+                    this.$mdSidenav("left").close().then(function () {
+                        this.$log.debug("toggle left is done");
+                    });
+                };
+                SidenavController.$inject = [
+                    "$scope",
+                    "$auth",
+                    "$mdSidenav",
+                    "$log"
+                ];
+                return SidenavController;
+            })();
+            sidenav.SidenavController = SidenavController;
+            angular.module("app").controller("app.views.sidenav.SidenavController", app.views.sidenav.SidenavController);
+        })(sidenav = views.sidenav || (views.sidenav = {}));
     })(views = app.views || (app.views = {}));
 })(app || (app = {}));
 var app;

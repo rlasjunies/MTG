@@ -1,4 +1,26 @@
-﻿<div ng-controller="app.views.header.HeaderController as vm" class="header">
+﻿<md-toolbar ng-controller="app.views.header.HeaderController as vm" class="header">
+    <div name="header" layout="row" class="md-toolbar-tools">
+        <md-button ng-click="vmIndex.toggleLeft()">
+            <md-tooltip>
+                Menu
+            </md-tooltip>
+            <md-icon icon="..\bower_components\material-design-icons\navigation\2x_web\ic_menu_black_24dp.png">
+            </md-icon>
+        </md-button>
+                <!--       <div layout="row" layout-center="center center">-->
+                <div flex align="center"><h3>seedTS</h3></div>
+                <!--</div>-->
+        <md-button class="md-raised md-primary"ng-href="/login">
+            <md-tooltip>
+                Login/Logout
+            </md-tooltip>
+            Connexion
+            <!--<md-icon icon="..\bower_components\material-design-icons\navigation\2x_web\ic_menu_black_24dp.png"></md-icon>-->
+        </md-button>
+    </div>
+
+
+    <!--<md-button >menuLeft</md-button>
     <ul class="nav nav-pills pull-right">
         <li ui-sref-active="active">
             <a ui-sref="main">Home</a>
@@ -12,6 +34,5 @@
         <li ng-show="vm.isAuthenticated()" ui-sref-active="active">
             <a ui-sref="logout">Logout</a>
         </li>
-    </ul>
-    <h3 class="text-muted">jwt</h3>
-</div>
+    </ul>-->
+</md-toolbar>

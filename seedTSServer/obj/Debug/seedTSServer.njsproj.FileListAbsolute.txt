@@ -1,1 +1,2 @@
 C:\Dev\seedTS\seedTSServer\bin\Microsoft.NodejsTools.WebRole.dll
+C:\Dev\seedTS\seedTSServer\obj\Debug\seedTSServer.njsprojResolveAssemblyReference.cache

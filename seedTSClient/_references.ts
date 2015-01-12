@@ -13,7 +13,7 @@
 /// <reference path="app/app.run.ts" />
 
 /// <reference path="app/views/header/headercontroller.ts" />
-/// <reference path="app/views/jobs/jobscontroller.ts" />
+/// <reference path="app/views/paints/paintscontroller.ts" />
 /// <reference path="app/views/login/logincontroller.ts" />
 /// <reference path="app/views/logout/logoutcontroller.ts" />
 /// <reference path="app/views/register/registercontroller.ts" />

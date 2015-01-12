@@ -3,6 +3,7 @@
 
     angular
         .module("app", [
+            "ngMaterial",
             "satellizer",
             "ui.router"
         ]);

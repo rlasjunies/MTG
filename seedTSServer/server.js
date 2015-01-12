@@ -62,6 +62,7 @@ exports.app.delete("/api/paints/:id?", $AuthLocal.authenticationCheck, $PaintsRo
 exports.app.put("/api/paints/:id?", $AuthLocal.authenticationCheck, $PaintsRoutes.update);
 exports.app.use("/", express.static(__dirname + "/../seedTSClient/app"));
 exports.app.use("/Scripts", express.static(__dirname + "/../seedTSClient/Scripts"));
+exports.app.use("/bower_components", express.static(__dirname + "/../seedTSClient/bower_components"));
 exports.app.use("/app", express.static(__dirname + "/../seedTSClient/app"));
 exports.app.use("/styles", express.static(__dirname + "/../seedTSClient/styles"));
 exports.app.use("/fonts", express.static(__dirname + "/../seedTSClient/fonts"));
