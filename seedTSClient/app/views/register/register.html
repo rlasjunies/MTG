@@ -1,17 +1,31 @@
-<div class="jumbotron">
-    <form name="register" class="form-signin" ng-submit="vm.submit()" novalidate>
-        <h1 class="form-signin-heading text-muted">Sign In</h1>
+<md-content class="md-padding">
+    <form name="register" ng-submit="vm.submit()" novalidate>
+        <h1>Create new account</h1>
 
-        <input name="email" type="email" ng-model="vm.email" class="form-control" placeholder="Email address" required="" autofocus="">
-        <p class="help-block" ng-show="register.email.$dirty && register.email.$invalid">Please enter a proper email.</p>
+        <md-input-container>
+            <input type="email" name="email" ng-model="vm.email" placeholder="Email address" required autofocus>
+            <!--<p class="help-block" ng-show="register.email.$dirty && register.email.$invalid">Please enter a proper email.</p>-->
+            <div ng-messages="register.vm.email.$error">
+                <div ng-message="required">Email is required.</div>
+                <div ng-message="md-maxlength">The name has to be less than 30 characters long.</div>
+                <div ng-message="email">Your email address is incorrect.</div>
+            </div>
+        </md-input-container>
 
-        <input name="password" type="password" ng-model="vm.password" class="form-control" placeholder="Password" required>
 
-        <input name="password_confirm" ng-model="vm.passwordConfirm" type="password" class="form-control" placeholder="Confirm Password">
-        <p class="help-block" ng-show="register.password_confirm.$dirty && register.password_confirm.$invalid">Please match the passowrd</p>
 
-        <button ng-disabled="register.$invalid" class="btn btn-lg btn-primary btn-block" type="submit">
+        <!--<input name="email" type="email" ng-model="vm.email" class="form-control" placeholder="Email address" required="" autofocus="">-->
+        <md-input-container>
+            <input name="password" type="password" ng-model="vm.password" placeholder="Password" required>
+        </md-input-container>
+
+        <md-input-container>
+            <input name="password_confirm" type="password" ng-model="vm.passwordConfirm" placeholder="Confirm Password" required>
+        </md-input-container>
+        <!--<p class="help-block" ng-show="register.password_confirm.$dirty && register.password_confirm.$invalid">Please match the passowrd</p>-->
+
+        <button ng-disabled="register.$invalid" type="submit">
             Submit
         </button>
     </form>
-</div>
+</md-content>

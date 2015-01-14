@@ -2,7 +2,7 @@
  * Angular Material Design
  * https://github.com/angular/material
  * @license MIT
- * v0.7.0-rc2-master-240c03a
+ * v0.6.1
  */
 goog.provide('ng.material.components.checkbox');
 goog.require('ng.material.core');
@@ -54,8 +54,9 @@ angular.module('material.components.checkbox', [
  * </hljs>
  *
  */
-function MdCheckboxDirective(inputDirective, $mdInkRipple, $mdAria, $mdConstant, $mdTheming, $mdUtil) {
+function MdCheckboxDirective(inputDirective, $mdInkRipple, $mdAria, $mdConstant, $mdTheming) {
   inputDirective = inputDirective[0];
+
   var CHECKED_CSS = 'md-checked';
 
   return {
@@ -81,9 +82,17 @@ function MdCheckboxDirective(inputDirective, $mdInkRipple, $mdAria, $mdConstant,
     tElement.attr('role', tAttrs.type);
 
     return function postLink(scope, element, attr, ngModelCtrl) {
-      ngModelCtrl = ngModelCtrl || $mdUtil.fakeNgModel();
       var checked = false;
       $mdTheming(element);
+
+      // Create a mock ngModel if the user doesn't provide one
+      ngModelCtrl = ngModelCtrl || {
+        $setViewValue: function(value) {
+          this.$viewValue = value;
+        },
+        $parsers: [],
+        $formatters: []
+      };
 
       $mdAria.expectWithText(tElement, 'aria-label');
 
@@ -95,11 +104,7 @@ function MdCheckboxDirective(inputDirective, $mdInkRipple, $mdAria, $mdConstant,
         0: {}
       }, attr, [ngModelCtrl]);
 
-      // Used by switch. in Switch, we don't want click listeners; we have more granular
-      // touchup/touchdown listening.
-      if (!attr.mdNoClick) {
-        element.on('click', listener);
-      }
+      element.on('click', listener);
       element.on('keypress', keypressHandler);
       ngModelCtrl.$render = render;
 
@@ -130,6 +135,6 @@ function MdCheckboxDirective(inputDirective, $mdInkRipple, $mdAria, $mdConstant,
     };
   }
 }
-MdCheckboxDirective.$inject = ["inputDirective", "$mdInkRipple", "$mdAria", "$mdConstant", "$mdTheming", "$mdUtil"];
+MdCheckboxDirective.$inject = ["inputDirective", "$mdInkRipple", "$mdAria", "$mdConstant", "$mdTheming"];
 
 })();

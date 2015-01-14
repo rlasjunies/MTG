@@ -41,6 +41,7 @@
         }
 
         submit = () => {
+            alert("messafe");
             this.$auth.signup<app.authentication.IAuthenticationServerResponse>({ email: this.email, password: this.password })
                 .then((response) => {
                     // console.log("registration is fine!"); 

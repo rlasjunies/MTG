@@ -4,7 +4,8 @@ var app;
     angular.module("app", [
         "ngMaterial",
         "satellizer",
-        "ui.router"
+        "ui.router",
+        "ngMessages"
     ]);
 })(app || (app = {}));
 var app;
@@ -437,6 +438,7 @@ var app;
                         _this.$scope["register"]["password_confirm"].$setValidity("equal", (_this.password === _this.passwordConfirm));
                     };
                     this.submit = function () {
+                        alert("messafe");
                         _this.$auth.signup({ email: _this.email, password: _this.password }).then(function (response) {
                             var msg = "Dear '" + response.data.user.email + "' you are now registered!. Goes in your mailbox to confirm your email address " + " within 12 hours.";
                             _this.NotificationService.success(msg);

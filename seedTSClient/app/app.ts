@@ -5,6 +5,7 @@
         .module("app", [
             "ngMaterial",
             "satellizer",
-            "ui.router"
+            "ui.router",
+            "ngMessages"
         ]);
 }

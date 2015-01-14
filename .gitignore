@@ -4,6 +4,7 @@ node_modules
 data
 .tscache
 Debug
+bower_components
 
 # Windows image file caches
 Thumbs.db

@@ -2,7 +2,7 @@
  * Angular Material Design
  * https://github.com/angular/material
  * @license MIT
- * v0.7.0-rc2-master-240c03a
+ * v0.6.1
  */
 goog.provide('ng.material.components.slider');
 goog.require('ng.material.core');
@@ -194,10 +194,9 @@ function SliderController($scope, $element, $attrs, $$rAF, $window, $mdAria, $md
 
       var numSteps = Math.floor( (max - min) / step );
       if (!tickCanvas) {
-        var trackTicksStyle = $window.getComputedStyle(tickContainer[0]);
         tickCanvas = angular.element('<canvas style="position:absolute;">');
         tickCtx = tickCanvas[0].getContext('2d');
-        tickCtx.fillStyle = trackTicksStyle.backgroundColor || 'black';
+        tickCtx.fillStyle = 'black';
         tickContainer.append(tickCanvas);
       }
       var dimensions = getSliderDimensions();

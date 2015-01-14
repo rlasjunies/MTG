@@ -2,7 +2,7 @@
  * Angular Material Design
  * https://github.com/angular/material
  * @license MIT
- * v0.7.0-rc2-master-416079b
+ * v0.6.1
  */
 (function() {
 'use strict';
@@ -21,7 +21,34 @@ angular.module('material.components.textField', [
   .directive('mdTextFloat', mdTextFloatDirective);
 
 
-function mdTextFloatDirective($mdTheming, $mdUtil, $parse, $log) {
+
+/**
+ * @ngdoc directive
+ * @name mdTextFloat
+ * @module material.components.textField
+ *
+ * @restrict E
+ *
+ * @description
+ * Use the `<md-text-float>` directive to quickly construct `Floating Label` text fields
+ *
+ * @param {string} ng-model Model expression used for two-way data binding with the input value.
+ * @param {string} label String value or expression that specifies the input text field label/hint.
+ * @param {string=} type Optional value to define the type of input field. Defaults to string.
+ * @param {string=} md-fid Optional attribute used for accessibility link pairing between the Label and Input elements
+ *
+ * @usage
+ * <hljs lang="html">
+ * <md-text-float label="LastName" ng-model="user.lastName" > </md-text-float>
+ *
+ * <!-- Specify a read-only input field by using the `disabled` attribute -->
+ * <md-text-float label="Company"  ng-model="user.company" ng-disabled="true" > </md-text-float>
+ *
+ * <!-- Specify an input type if desired. -->
+ * <md-text-float label="eMail"    ng-model="user.email" type="email" ></md-text-float>
+ * </hljs>
+ */
+function mdTextFloatDirective($mdTheming, $mdUtil, $parse) {
   return {
     restrict: 'E',
     replace: true,
@@ -31,9 +58,6 @@ function mdTextFloatDirective($mdTheming, $mdUtil, $parse, $log) {
       value : '=ngModel'
     },
     compile : function(element, attr) {
-
-      $log.warn('<md-text-float> is deprecated. Please use `<md-input-container>` and `<input>`.' + 
-                'More information at http://material.angularjs.org/#/api/material.components.input/directive/mdInputContainer');
 
       if ( angular.isUndefined(attr.mdFid) ) {
         attr.mdFid = $mdUtil.nextUid();
@@ -58,15 +82,30 @@ function mdTextFloatDirective($mdTheming, $mdUtil, $parse, $log) {
     '</md-input-group>'
   };
 }
-mdTextFloatDirective.$inject = ["$mdTheming", "$mdUtil", "$parse", "$log"];
+mdTextFloatDirective.$inject = ["$mdTheming", "$mdUtil", "$parse"];
 
-function mdInputGroupDirective($log) {
+/*
+ * @private
+ *
+ * @ngdoc directive
+ * @name mdInputGroup
+ * @module material.components.textField
+ * @restrict E
+ * @description
+ * Use the `<md-input-group>` directive as the grouping parent of a `<md-input>` element.
+ *
+ * @usage 
+ * <hljs lang="html">
+ * <md-input-group ng-disabled="isDisabled">
+ *   <label for="{{fid}}">{{someLabel}}</label>
+ *   <md-input id="{{fid}}" type="text" ng-model="someText"></md-input>
+ * </md-input-group>
+ * </hljs>
+ */
+function mdInputGroupDirective() {
   return {
     restrict: 'CE',
     controller: ['$element', function($element) {
-
-      $log.warn('<md-input-group> is deprecated. Please use `<md-input-container>` and `<input>`.' + 
-                'More information at http://material.angularjs.org/#/api/material.components.input/directive/mdInputContainer');
       this.setFocused = function(isFocused) {
         $element.toggleClass('md-input-focused', !!isFocused);
       };
@@ -77,9 +116,28 @@ function mdInputGroupDirective($log) {
   };
 
 }
-mdInputGroupDirective.$inject = ["$log"];
 
-function mdInputDirective($mdUtil, $log) {
+/*
+ * @private
+ *
+ * @ngdoc directive
+ * @name mdInput
+ * @module material.components.textField
+ *
+ * @restrict E
+ *
+ * @description
+ * Use the `<md-input>` directive as elements within a `<md-input-group>` container
+ *
+ * @usage
+ * <hljs lang="html">
+ * <md-input-group ng-disabled="user.isLocked">
+ *   <label for="i1">FirstName</label>
+ *   <md-input id="i1" ng-model="user.firstName"></md-input>
+ * </md-input-group>
+ * </hljs>
+ */
+function mdInputDirective($mdUtil) {
   return {
     restrict: 'E',
     replace: true,
@@ -87,9 +145,6 @@ function mdInputDirective($mdUtil, $log) {
     require: ['^?mdInputGroup', '?ngModel'],
     link: function(scope, element, attr, ctrls) {
       if ( !ctrls[0] ) return;
-
-      $log.warn('<md-input> is deprecated. Please use `<md-input-container>` and `<input>`.' + 
-                'More information at http://material.angularjs.org/#/api/material.components.input/directive/mdInputContainer');
 
       var inputGroupCtrl = ctrls[0];
       var ngModelCtrl = ctrls[1];
@@ -138,6 +193,6 @@ function mdInputDirective($mdUtil, $log) {
     }
   };
 }
-mdInputDirective.$inject = ["$mdUtil", "$log"];
+mdInputDirective.$inject = ["$mdUtil"];
 
 })();
