@@ -31,7 +31,7 @@
         }
 
         close():void{
-            this.$mdSidenav("left").close().then(function () {
+            this.$mdSidenav("left").close().then(() => {
                     this.$log.debug("toggle left is done");
                 });
         }

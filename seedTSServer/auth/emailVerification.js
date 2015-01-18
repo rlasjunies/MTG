@@ -61,7 +61,7 @@ function verify(req, res, next) {
 exports.verify = verify;
 function handleError(res) {
     return res.status(401).send({
-        message: "Authenitication failed, enable to verify the email"
+        message: "Authentication failed, enable to verify the email"
     });
 }
 function getHtml(token) {

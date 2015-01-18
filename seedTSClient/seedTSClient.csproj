@@ -90,6 +90,7 @@
     <TypeScriptCompile Include="app\views\logout\logoutController.ts" />
     <TypeScriptCompile Include="app\views\register\registerController.ts" />
     <TypeScriptCompile Include="app\views\register\validateEqualsDirective.ts" />
+    <TypeScriptCompile Include="scripts\typings\angular-material.d.ts" />
     <TypeScriptCompile Include="scripts\typings\angular-ui\angular-ui-router.d.ts" />
     <TypeScriptCompile Include="scripts\typings\angularjs\angular-animate.d.ts" />
     <TypeScriptCompile Include="scripts\typings\angularjs\angular-cookies.d.ts" />

@@ -93,7 +93,7 @@ export function verify(req: e.xRequest<e.IRouteParamEmpty>, res:e.Response, next
 
 function handleError(res:e.Response) {
     return res.status(401).send({
-        message:"Authenitication failed, enable to verify the email"
+        message:"Authentication failed, enable to verify the email"
     });
 }
 

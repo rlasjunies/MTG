@@ -30,14 +30,14 @@
             // });
         }
 
-        toggleLeft(): void {
-            this.$mdSidenav("left").toggle().then(function () {
+        toggleLeft  = (): void => {
+            this.$mdSidenav("left").toggle().then(()=>{
                 this.$log.debug("toggle left is done");
             });
         }
 
-        toggleRight(): void {
-            this.$mdSidenav("right").toggle().then(function () {
+        toggleRight = (): void=> {
+            this.$mdSidenav("right").toggle().then(() => {
                 this.$log.debug("toggle RIGHT is done");
             });
         }

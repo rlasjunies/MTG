@@ -123,43 +123,52 @@ var app;
     var services;
     (function (services) {
         "use strict";
+        var Config = (function () {
+            function Config() {
+            }
+            return Config;
+        })();
         var NotificationService = (function () {
-            function NotificationService() {
+            function NotificationService($mdToast) {
+                this.$mdToast = $mdToast;
                 console.log("notificationService ... loaded");
-                toastr.options = {
-                    "positionClass": "toast-bottom-right",
-                };
+                this.toastConfig = new Config();
+                this.toastConfig.hideDelay = 1000;
             }
             NotificationService.prototype.success = function (message, title) {
                 if (title === undefined) {
                     title = "";
                 }
-                toastr.success(message, title);
+                var toast = this.$mdToast.simple().content(message).hideDelay(1000);
+                this.$mdToast.show(toast);
             };
             NotificationService.prototype.error = function (message, title) {
                 if (title === undefined) {
                     title = "";
                 }
-                toastr.error(message, title);
+                var toast = this.$mdToast.simple().content(message).hideDelay(1000);
+                this.$mdToast.show(toast);
             };
             NotificationService.prototype.info = function (message, title) {
                 if (title === undefined) {
                     title = "";
                 }
-                toastr.info(message, title);
+                var toast = this.$mdToast.simple().content(message).hideDelay(1000);
+                this.$mdToast.show(toast);
             };
             NotificationService.prototype.warning = function (message, title) {
                 if (title === undefined) {
                     title = "";
                 }
-                toastr.warning(message, title);
+                var toast = this.$mdToast.simple().content(message).hideDelay(1000);
+                this.$mdToast.show(toast);
             };
             return NotificationService;
         })();
         services.NotificationService = NotificationService;
-        factory.$inject = [];
-        function factory() {
-            return new app.services.NotificationService();
+        factory.$inject = ["$mdToast"];
+        function factory($mdToast) {
+            return new app.services.NotificationService($mdToast);
         }
         angular.module("app").factory("NotificationService", factory);
     })(services = app.services || (app.services = {}));
@@ -536,23 +545,24 @@ var app;
             "use strict";
             var IndexController = (function () {
                 function IndexController($scope, $auth, $mdSidenav, $log) {
+                    var _this = this;
                     this.$scope = $scope;
                     this.$auth = $auth;
                     this.$mdSidenav = $mdSidenav;
                     this.$log = $log;
+                    this.toggleLeft = function () {
+                        _this.$mdSidenav("left").toggle().then(function () {
+                            _this.$log.debug("toggle left is done");
+                        });
+                    };
+                    this.toggleRight = function () {
+                        _this.$mdSidenav("right").toggle().then(function () {
+                            _this.$log.debug("toggle RIGHT is done");
+                        });
+                    };
                     this.isAuthenticated = this.$auth.isAuthenticated;
                     console.log("IndexController: Constructor");
                 }
-                IndexController.prototype.toggleLeft = function () {
-                    this.$mdSidenav("left").toggle().then(function () {
-                        this.$log.debug("toggle left is done");
-                    });
-                };
-                IndexController.prototype.toggleRight = function () {
-                    this.$mdSidenav("right").toggle().then(function () {
-                        this.$log.debug("toggle RIGHT is done");
-                    });
-                };
                 IndexController.$inject = [
                     "$scope",
                     "$auth",
@@ -717,8 +727,9 @@ var app;
                     console.log("SidenavController: Constructor");
                 }
                 SidenavController.prototype.close = function () {
+                    var _this = this;
                     this.$mdSidenav("left").close().then(function () {
-                        this.$log.debug("toggle left is done");
+                        _this.$log.debug("toggle left is done");
                     });
                 };
                 SidenavController.$inject = [

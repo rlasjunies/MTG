@@ -1,5 +1,5 @@
 ﻿<div ng-controller="app.views.sidenav.SidenavController as vm">
-    <md-sidenav class="md-sidenav-left md-whiteframe-z2" md-component-id="left">
+    <md-sidenav class="md-sidenav-left md-whiteframe-z2" md-component-id="left" md-is-locked-open="$media('gt-md')">
         <md-toolbar class="md-theme-indigo" layout="row">
             <md-button ng-click="vm.close()">
                 <md-icon icon="..\bower_components\material-design-icons\navigation\2x_web\ic_menu_black_24dp.png" style="width:24px;height:24px"></md-icon>
@@ -12,31 +12,4 @@
             <md-button ng-href="/paints" ng-click="vm.close()">Paints</md-button>
         </md-content>
     </md-sidenav>
-    <!--<md-content flex class="md-padding">
-        <div layout="column" layout-fill layout-align="center center">
-            <p>
-                The left sidenav will 'lock open' on a medium (>=960px wide) device.
-            </p>
-            <div>
-                <md-button ng-click="vm.toggleLeft()" class="md-primary" hide-gt-md>
-                    Toggle left
-                </md-button>
-            </div>
-            <div>
-                <md-button ng-click="vm.toggleRight()" class="md-primary">
-                    Toggle right
-                </md-button>
-            </div>
-        </div>
-    </md-content>
-    <md-sidenav class="md-sidenav-right md-whiteframe-z2" md-component-id="right">
-        <md-toolbar class="md-theme-light">
-            <h1 class="md-toolbar-tools">Sidenav Right</h1>
-        </md-toolbar>
-        <md-content class="md-padding">
-            <md-button ng-click="vm.rightClose()" class="md-primary">
-                Close Sidenav Right
-            </md-button>
-        </md-content>
-    </md-sidenav>-->
 </div>
