@@ -1,10 +1,10 @@
-packages
 configSecret.*
+packages
 node_modules
+bower_components
 data
 .tscache
 Debug
-bower_components
 
 # Windows image file caches
 Thumbs.db
