@@ -7,7 +7,7 @@
     db: {
         production: "rlasjunies:1234",
         development: "",
-        test: "",
+        test: "", 
     }
 };
 export = secret
