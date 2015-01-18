@@ -6,24 +6,24 @@
     }
 
     export class HeaderController {
-        public isAuthenticated: Function;
+        //public isAuthenticated: Function;
         // public $auth:  //any; //: services.AuthToken;
 
         static $inject = [
             "$scope",
-            "$auth"
+            "$auth",
+            "$log"
         ];
         constructor(
             private $scope: ng.IScope,
-            private $auth) {
+            private $auth: satellizer.IAuthService,
+            private $log:ng.ILogService) {
             this.isAuthenticated = this.$auth.isAuthenticated;
-            console.log("HeaderController: Constructor");
+            this.$log.debug("HeaderController: Constructor");
+        }
 
-            // TODO update to use angular.value
-            // $scope.$on("userupdated", (event: ng.IAngularEvent) => {
-            //    this.isAuthenticated = this.$auth.isAuthenticated();
-            // });
-
+        isAuthenticated = ():boolean => {
+            return this.$auth.isAuthenticated();
         }
     }
 

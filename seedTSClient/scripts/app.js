@@ -81,11 +81,14 @@ var app;
         "use strict";
         var CST_KEY = "TOKEN";
         var AuthToken = (function () {
-            function AuthToken($window) {
+            function AuthToken($window, $log) {
                 var _this = this;
+                this.$window = $window;
+                this.$log = $log;
                 this.setToken = function (token) {
                     _this.cachedToken = token;
                     _this.storage.setItem(CST_KEY, token);
+                    _this.$log.debug("authToken: SetToken");
                 };
                 this.getToken = function () {
                     if (!_this.cachedToken) {
@@ -96,6 +99,7 @@ var app;
                 this.remove = function () {
                     _this.cachedToken = null;
                     _this.storage.removeItem(CST_KEY);
+                    _this.$log.debug("remove token");
                 };
                 this.isAuthenticated = function () {
                     if (_this.getToken() === null) {
@@ -104,16 +108,17 @@ var app;
                     return true;
                 };
                 this.storage = $window.localStorage;
-                console.log("notificationService ... loaded");
+                this.$log.debug("authToken service ... loaded");
             }
             return AuthToken;
         })();
         authentication.AuthToken = AuthToken;
         factory.$inject = [
-            "$window"
+            "$window",
+            "$log"
         ];
-        function factory($window) {
-            return new app.authentication.AuthToken($window);
+        function factory($window, $log) {
+            return new app.authentication.AuthToken($window, $log);
         }
         angular.module("app").factory("AuthToken", factory);
     })(authentication = app.authentication || (app.authentication = {}));
@@ -129,11 +134,12 @@ var app;
             return Config;
         })();
         var NotificationService = (function () {
-            function NotificationService($mdToast) {
+            function NotificationService($mdToast, $log) {
                 this.$mdToast = $mdToast;
-                console.log("notificationService ... loaded");
+                this.$log = $log;
                 this.toastConfig = new Config();
                 this.toastConfig.hideDelay = 1000;
+                this.$log.debug("notificationService ... loaded");
             }
             NotificationService.prototype.success = function (message, title) {
                 if (title === undefined) {
@@ -166,9 +172,12 @@ var app;
             return NotificationService;
         })();
         services.NotificationService = NotificationService;
-        factory.$inject = ["$mdToast"];
-        function factory($mdToast) {
-            return new app.services.NotificationService($mdToast);
+        factory.$inject = [
+            "$mdToast",
+            "$log"
+        ];
+        function factory($mdToast, $log) {
+            return new app.services.NotificationService($mdToast, $log);
         }
         angular.module("app").factory("NotificationService", factory);
     })(services = app.services || (app.services = {}));
@@ -234,10 +243,11 @@ var app;
     (function (authentication) {
         "use strict";
         var AuthInterceptor = (function () {
-            function AuthInterceptor(AuthToken) {
+            function AuthInterceptor($auth) {
                 var _this = this;
+                this.$auth = $auth;
                 this.request = function (config) {
-                    var token = _this.authToken.getToken();
+                    var token = _this.$auth.getToken();
                     if (token) {
                         config.headers.Authorization = "Bearer " + token;
                     }
@@ -246,16 +256,15 @@ var app;
                 this.response = function (response) {
                     return response;
                 };
-                this.authToken = AuthToken;
             }
             return AuthInterceptor;
         })();
         authentication.AuthInterceptor = AuthInterceptor;
         factory.$inject = [
-            "AuthToken"
+            "$auth"
         ];
-        function factory(AuthToken) {
-            return new app.authentication.AuthInterceptor(AuthToken);
+        function factory($auth) {
+            return new app.authentication.AuthInterceptor($auth);
         }
         ;
     })(authentication = app.authentication || (app.authentication = {}));
@@ -284,15 +293,21 @@ var app;
         (function (header) {
             "use strict";
             var HeaderController = (function () {
-                function HeaderController($scope, $auth) {
+                function HeaderController($scope, $auth, $log) {
+                    var _this = this;
                     this.$scope = $scope;
                     this.$auth = $auth;
+                    this.$log = $log;
+                    this.isAuthenticated = function () {
+                        return _this.$auth.isAuthenticated();
+                    };
                     this.isAuthenticated = this.$auth.isAuthenticated;
-                    console.log("HeaderController: Constructor");
+                    this.$log.debug("HeaderController: Constructor");
                 }
                 HeaderController.$inject = [
                     "$scope",
-                    "$auth"
+                    "$auth",
+                    "$log"
                 ];
                 return HeaderController;
             })();
@@ -309,26 +324,29 @@ var app;
         (function (_paints) {
             "use strict";
             var PaintsController = (function () {
-                function PaintsController($scope, $http, CST_API_URL, NotificationService) {
+                function PaintsController($scope, $http, CST_API_URL, NotificationService, $log) {
                     var _this = this;
                     this.$scope = $scope;
                     this.$http = $http;
                     this.CST_API_URL = CST_API_URL;
                     this.NotificationService = NotificationService;
+                    this.$log = $log;
                     this.paints = [];
                     $http.get(this.CST_API_URL + "/paints").error(function (err) {
+                        _this.$log.error("Error message: \n" + JSON.stringify(err), "Cannot load paints resources:");
                         _this.NotificationService.error("Error message: \n" + JSON.stringify(err), "Cannot load paints resources:");
                     }).success(function (paints) {
                         _this.paints = paints;
+                        _this.$log.debug("paints loaded!");
                     });
-                    console.log("PaintsController: Constructor");
-                    console.log(JSON.stringify(this.paints));
+                    this.$log.debug("PaintsController: Constructor");
                 }
                 PaintsController.$inject = [
                     "$scope",
                     "$http",
                     "CST_API_URL",
-                    "NotificationService"
+                    "NotificationService",
+                    "$log"
                 ];
                 return PaintsController;
             })();
@@ -346,14 +364,16 @@ var app;
             "use strict";
             ;
             var LoginController = (function () {
-                function LoginController($rootScope, NotificationService, $state, $auth) {
+                function LoginController($rootScope, NotificationService, $state, $auth, $log) {
                     var _this = this;
                     this.$rootScope = $rootScope;
                     this.NotificationService = NotificationService;
                     this.$state = $state;
                     this.$auth = $auth;
+                    this.$log = $log;
                     this.submit = function () {
                         _this.$auth.login({ email: _this.email, password: _this.password }).then(function (response) {
+                            _this.$log.debug("login is fine!");
                             var msg = "Thanks '" + response.data.user.email + "'for coming back!";
                             _this.NotificationService.success(msg);
                             if (!response.data.user.active) {
@@ -363,30 +383,31 @@ var app;
                             _this.$rootScope.$broadcast("userupdated");
                             _this.$state.go("main");
                         }).catch(function (err) {
-                            console.log("login:" + JSON.stringify(err));
+                            _this.$log.error("login:" + JSON.stringify(err));
                             _this.NotificationService.error("Error registering!");
                             _this.$rootScope.$broadcast("userupdated");
                         });
                     };
                     this.authenticate = function (provider) {
                         _this.$auth.authenticate(provider).then(function (response) {
-                            console.log("login is fine!");
+                            _this.$log.debug("login is fine!");
                             _this.NotificationService.success("U are logged!");
                             _this.$rootScope.$broadcast("userupdated");
                             _this.$state.go("main");
                         }).catch(function (err) {
-                            console.log("login:" + JSON.stringify(err));
+                            _this.$log.error("login:" + JSON.stringify(err));
                             _this.NotificationService.error("Error registering!");
                             _this.$rootScope.$broadcast("userupdated");
                         });
                     };
-                    console.log("LoginController: Constructor");
+                    this.$log.debug("LoginController: Constructor");
                 }
                 LoginController.$inject = [
                     "$rootScope",
                     "NotificationService",
                     "$state",
-                    "$auth"
+                    "$auth",
+                    "$log"
                 ];
                 return LoginController;
             })();
@@ -403,22 +424,24 @@ var app;
         (function (logout) {
             "use strict";
             var LogoutController = (function () {
-                function LogoutController($rootScope, $auth, $state, NotificationService) {
+                function LogoutController($rootScope, $auth, $state, NotificationService, $log) {
                     this.$rootScope = $rootScope;
                     this.$auth = $auth;
                     this.$state = $state;
                     this.NotificationService = NotificationService;
-                    console.log("LogoutController: Constructor");
+                    this.$log = $log;
                     this.$auth.logout();
                     this.$rootScope.$broadcast("userupdated");
                     this.$state.go("main");
                     NotificationService.info("You are now logout!", "Authentication message");
+                    this.$log.debug("LogoutController: Constructor");
                 }
                 LogoutController.$inject = [
                     "$rootScope",
                     "$auth",
                     "$state",
-                    "NotificationService"
+                    "NotificationService",
+                    "$log"
                 ];
                 return LogoutController;
             })();
@@ -436,25 +459,26 @@ var app;
             "use strict";
             ;
             var RegisterController = (function () {
-                function RegisterController($rootScope, $scope, NotificationService, $auth, $state) {
+                function RegisterController($rootScope, $scope, NotificationService, $auth, $state, $log) {
                     var _this = this;
                     this.$rootScope = $rootScope;
                     this.$scope = $scope;
                     this.NotificationService = NotificationService;
                     this.$auth = $auth;
                     this.$state = $state;
+                    this.$log = $log;
                     this.checkPasswords = function () {
                         _this.$scope["register"]["password_confirm"].$setValidity("equal", (_this.password === _this.passwordConfirm));
                     };
                     this.submit = function () {
-                        alert("messafe");
                         _this.$auth.signup({ email: _this.email, password: _this.password }).then(function (response) {
+                            _this.$log.info("registration is fine!");
                             var msg = "Dear '" + response.data.user.email + "' you are now registered!. Goes in your mailbox to confirm your email address " + " within 12 hours.";
                             _this.NotificationService.success(msg);
                             _this.$scope.$broadcast("userupdated");
                             _this.$state.go("main");
                         }).catch(function (err) {
-                            console.log("bad");
+                            _this.$log.error("registration is wrong bad:" + JSON.stringify(err));
                             _this.NotificationService.error("Error registering!" + JSON.stringify(err));
                             _this.$scope.$broadcast("userupdated");
                         });
@@ -463,14 +487,15 @@ var app;
                     this.passwordConfirm = "";
                     this.$scope.$watch(function () { return _this.password; }, this.checkPasswords);
                     this.$scope.$watch(function () { return _this.passwordConfirm; }, this.checkPasswords);
-                    console.log("RegisterController: Constructor");
+                    this.$log.debug("RegisterController: Constructor");
                 }
                 RegisterController.$inject = [
                     "$rootScope",
                     "$scope",
                     "NotificationService",
                     "$auth",
-                    "$state"
+                    "$state",
+                    "$log"
                 ];
                 return RegisterController;
             })();
@@ -491,18 +516,13 @@ var app;
                     this.require = "ngModel";
                     this.link = function (scope, instanceElement, attrs, controller) {
                         function validateEqual(value) {
-                            console.log("validateEqual-value:" + value);
-                            console.log("validateEqual-scope.$eval(attrs['controllerValidateEquals'])):" + scope.$eval(attrs["controllerValidateEquals"]));
                             var valid = (value === scope.$eval(attrs["controllerValidateEquals"]));
-                            console.log("isValid?:" + valid);
                             return valid ? value : undefined;
                         }
                         ;
                         controller.$parsers.push(validateEqual);
                         controller.$formatters.push(validateEqual);
                         scope.$watch(attrs["controllerValidateEquals"], function () {
-                            console.log("scope.$watch of - val of ctlr.password:" + scope.$eval(attrs["controllerValidateEquals"]));
-                            console.log("scope.$watch of - val of confirmPassword", controller.$viewValue);
                             if (controller.$viewValue === scope.$eval(attrs["controllerValidateEquals"])) {
                                 controller.$setValidity("equal", true);
                             }
@@ -521,21 +541,6 @@ var app;
 angular.module("app").directive("x", function () {
     return new app.views.register.ValidateEqualsDirective();
 });
-var app;
-(function (app) {
-    var route;
-    (function (_route) {
-        "use strict";
-        route.$inject = [
-            "$urlRouterProvider"
-        ];
-        function route($urlRouterProvider) {
-            $urlRouterProvider.otherwise("/");
-        }
-        ;
-        angular.module("app").config(route);
-    })(route = app.route || (app.route = {}));
-})(app || (app = {}));
 var app;
 (function (app) {
     var views;
@@ -561,7 +566,7 @@ var app;
                         });
                     };
                     this.isAuthenticated = this.$auth.isAuthenticated;
-                    console.log("IndexController: Constructor");
+                    this.$log.debug("IndexController: Constructor");
                 }
                 IndexController.$inject = [
                     "$scope",
@@ -574,6 +579,44 @@ var app;
             index.IndexController = IndexController;
             angular.module("app").controller("app.views.index.IndexController", app.views.index.IndexController);
         })(index = views.index || (views.index = {}));
+    })(views = app.views || (app.views = {}));
+})(app || (app = {}));
+var app;
+(function (app) {
+    var route;
+    (function (_route) {
+        "use strict";
+        route.$inject = [
+            "$urlRouterProvider"
+        ];
+        function route($urlRouterProvider) {
+            $urlRouterProvider.otherwise("/");
+        }
+        ;
+        angular.module("app").config(route);
+    })(route = app.route || (app.route = {}));
+})(app || (app = {}));
+var app;
+(function (app) {
+    var views;
+    (function (views) {
+        var paints;
+        (function (paints) {
+            "use strict";
+            route.$inject = [
+                "$stateProvider"
+            ];
+            function route($stateProvider) {
+                $stateProvider.state("paints", {
+                    url: "/paints",
+                    templateUrl: "app/views/paints/paints.html",
+                    controller: "app.views.paints.PaintsController",
+                    controllerAs: "vm"
+                });
+            }
+            ;
+            angular.module("app").config(route);
+        })(paints = views.paints || (views.paints = {}));
     })(views = app.views || (app.views = {}));
 })(app || (app = {}));
 var app;
@@ -629,10 +672,12 @@ var app;
         (function (main) {
             "use strict";
             var MainController = (function () {
-                function MainController() {
-                    console.log("MainController: Constructor");
+                function MainController($log) {
+                    this.$log = $log;
+                    this.$log.debug("MainController: Constructor");
                 }
                 MainController.$inject = [
+                    "$log"
                 ];
                 return MainController;
             })();
@@ -662,29 +707,6 @@ var app;
             ;
             angular.module("app").config(route);
         })(main = views.main || (views.main = {}));
-    })(views = app.views || (app.views = {}));
-})(app || (app = {}));
-var app;
-(function (app) {
-    var views;
-    (function (views) {
-        var paints;
-        (function (paints) {
-            "use strict";
-            route.$inject = [
-                "$stateProvider"
-            ];
-            function route($stateProvider) {
-                $stateProvider.state("paints", {
-                    url: "/paints",
-                    templateUrl: "app/views/paints/paints.html",
-                    controller: "app.views.paints.PaintsController",
-                    controllerAs: "vm"
-                });
-            }
-            ;
-            angular.module("app").config(route);
-        })(paints = views.paints || (views.paints = {}));
     })(views = app.views || (app.views = {}));
 })(app || (app = {}));
 var app;
@@ -724,7 +746,7 @@ var app;
                     this.$mdSidenav = $mdSidenav;
                     this.$log = $log;
                     this.isAuthenticated = this.$auth.isAuthenticated;
-                    console.log("SidenavController: Constructor");
+                    this.$log.debug("SidenavController: Constructor");
                 }
                 SidenavController.prototype.close = function () {
                     var _this = this;

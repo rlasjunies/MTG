@@ -89,10 +89,6 @@ heroku ps:scale web=1
 https://afternoon-everglades-8738.herokuapp.com/
 
 
-
-
-
-
 HTTP Verb       Path                Module Method       Description
 GET             /users              index               Lists users
 //GET             /users/new          new                 The form to create a newuser
@@ -105,3 +101,13 @@ DELETE          /users/:id          destroy             Deletes user with ID :id
 #Debug Mocha tests
 
 C:\Users\Richard\AppData\Roaming\npm\node_modules\mocha\bin\mocha "C:\Dev\seedTS\seedTSServer\test-api\**\*-specs.js"
+
+
+#Google App ID
+https://developers.google.com/
+https://console.developers.google.com/project
+
+
+#Facebook App ID
+https://developers.facebook.com/apps/
+

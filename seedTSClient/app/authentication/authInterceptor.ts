@@ -1,17 +1,12 @@
-﻿// TODO not sure this is needed anymore due to the usage of satellizer
-
-module app.authentication {
+﻿module app.authentication {
     "use strict";
     export class AuthInterceptor {
 
-        authToken: app.authentication.AuthToken;
-
-        constructor(AuthToken: app.authentication.AuthToken) {
-            this.authToken = AuthToken;
+        constructor(private $auth: satellizer.IAuthService) {
         }
 
         request = (config) => {
-            var token = this.authToken.getToken();
+            var token = this.$auth.getToken();
 
             if (token) {
                 config.headers.Authorization = "Bearer " + token;
@@ -27,10 +22,10 @@ module app.authentication {
 
 
     factory.$inject = [
-        "AuthToken"
+        "$auth"
     ];
     function factory(
-        AuthToken: app.authentication.AuthToken) {
-        return new app.authentication.AuthInterceptor(AuthToken);
+        $auth: satellizer.IAuthService) {
+        return new app.authentication.AuthInterceptor($auth);
     };
 }

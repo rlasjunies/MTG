@@ -10,15 +10,15 @@
                 * I think it should be easier/more maintainable to do directly in the controller itself
                 */
 
-                console.log("validateEqual-value:" + value);
+                // console.log("validateEqual-value:" + value);
                 // console.log("validateEqual-attrs["validateEquals"]):" + attrs["validateEquals"]);
-                console.log("validateEqual-scope.$eval(attrs['controllerValidateEquals'])):"
-                    + scope.$eval(attrs["controllerValidateEquals"]));
+                // console.log("validateEqual-scope.$eval(attrs['controllerValidateEquals'])):"
+                //    + scope.$eval(attrs["controllerValidateEquals"]));
                 // console.log("validateEqual-controller:" + controller.$name);
                 var valid = (value === scope.$eval(attrs["controllerValidateEquals"]));
                 // console.log("validateEqual-valid:" + valid);
                 // controller.$setValidity("equal", valid);
-                console.log("isValid?:" + valid);
+                // console.log("isValid?:" + valid);
                 return valid ? value : undefined;
             };
 
@@ -27,8 +27,8 @@
 
             scope.$watch(attrs["controllerValidateEquals"], function () {
                 // console.log("scope.$watch of:" + attrs["controllerValidateEquals"]);
-                console.log("scope.$watch of - val of ctlr.password:" + scope.$eval(attrs["controllerValidateEquals"]));
-                console.log("scope.$watch of - val of confirmPassword", controller.$viewValue);
+                // console.log("scope.$watch of - val of ctlr.password:" + scope.$eval(attrs["controllerValidateEquals"]));
+                // console.log("scope.$watch of - val of confirmPassword", controller.$viewValue);
 
                 // validateEqual(controller.$viewValue);
                 if (controller.$viewValue === scope.$eval(attrs["controllerValidateEquals"])) {

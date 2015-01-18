@@ -57,8 +57,8 @@ passport.use("local-register", xLocalStrategy.register());
 passport.use("local-login", xLocalStrategy.login());
 
 app.post("/auth/register", passport.authenticate("local-register"), $AuthLocal.register);
+app.post("/auth/login", passport.authenticate("local-login"), $AuthLocal.login);
 app.get("/auth/verifyemail", xEmailVerif.verify);
-app.post("/auth/login", passport.authenticate("local-login"),  $AuthLocal.login);
 app.post("/auth/facebook", xAuthFacebook.facebookAuth);
 app.post("/auth/google", xAuthGoogle.googleAuth);
 

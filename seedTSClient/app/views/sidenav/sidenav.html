@@ -1,4 +1,26 @@
 ﻿<div ng-controller="app.views.sidenav.SidenavController as vm">
+        <md-sidenav layout="column" class="site-sidenav md-sidenav-left md-whiteframe-z2"
+                    style="overflow: hidden; display: flex;"
+                    md-component-id="left" md-is-locked-open="$media('gt-md')">
+            <md-toolbar class="md-default-theme" layout="row">
+                <md-button ng-click="vm.close()">
+                <md-icon icon="..\bower_components\material-design-icons\navigation\2x_web\ic_menu_black_24dp.png" style="width:24px;height:24px"></md-icon>
+            </md-button>
+                <div layout="row" layout-fill="" layout-align="center center">seedTSClient</div>
+            </md-toolbar>
+
+            <md-content class="md-padding" layout="column">
+                <md-button class="md-primary" ng-href="/" ng-click="vm.close()">Home</md-button>
+                <md-button ng-href="/paints" ng-click="vm.close()">Paints</md-button>
+            </md-content>
+        </md-sidenav>
+    </div>
+
+
+
+
+
+<!--<div ng-controller="app.views.sidenav.SidenavController as vm">
     <md-sidenav class="md-sidenav-left md-whiteframe-z2" md-component-id="left" md-is-locked-open="$media('gt-md')">
         <md-toolbar class="md-theme-indigo" layout="row">
             <md-button ng-click="vm.close()">
@@ -12,4 +34,4 @@
             <md-button ng-href="/paints" ng-click="vm.close()">Paints</md-button>
         </md-content>
     </md-sidenav>
-</div>
+</div>-->

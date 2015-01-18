@@ -4,12 +4,12 @@ var $EmailVerification = require("./emailVerification");
 var $log = require("../services/logger");
 var $configSecret = require("../services/configSecret");
 var moduleName = "localAuth";
-function register(expReq, expRes) {
+function register(expReq, expRes, info) {
     $EmailVerification.send(expReq.body.email, expRes);
     $Token.createSendToken(expReq.user, expRes);
 }
 exports.register = register;
-function login(expReq, expRes) {
+function login(expReq, expRes, info) {
     $Token.createSendToken(expReq.user, expRes);
 }
 exports.login = login;
@@ -19,7 +19,8 @@ function authenticationCheck(expReq, expRes, next) {
     }
     else {
         $log.debug(moduleName + "@authentication: req.headers['authorization']" + expReq.headers["authorization"]);
-        var token = expReq.headers["authorization"];
+        var authorization = expReq.headers["authorization"];
+        var token = authorization.split(" ")[1];
         try {
             var payload = jwt.decode(token, $configSecret.JWT_SECRET);
         }

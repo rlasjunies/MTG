@@ -14,14 +14,10 @@
     <base href="/">
 </head>
 <body layout="row" ng-app="app" ng-controller="app.views.index.IndexController as vmIndex">
-    <!--<div ng-include="'app/views/sidenav/sidenav.html'"></div>-->
-    <!--<div ng-include="'app/views/header/header.html'"></div>-->
+    <div ng-include="'app/views/sidenav/sidenav.html'"></div>
+    <div ng-include="'app/views/header/header.html'"></div>
 
-
-
-
-
-    <div ng-controller="app.views.sidenav.SidenavController as vm">
+    <!--<div ng-controller="app.views.sidenav.SidenavController as vm">
         <md-sidenav layout="column" class="site-sidenav md-sidenav-left md-whiteframe-z2"
                     style="overflow: hidden; display: flex;"
                     md-component-id="left" md-is-locked-open="$media('gt-md')">
@@ -29,7 +25,7 @@
                 <!--<md-button ng-click="vm.close()">
                 <md-icon icon="..\bower_components\material-design-icons\navigation\2x_web\ic_menu_black_24dp.png" style="width:24px;height:24px"></md-icon>
             </md-button>-->
-                <div layout="row" layout-fill="" layout-align="center center">seedTSClient</div>
+                <!--<div layout="row" layout-fill="" layout-align="center center">seedTSClient</div>
             </md-toolbar>
 
             <md-content class="md-padding" layout="column">
@@ -37,15 +33,10 @@
                 <md-button ng-href="/paints" ng-click="vm.close()">Paints</md-button>
             </md-content>
         </md-sidenav>
-    </div>
+    </div>-->
 
-
-
-
-
-
-    <div role="main" tabindex="-1" layout-fill="" layout="column">
-        <md-toolbar ng-controller="app.views.header.HeaderController as vm" class="md-default-theme">
+    <!--<div role="main" tabindex="-1" layout-fill="" layout="column">
+        <!--<md-toolbar ng-controller="app.views.header.HeaderController as vm" class="md-default-theme">
             <div name="header" layout="row" class="md-toolbar-tools">
                 <md-button ng-click="vmIndex.toggleLeft()" hide-gt-md="">
                     <md-tooltip>
@@ -55,16 +46,16 @@
                     </md-icon>
                 </md-button>
                 <!--       <div layout="row" layout-center="center center">-->
-                <div flex align="center"><h3>seedTS</h3></div>
+                <!--<div flex align="center"><h3>seedTS</h3></div>-->
                 <!--</div>-->
-                <md-button class="md-raised md-primary" ng-href="/login">
+                <!--<md-button class="md-raised md-primary" ng-href="/login">
                     <md-tooltip>
                         Login/Logout
                     </md-tooltip>
                     Connexion
                     <!--<md-icon icon="..\bower_components\material-design-icons\navigation\2x_web\ic_menu_black_24dp.png"></md-icon>-->
-                </md-button>
-            </div>
+         <!--</md-button>
+            </div>-->
 
 
             <!--<md-button >menuLeft</md-button>
@@ -82,13 +73,10 @@
                     <a ui-sref="logout">Logout</a>
                 </li>
             </ul>-->
-        </md-toolbar>
-
-
-
+        <!--</md-toolbar>-->
 
         <md-content ui-view class="md-whiteframe-z1" style="margin:auto auto auto auto; padding: 10px 10px"></md-content>
-    </div>
+    <!--</div>-->
     <script src="../bower_components/hammerjs/hammer.js"></script>
 
     <script src="../bower_components/angular/angular.js"></script>

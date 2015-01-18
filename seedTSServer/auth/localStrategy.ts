@@ -9,20 +9,24 @@ export function login() {
         var qryUser = { email: username };
         libuser.userModel().findOne(qryUser, function (err, dbUser) {
             if (err) {
+                $log.error("login.findOne error:" + err);
                 return done(err);
             }
 
             if (!dbUser) {
                 // TODO again the message is not "readable for the client part
+                $log.info ("login.dbUser does not exists!");
                 return done(null, false, { message: "Wrong email / password" });
             }
 
             dbUser.comparePasswords(password, function (err, isMatching) {
                 if (err) {
+                    $log.error("login.dbUser.comparePasswords error:" + err);
                     return done(err);
                 }
 
                 if (!isMatching) {
+                    $log.info("login.dbUser.comparePasswords:" + err);
                     return done(null, false, { message: "Wrong email / password" });
                 }
 
@@ -41,11 +45,13 @@ export function register() {
 
         libuser.userModel().findOne(qryUser, (err, dbUser) => {
             if (err) {
+                $log.error("register.findOne error:" + err);
                 return done(err);
             }
 
             if (dbUser) {
-                // TODO message not cleat when it happen
+                // TODO message not clear when it happen
+                $log.error("register.findOne user already exist in the database!");
                 return done(null, false, { message: "email already exists!" });
             }
 
@@ -56,6 +62,7 @@ export function register() {
 
             newUser.save(function (err) {
                 if (err) {
+                    $log.error("resgister.newUser.save error:" + err);
                     return done(err);
                 }
                 return done(null, newUser);

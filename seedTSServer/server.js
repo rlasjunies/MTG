@@ -51,8 +51,8 @@ exports.app.use(function (req, res, next) {
 passport.use("local-register", xLocalStrategy.register());
 passport.use("local-login", xLocalStrategy.login());
 exports.app.post("/auth/register", passport.authenticate("local-register"), $AuthLocal.register);
-exports.app.get("/auth/verifyemail", xEmailVerif.verify);
 exports.app.post("/auth/login", passport.authenticate("local-login"), $AuthLocal.login);
+exports.app.get("/auth/verifyemail", xEmailVerif.verify);
 exports.app.post("/auth/facebook", xAuthFacebook.facebookAuth);
 exports.app.post("/auth/google", xAuthGoogle.googleAuth);
 var $PaintsRoutes = require("./api/paints/paintsRoutes");

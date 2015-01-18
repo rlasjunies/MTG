@@ -71,8 +71,7 @@ module app.services {
             this.$mdToast.show(toast);
         }
 
-        constructor(public $mdToast:ngmd.toastService) {
-            console.log("notificationService ... loaded");
+        constructor(private $mdToast:ngmd.toastService, private $log:ng.ILogService) {
             this.toastConfig = new Config();
             //this.toastConfig.position = new ngmd.toastPosition();
             this.toastConfig.hideDelay = 1000;
@@ -82,12 +81,16 @@ module app.services {
             //toastr.options = {
             //    "positionClass": "toast-bottom-right",
             //};
+            this.$log.debug("notificationService ... loaded");
         }
     }
 
-    factory.$inject = ["$mdToast"];
-    function factory($mdToast) {
-        return new app.services.NotificationService($mdToast);
+    factory.$inject = [
+        "$mdToast",
+        "$log"
+    ];
+    function factory($mdToast, $log) {
+        return new app.services.NotificationService($mdToast,$log);
     }
 
     angular

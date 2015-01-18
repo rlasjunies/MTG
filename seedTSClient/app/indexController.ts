@@ -22,7 +22,7 @@
             private $mdSidenav: any,
             private $log: ng.ILogService) {
             this.isAuthenticated = this.$auth.isAuthenticated;
-            console.log("IndexController: Constructor");
+            this.$log.debug("IndexController: Constructor");
 
             // TODO update to use angular.value
             // $scope.$on("userupdated", (event: ng.IAngularEvent) => {

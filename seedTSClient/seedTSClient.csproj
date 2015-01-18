@@ -33,8 +33,6 @@
     <Content Include="packages.config" />
     <Content Include="scripts\satellizer.js" />
     <Content Include="scripts\satellizer.min.js" />
-    <Content Include="scripts\toastr.js" />
-    <Content Include="scripts\toastr.min.js" />
     <Content Include="styles\bootstrap-theme.css" />
     <Content Include="styles\bootstrap-theme.min.css" />
     <Content Include="styles\bootstrap.css" />

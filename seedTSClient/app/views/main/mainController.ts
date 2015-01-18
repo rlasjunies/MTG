@@ -3,14 +3,15 @@
     export class MainController {
         static $inject = [
 //            "$scope",
-//            "$auth"
+//            "$auth",
+            "$log"
         ];
-        constructor() {
+        constructor(private $log:ng.ILogService) {
             // private $scope: ng.IScope,
             // private $auth : satellizer.IAuthService{
 
             // this.$scope
-            console.log("MainController: Constructor");
+            this.$log.debug("MainController: Constructor");
             // this.$auth.logout();
             // this.$rootScope.$broadcast("userupdated");
             // this.$state.go("main");

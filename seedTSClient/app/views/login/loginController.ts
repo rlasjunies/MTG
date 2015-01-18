@@ -13,20 +13,22 @@
             "$rootScope",
             "NotificationService",
             "$state",
-            "$auth"
+            "$auth",
+            "$log"
         ];
         constructor (
             private $rootScope: ng.IScope,
             private NotificationService: app.services.NotificationService,
             private $state: ng.ui.IStateService,
-            private $auth: satellizer.IAuthService) {
-            console.log("LoginController: Constructor");
+            private $auth: satellizer.IAuthService,
+            private $log:ng.ILogService) {
+            this.$log.debug("LoginController: Constructor");
         }
 
         submit = () => {
             this.$auth.login<app.authentication.IAuthenticationServerResponse>({ email: this.email, password: this.password })
                 .then((response) => {
-                    // console.log("login is fine!");
+                    this.$log.debug("login is fine!");
 
                     var msg = "Thanks '" + response.data.user.email + "'for coming back!";
                     this.NotificationService.success(msg);
@@ -40,7 +42,7 @@
                     this.$state.go("main");
                 })
                 .catch((err) => {
-                    console.log("login:" + JSON.stringify(err));
+                    this.$log.error("login:" + JSON.stringify(err));
                     this.NotificationService.error("Error registering!");
                     this.$rootScope.$broadcast("userupdated");
                 });
@@ -48,12 +50,12 @@
 
         authenticate = (provider:string) => {
             this.$auth.authenticate<app.authentication.IAuthenticationServerResponse>(provider).then((response) => {
-                console.log("login is fine!");
+                this.$log.debug("login is fine!");
                 this.NotificationService.success("U are logged!");
                 this.$rootScope.$broadcast("userupdated");
                 this.$state.go("main");
             }).catch((err) => {
-                    console.log("login:" + JSON.stringify(err));
+                    this.$log.error("login:" + JSON.stringify(err));
                     this.NotificationService.error("Error registering!");
                 this.$rootScope.$broadcast("userupdated");
             });

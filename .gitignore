@@ -1,5 +1,5 @@
-configSecret.ts
-configSecret.*
+**/configSecret.ts
+**/configSecret.*
 packages
 node_modules
 bower_components
