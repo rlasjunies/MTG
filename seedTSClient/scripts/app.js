@@ -581,6 +581,7 @@ var app;
                         });
                     };
                     this.$log.debug("IndexController: Constructor");
+                    this.isAuthenticated = this.$auth.isAuthenticated();
                     $scope.$on("userupdated", function (event) {
                         _this.isAuthenticated = _this.$auth.isAuthenticated();
                     });

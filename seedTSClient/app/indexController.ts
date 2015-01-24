@@ -21,8 +21,8 @@
             private $mdSidenav: any,
             private $log: ng.ILogService) {
             this.$log.debug("IndexController: Constructor");
+            this.isAuthenticated = this.$auth.isAuthenticated();
 
-            // TODO update to use angular.value
              $scope.$on("userupdated", (event: ng.IAngularEvent) => {
                 this.isAuthenticated = this.$auth.isAuthenticated();
              });
