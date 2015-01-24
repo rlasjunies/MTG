@@ -580,8 +580,10 @@ var app;
                             _this.$log.debug("toggle RIGHT is done");
                         });
                     };
-                    this.isAuthenticated = this.$auth.isAuthenticated;
                     this.$log.debug("IndexController: Constructor");
+                    $scope.$on("userupdated", function (event) {
+                        _this.isAuthenticated = _this.$auth.isAuthenticated();
+                    });
                 }
                 IndexController.$inject = [
                     "$scope",

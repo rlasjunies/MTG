@@ -6,8 +6,7 @@
     }
 
     export class IndexController {
-        public isAuthenticated: Function;
-        // public $auth:  //any; //: services.AuthToken;
+        private isAuthenticated: boolean;
 
         static $inject = [
             "$scope",
@@ -21,13 +20,12 @@
             private $auth,
             private $mdSidenav: any,
             private $log: ng.ILogService) {
-            this.isAuthenticated = this.$auth.isAuthenticated;
             this.$log.debug("IndexController: Constructor");
 
             // TODO update to use angular.value
-            // $scope.$on("userupdated", (event: ng.IAngularEvent) => {
-            //    this.isAuthenticated = this.$auth.isAuthenticated();
-            // });
+             $scope.$on("userupdated", (event: ng.IAngularEvent) => {
+                this.isAuthenticated = this.$auth.isAuthenticated();
+             });
         }
 
         toggleLeft  = (): void => {
@@ -41,6 +39,7 @@
                 this.$log.debug("toggle RIGHT is done");
             });
         }
+
     }
 
     angular

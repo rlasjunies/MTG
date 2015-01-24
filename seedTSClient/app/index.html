@@ -51,11 +51,20 @@
                 </h3>
 
                 <!-- login / logout button-->
-                <md-button ng-href="/login"
+                <md-button ng-hide="vmIndex.isAuthenticated"
+                           ng-href="/login"
                            layout="column"
                            layout-align="center center"
                            style="padding:10px 10px 10px 10px">
                     <span class="ng-scope">Login</span>
+                    <!--<md-icon icon="..\bower_components\material-design-icons\navigation\2x_web\ic_menu_white_24dp.png"></md-icon>-->
+                </md-button>
+                <md-button ng-show="vmIndex.isAuthenticated"
+                           ng-href="/logout"
+                           layout="column"
+                           layout-align="center center"
+                           style="padding:10px 10px 10px 10px">
+                    <span class="ng-scope">Logout</span>
                     <!--<md-icon icon="..\bower_components\material-design-icons\navigation\2x_web\ic_menu_white_24dp.png"></md-icon>-->
                 </md-button>
                 <!--</div>-->
