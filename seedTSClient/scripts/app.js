@@ -543,6 +543,21 @@ angular.module("app").directive("x", function () {
 });
 var app;
 (function (app) {
+    var route;
+    (function (_route) {
+        "use strict";
+        route.$inject = [
+            "$urlRouterProvider"
+        ];
+        function route($urlRouterProvider) {
+            $urlRouterProvider.otherwise("/");
+        }
+        ;
+        angular.module("app").config(route);
+    })(route = app.route || (app.route = {}));
+})(app || (app = {}));
+var app;
+(function (app) {
     var views;
     (function (views) {
         var index;
@@ -579,44 +594,6 @@ var app;
             index.IndexController = IndexController;
             angular.module("app").controller("app.views.index.IndexController", app.views.index.IndexController);
         })(index = views.index || (views.index = {}));
-    })(views = app.views || (app.views = {}));
-})(app || (app = {}));
-var app;
-(function (app) {
-    var route;
-    (function (_route) {
-        "use strict";
-        route.$inject = [
-            "$urlRouterProvider"
-        ];
-        function route($urlRouterProvider) {
-            $urlRouterProvider.otherwise("/");
-        }
-        ;
-        angular.module("app").config(route);
-    })(route = app.route || (app.route = {}));
-})(app || (app = {}));
-var app;
-(function (app) {
-    var views;
-    (function (views) {
-        var paints;
-        (function (paints) {
-            "use strict";
-            route.$inject = [
-                "$stateProvider"
-            ];
-            function route($stateProvider) {
-                $stateProvider.state("paints", {
-                    url: "/paints",
-                    templateUrl: "app/views/paints/paints.html",
-                    controller: "app.views.paints.PaintsController",
-                    controllerAs: "vm"
-                });
-            }
-            ;
-            angular.module("app").config(route);
-        })(paints = views.paints || (views.paints = {}));
     })(views = app.views || (app.views = {}));
 })(app || (app = {}));
 var app;
@@ -707,6 +684,29 @@ var app;
             ;
             angular.module("app").config(route);
         })(main = views.main || (views.main = {}));
+    })(views = app.views || (app.views = {}));
+})(app || (app = {}));
+var app;
+(function (app) {
+    var views;
+    (function (views) {
+        var paints;
+        (function (paints) {
+            "use strict";
+            route.$inject = [
+                "$stateProvider"
+            ];
+            function route($stateProvider) {
+                $stateProvider.state("paints", {
+                    url: "/paints",
+                    templateUrl: "app/views/paints/paints.html",
+                    controller: "app.views.paints.PaintsController",
+                    controllerAs: "vm"
+                });
+            }
+            ;
+            angular.module("app").config(route);
+        })(paints = views.paints || (views.paints = {}));
     })(views = app.views || (app.views = {}));
 })(app || (app = {}));
 var app;

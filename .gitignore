@@ -1,8 +1,9 @@
-**/configSecret.ts
-**/configSecret.*
+#
 packages
 node_modules
+seedTSClient
 bower_components
+#
 data
 .tscache
 Debug

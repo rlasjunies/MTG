@@ -1,5 +1,6 @@
-<form name="login" ng-submit="vm.submit()" layout="column" layout-align="center center" style="width:350px">
-    <h1>Sign In</h1>
+<div layout-fill layout="column" layout-align="center center">
+    <form name="login" ng-submit="vm.submit()" layout="column" layout-align="center center" style="width:350px">
+        <h1>Sign In</h1>
         <md-input-container>
             <label>email</label>
             <input type="email" ng-model="vm.email" name="email" required autofocus>
@@ -12,6 +13,7 @@
         <md-button class="md-primary md-raised" type="submit">Login</md-button>
         <br />
         <a class="text-muted pull-right" ui-sref="register">Create account</a>
-    <md-button ng-click="vm.authenticate('google')" class="md-raised" type="button">Google</md-button>
-    <md-button ng-click="vm.authenticate('facebook')" class="md-raised" type="button">Facebook</md-button>
-</form>
+        <md-button ng-click="vm.authenticate('google')" class="md-raised" type="button">Google</md-button>
+        <md-button ng-click="vm.authenticate('facebook')" class="md-raised" type="button">Facebook</md-button>
+    </form>
+</div>

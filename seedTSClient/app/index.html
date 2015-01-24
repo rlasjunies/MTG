@@ -6,77 +6,68 @@
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width">
 
-    <!--<link href="../styles/toastr.min.css" rel="stylesheet" />-->
     <link href="../bower_components/angular-material/angular-material.css" rel="stylesheet" />
-    <link href="../bower_components/angular-material/themes/blue-theme.css" rel="stylesheet" />
-
 
     <base href="/">
 </head>
-<body layout="row" ng-app="app" ng-controller="app.views.index.IndexController as vmIndex">
-    <div ng-include="'app/views/sidenav/sidenav.html'"></div>
-    <div ng-include="'app/views/header/header.html'"></div>
+<body ng-app="app"
+      ng-controller="app.views.index.IndexController as vmIndex"
+      layout="row"
+      layout-fill>
 
-    <!--<div ng-controller="app.views.sidenav.SidenavController as vm">
-        <md-sidenav layout="column" class="site-sidenav md-sidenav-left md-whiteframe-z2"
-                    style="overflow: hidden; display: flex;"
-                    md-component-id="left" md-is-locked-open="$media('gt-md')">
+    <!-- WHOLE PAGE -->
+    <div layout="row" layout-fill>
+
+        <!-- LEFT MENU -->
+        <md-sidenav layout="column"
+                    class="site-sidenav md-sidenav-left md-whiteframe-z2"
+                    md-component-id="left"
+                    md-is-locked-open="$media('gt-md')">
             <md-toolbar class="md-default-theme" layout="row">
-                <!--<md-button ng-click="vm.close()">
-                <md-icon icon="..\bower_components\material-design-icons\navigation\2x_web\ic_menu_black_24dp.png" style="width:24px;height:24px"></md-icon>
-            </md-button>-->
-                <!--<div layout="row" layout-fill="" layout-align="center center">seedTSClient</div>
+                <div layout="row" layout-fill="" layout-align="center center">Menu</div>
+            </md-toolbar>
+                <div ng-include="'../views/sidenav/sidenav.html'"></div>
+        </md-sidenav>
+
+        <!-- CONTENT -->
+        <div layout="column" layout-fill>
+
+            <!-- CONTENT HEADER-->
+            <md-toolbar ng-controller="app.views.header.HeaderController as vm"
+                        name="header"
+                        layout="row">
+
+                <!-- Toggle menu button -->
+                <md-button ng-click="vmIndex.toggleLeft()"
+                           hide-gt-md="">
+                    <md-icon icon="..\bower_components\material-design-icons\navigation\2x_web\ic_menu_white_24dp.png"></md-icon>
+                </md-button>
+
+                <!-- Header -->
+                <h3 align="center"
+                    class="md-toolbar-tools"
+                    layout-align="center center">
+                    <span>seedTS</span>
+                </h3>
+
+                <!-- login / logout button-->
+                <md-button ng-href="/login"
+                           layout="column"
+                           layout-align="center center"
+                           style="padding:10px 10px 10px 10px">
+                    <span class="ng-scope">Login</span>
+                    <!--<md-icon icon="..\bower_components\material-design-icons\navigation\2x_web\ic_menu_white_24dp.png"></md-icon>-->
+                </md-button>
+                <!--</div>-->
             </md-toolbar>
 
-            <md-content class="md-padding" layout="column">
-                <md-button class="md-primary" ng-href="/" ng-click="vm.close()">Home</md-button>
-                <md-button ng-href="/paints" ng-click="vm.close()">Paints</md-button>
-            </md-content>
-        </md-sidenav>
-    </div>-->
+            <!-- CONTENT -->
+            <md-content layout-fill
+                        layout-align="center center"
+                        ui-view></md-content>
+        </div>
+    </div>
 
-    <!--<div role="main" tabindex="-1" layout-fill="" layout="column">
-        <!--<md-toolbar ng-controller="app.views.header.HeaderController as vm" class="md-default-theme">
-            <div name="header" layout="row" class="md-toolbar-tools">
-                <md-button ng-click="vmIndex.toggleLeft()" hide-gt-md="">
-                    <md-tooltip>
-                        Menu
-                    </md-tooltip>
-                    <md-icon icon="..\bower_components\material-design-icons\navigation\2x_web\ic_menu_black_24dp.png">
-                    </md-icon>
-                </md-button>
-                <!--       <div layout="row" layout-center="center center">-->
-                <!--<div flex align="center"><h3>seedTS</h3></div>-->
-                <!--</div>-->
-                <!--<md-button class="md-raised md-primary" ng-href="/login">
-                    <md-tooltip>
-                        Login/Logout
-                    </md-tooltip>
-                    Connexion
-                    <!--<md-icon icon="..\bower_components\material-design-icons\navigation\2x_web\ic_menu_black_24dp.png"></md-icon>-->
-         <!--</md-button>
-            </div>-->
-
-
-            <!--<md-button >menuLeft</md-button>
-            <ul class="nav nav-pills pull-right">
-                <li ui-sref-active="active">
-                    <a ui-sref="main">Home</a>
-                </li>
-                <li ui-sref-active="active">
-                    <a ui-sref="jobs">Jobs</a>
-                </li>
-                <li ng-hide="vm.isAuthenticated()" ui-sref-active="active">
-                    <a ui-sref="login">Login</a>
-                </li>
-                <li ng-show="vm.isAuthenticated()" ui-sref-active="active">
-                    <a ui-sref="logout">Logout</a>
-                </li>
-            </ul>-->
-        <!--</md-toolbar>-->
-
-        <md-content ui-view class="md-whiteframe-z1" style="margin:auto auto auto auto; padding: 10px 10px"></md-content>
-    <!--</div>-->
     <script src="../bower_components/hammerjs/hammer.js"></script>
 
     <script src="../bower_components/angular/angular.js"></script>
