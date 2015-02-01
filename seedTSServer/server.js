@@ -29,16 +29,6 @@ morgan.token("statuscolorized", function (expReq, expRes) {
     return "\x1b[" + color + "m:" + status + "\x1b[0m";
 });
 exports.app.use(morgan(":date[iso] :method :url :statuscolorized :response-time ms - :res[content-length]"));
-//app.use(morgan("dev"));
-//app.use(morgan(function (req, res) {
-//    var color = 32; // green
-//    var status = res.statusCode;
-//    if (status >= 500) color = 31; // red
-//    else if (status >= 400) color = 33; // yellow
-//    else if (status >= 300) color = 36; // cyan
-//    ('\x1b[0m:method :url \x1b[' + color + 'm:status \x1b[0m:response-time ms - :res[content-length]\x1b[0m');
-//    return ;
-//}));
 passport.serializeUser(function (user, done) {
     done(null, user.id);
 });
@@ -56,10 +46,17 @@ exports.app.get("/auth/verifyemail", xEmailVerif.verify);
 exports.app.post("/auth/facebook", xAuthFacebook.facebookAuth);
 exports.app.post("/auth/google", xAuthGoogle.googleAuth);
 var $PaintsRoutes = require("./api/paints/paintsRoutes");
-exports.app.post("/api/paints", $AuthLocal.authenticationCheck, $PaintsRoutes.create);
-exports.app.get("/api/paints/:id?", $AuthLocal.authenticationCheck, $PaintsRoutes.find);
-exports.app.delete("/api/paints/:id?", $AuthLocal.authenticationCheck, $PaintsRoutes.remove);
-exports.app.put("/api/paints/:id?", $AuthLocal.authenticationCheck, $PaintsRoutes.update);
+var rootRoute = "/api/paints/";
+exports.app.post(rootRoute, $AuthLocal.authenticationCheck, $PaintsRoutes.create);
+exports.app.get(rootRoute + ":id?", $AuthLocal.authenticationCheck, $PaintsRoutes.find);
+exports.app.delete(rootRoute + ":id?", $AuthLocal.authenticationCheck, $PaintsRoutes.remove);
+exports.app.put(rootRoute + ":id?", $AuthLocal.authenticationCheck, $PaintsRoutes.update);
+var $UsersRoutes = require("./api/users/usersRoutes");
+rootRoute = "/api/users/";
+exports.app.post(rootRoute, $AuthLocal.authenticationCheck, $UsersRoutes.create);
+exports.app.get(rootRoute + ":id?", $AuthLocal.authenticationCheck, $UsersRoutes.find);
+exports.app.delete(rootRoute + ":id?", $AuthLocal.authenticationCheck, $UsersRoutes.remove);
+exports.app.put(rootRoute + ":id?", $AuthLocal.authenticationCheck, $UsersRoutes.update);
 exports.app.use("/", express.static(__dirname + "/../seedTSClient/app"));
 exports.app.use("/Scripts", express.static(__dirname + "/../seedTSClient/Scripts"));
 exports.app.use("/bower_components", express.static(__dirname + "/../seedTSClient/bower_components"));

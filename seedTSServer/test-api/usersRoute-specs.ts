@@ -1,14 +1,4 @@
-﻿// should.not.exist(err);
-// res.should.have.status(200);
-// should.exist(res.headers["set-cookie"]);
-// should.not.exist(res.headers["set-cookie"]);
-// res.text.should.include("dashboard");
-// res.redirects.should.eql([]);
-// res.header.location.should.equal("/dashboard");
-// should.exist(res.headers["set-cookie"]);
-// should.not.exist(res.headers["set-cookie"]);
-// resp.redirects.should.eql(["http://localhost:4000/simple"]);
-import $log = require("../services/logger");
+﻿import $log = require("../services/logger");
 
 import chai = require("chai");
 import sa = require("superagent");
@@ -16,51 +6,58 @@ import $fmt = require("sprintf");
 import $faker = require("faker");
 
 var expect = chai.expect;
-var moduleName = "paintsRoute-specs - ";
+var moduleName = "usersRoute-specs - ";
 
-import $paintCol = require("../models/paints");
+import $userCol = require("../models/user");
 
 //Variables used during the test
 var siteUrl: string = "http://localhost:3000";
-var user = "test@g.c";
-var password = "1234";
+var testUserEmail = "test@g.c";
+var testUserPassword = "1234";
 var agent = sa.agent();
 var token: string;
 
-var paintsUrl = siteUrl + "/api/paints";
-var paintsInitialLenght: number;
+var usersUrl = siteUrl + "/api/users";
+var usersInitialLenght: number;
 
-var paintsDocID;
-var newPaint: $paintCol.IPaintObject = {
-    title: $faker.lorem.sentence(),
-    description: $faker.lorem.sentences()
+var usersDocID;
+
+var newUser: $userCol.IUserObject = {
+    email: $faker.internet.email(),
+    active: true,
+    googleId: "googleid",
+    facebookId:"facebookid",
+    displayName: $faker.internet.userName(),
+    password: $faker.internet.password(8, true)
 };
 
-describe("Paints ", () => {
+describe("Users ", () => {
+    
     before(function (done) {
         this.timeout(10000);
         agent
             .post(siteUrl + "/auth/login")
-            .send({ email: user, password: password })
+            .send({ email: testUserEmail, password: testUserPassword })
             .end(function (err, resp: sa.Response) {
                 if ( err ) {
                     $log.error("Error:" + err);
-                    $log.error($fmt.sprintf("User '%s' NOT logged:", user));
+                    $log.error($fmt.sprintf("User '%s' NOT logged:", testUserEmail));
                 } else {
                         $log.debug("res.text:" + resp.text);
                         var loginAnswer = JSON.parse(resp.text);
                         token = "Bearer " + loginAnswer.token;
-                        $log.info($fmt.sprintf("User '%s' logged:", user));
+                        $log.info($fmt.sprintf("User '%s' logged:", testUserEmail));
                         return done();
                 }
             });
     });
 
-    describe(paintsUrl, function () {
+    describe(usersUrl, function () {
+        this.timeout(10000);
 
-        it("Should get paints", function (done) {
+        it("Should get users", function (done) {
 
-            agent.get(paintsUrl)
+            agent.get(usersUrl)
                 .set("authorization", token)
                 .end((err, resp) => {
                     if (err) {
@@ -69,12 +66,12 @@ describe("Paints ", () => {
                         expect(err).equals(null);
                         expect(resp.status).equals(200); // res.should.have.status(200);
 
-                        var paints = <$paintCol.IPaintDocument[]>resp.body;
+                        var users = <$userCol.IUserDocument[]>resp.body;
                         //var paints = resp.body;
                         $log.debug("resp.body:" + JSON.stringify( resp.body ) );
-                        expect(paints).to.be.a("Array");
-                        paintsInitialLenght = paints.length;
-                        $log.info($fmt.sprintf("paints.length:%s", paintsInitialLenght));
+                        expect(users).to.be.a("Array");
+                        usersInitialLenght = users.length;
+                        $log.info($fmt.sprintf("paints.length:%s", usersInitialLenght));
 
                         done();
                     }
@@ -86,41 +83,41 @@ describe("Paints ", () => {
         //    it("should validate that description is greater than 4 characters");
         //    it("should validate that description is less than 250 characters");
 
-        it("should add paint", (done) => {
+        it("should add user", (done) => {
+            $log.info($fmt.sprintf("user to create: %s", newUser.displayName));
 
-            $log.info($fmt.sprintf("paint to create: %s", newPaint.title));
-
-            agent.post(paintsUrl).
+            agent.post(usersUrl).
                 set("authorization", token)
-                .send(newPaint)
+                .send(newUser)
                 .end((err, resp: sa.Response) => {
                     if (err) {
                         $log.error("Error:" + err);
                     } else {
-
-
                         expect(err).equals(null);
                         expect(resp.status).equals(200); 
-                        $log.debug(moduleName + "@api/paints-POST: respJob.body:" + JSON.stringify(resp.body));
+                        $log.debug(moduleName + "@api/users-POST: respJob.body:" + JSON.stringify(resp.body));
 
-                        var doc = <$paintCol.IPaintDocument>resp.body;
-                        $log.info($fmt.sprintf("paint to created: %s", doc.title));
+                        var doc = <$userCol.IUserDocument>resp.body;
+                        $log.info($fmt.sprintf("user to created: %s", doc.displayName));
 
                         expect(doc._id).to.not.be.empty;
-                        paintsDocID = doc._id;
+                        usersDocID = doc._id;
                         expect(doc.__v).to.equal(0);
 
                         //remove added properties from mongodb
                         delete doc._id;
                         delete doc.__v;
-                        expect(doc).to.deep.equal(newPaint);
+
+                        //remove password property from source as is not send back
+                        delete newUser.password;
+                        expect(doc).to.deep.equal(newUser);
                         done();
                     }
                 });
         });
 
-        it("should have 1 more paints", function (done) {
-            agent.get(paintsUrl)
+        it("should have 1 more user", function (done) {
+            agent.get(usersUrl)
                 .set("authorization", token)
             
                 .end((err, resp: sa.Response) => {
@@ -130,20 +127,20 @@ describe("Paints ", () => {
                         expect(err).equals(null);
                         expect(resp.status).equals(200); 
 
-                        var paints = <$paintCol.IPaintDocument[]>resp.body;
-                        expect(paints).to.be.a("Array");
-                        expect(paints.length).to.be.equal(paintsInitialLenght + 1);
+                        var listOfUsers = <$userCol.IUserDocument[]>resp.body;
+                        expect(listOfUsers).to.be.a("Array");
+                        expect(listOfUsers.length).to.be.equal(usersInitialLenght + 1);
 
-                        $log.info($fmt.sprintf("paints initial length: %s current length:%s", paintsInitialLenght, paints.length));
+                        $log.info($fmt.sprintf("users initial length: %s current length:%s", usersInitialLenght, listOfUsers.length));
 
                         done();
                     }
                 });
         });
 
-        it("should find paint by id:", (done) => {
+        it("should find user by id:", (done) => {
 
-            agent.get(paintsUrl + "/" + paintsDocID).
+            agent.get(usersUrl + "/" + usersDocID).
                 set("authorization", token)
                 .end((err, resp: sa.Response) => {
                     if (err) {
@@ -154,7 +151,7 @@ describe("Paints ", () => {
                         expect(resp.status).equals(200);
 
                         $log.debug(moduleName + "@find: respJob.body:" + JSON.stringify(resp.body));
-                        var paints = <$paintCol.IPaintDocument[]>resp.body;
+                        var paints = <$userCol.IUserDocument[]>resp.body;
 
                         expect(paints).to.be.a("Array");
                         expect(paints.length).length.to.equal(1);
@@ -163,15 +160,15 @@ describe("Paints ", () => {
                         //remove added properties from mongodb
                         delete paint._id;
                         delete paint.__v;
-                        expect(paint).to.deep.equal(newPaint);
+                        expect(paint).to.deep.equal(newUser);
                         done();
                     }
                 });
         });
 
-        it("should remove paint by id:", (done) => {
+        it("should remove user by id:", (done) => {
 
-            agent.del(paintsUrl + "/" + paintsDocID).
+            agent.del(usersUrl + "/" + usersDocID).
                 set("authorization", token)
                 .end((err, resp: sa.Response) => {
                     if (err) {
@@ -181,19 +178,19 @@ describe("Paints ", () => {
                         expect(resp.status).equals(200);
 
                         $log.debug(moduleName + "@remove: respJob.body:" + JSON.stringify(resp.body));
-                        var paint = <$paintCol.IPaintDocument>resp.body;
+                        var paint = <$userCol.IUserDocument>resp.body;
 
                         //remove added properties from mongodb
                         delete paint._id;
                         delete paint.__v;
-                        expect(paint).to.deep.equal(newPaint);
+                        expect(paint).to.deep.equal(newUser);
                         done();
                     }
                 });
         });
 
-        it("should have the same number of document", function (done) {
-            agent.get(paintsUrl)
+        it("should have the same number of documents", function (done) {
+            agent.get(usersUrl)
                 .set("authorization", token)
                 .end((err, resp: sa.Response) => {
                     if (err) {
@@ -202,11 +199,11 @@ describe("Paints ", () => {
                         expect(err).equals(null);
                         expect(resp.status).equals(200);
 
-                        var paints = <$paintCol.IPaintDocument[]>resp.body;
-                        expect(paints).to.be.a("Array");
-                        expect(paints.length).to.be.equal(paintsInitialLenght);
+                        var listOfUsers = <$userCol.IUserDocument[]>resp.body;
+                        expect(listOfUsers).to.be.a("Array");
+                        expect(listOfUsers.length).to.be.equal(usersInitialLenght);
 
-                        $log.info($fmt.sprintf("paints initial length: %s current length:%s", paintsInitialLenght, paints.length));
+                        $log.info($fmt.sprintf("users initial length: %s current length:%s", usersInitialLenght, listOfUsers.length));
 
                         done();
                     }

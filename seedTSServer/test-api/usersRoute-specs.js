@@ -1,65 +1,60 @@
-// should.not.exist(err);
-// res.should.have.status(200);
-// should.exist(res.headers["set-cookie"]);
-// should.not.exist(res.headers["set-cookie"]);
-// res.text.should.include("dashboard");
-// res.redirects.should.eql([]);
-// res.header.location.should.equal("/dashboard");
-// should.exist(res.headers["set-cookie"]);
-// should.not.exist(res.headers["set-cookie"]);
-// resp.redirects.should.eql(["http://localhost:4000/simple"]);
 var $log = require("../services/logger");
 var chai = require("chai");
 var sa = require("superagent");
 var $fmt = require("sprintf");
 var $faker = require("faker");
 var expect = chai.expect;
-var moduleName = "paintsRoute-specs - ";
+var moduleName = "usersRoute-specs - ";
 //Variables used during the test
 var siteUrl = "http://localhost:3000";
-var user = "test@g.c";
-var password = "1234";
+var testUserEmail = "test@g.c";
+var testUserPassword = "1234";
 var agent = sa.agent();
 var token;
-var paintsUrl = siteUrl + "/api/paints";
-var paintsInitialLenght;
-var paintsDocID;
-var newPaint = {
-    title: $faker.lorem.sentence(),
-    description: $faker.lorem.sentences()
+var usersUrl = siteUrl + "/api/users";
+var usersInitialLenght;
+var usersDocID;
+var newUser = {
+    email: $faker.internet.email(),
+    active: true,
+    googleId: "googleid",
+    facebookId: "facebookid",
+    displayName: $faker.internet.userName(),
+    password: $faker.internet.password(8, true)
 };
-describe("Paints ", function () {
+describe("Users ", function () {
     before(function (done) {
         this.timeout(10000);
-        agent.post(siteUrl + "/auth/login").send({ email: user, password: password }).end(function (err, resp) {
+        agent.post(siteUrl + "/auth/login").send({ email: testUserEmail, password: testUserPassword }).end(function (err, resp) {
             if (err) {
                 $log.error("Error:" + err);
-                $log.error($fmt.sprintf("User '%s' NOT logged:", user));
+                $log.error($fmt.sprintf("User '%s' NOT logged:", testUserEmail));
             }
             else {
                 $log.debug("res.text:" + resp.text);
                 var loginAnswer = JSON.parse(resp.text);
                 token = "Bearer " + loginAnswer.token;
-                $log.info($fmt.sprintf("User '%s' logged:", user));
+                $log.info($fmt.sprintf("User '%s' logged:", testUserEmail));
                 return done();
             }
         });
     });
-    describe(paintsUrl, function () {
-        it("Should get paints", function (done) {
-            agent.get(paintsUrl).set("authorization", token).end(function (err, resp) {
+    describe(usersUrl, function () {
+        this.timeout(10000);
+        it("Should get users", function (done) {
+            agent.get(usersUrl).set("authorization", token).end(function (err, resp) {
                 if (err) {
                     $log.error("Error:" + err);
                 }
                 else {
                     expect(err).equals(null);
                     expect(resp.status).equals(200); // res.should.have.status(200);
-                    var paints = resp.body;
+                    var users = resp.body;
                     //var paints = resp.body;
                     $log.debug("resp.body:" + JSON.stringify(resp.body));
-                    expect(paints).to.be.a("Array");
-                    paintsInitialLenght = paints.length;
-                    $log.info($fmt.sprintf("paints.length:%s", paintsInitialLenght));
+                    expect(users).to.be.a("Array");
+                    usersInitialLenght = users.length;
+                    $log.info($fmt.sprintf("paints.length:%s", usersInitialLenght));
                     done();
                 }
             });
@@ -68,47 +63,49 @@ describe("Paints ", function () {
         //    it("should validate that title is less than 40 characters");
         //    it("should validate that description is greater than 4 characters");
         //    it("should validate that description is less than 250 characters");
-        it("should add paint", function (done) {
-            $log.info($fmt.sprintf("paint to create: %s", newPaint.title));
-            agent.post(paintsUrl).set("authorization", token).send(newPaint).end(function (err, resp) {
+        it("should add user", function (done) {
+            $log.info($fmt.sprintf("user to create: %s", newUser.displayName));
+            agent.post(usersUrl).set("authorization", token).send(newUser).end(function (err, resp) {
                 if (err) {
                     $log.error("Error:" + err);
                 }
                 else {
                     expect(err).equals(null);
                     expect(resp.status).equals(200);
-                    $log.debug(moduleName + "@api/paints-POST: respJob.body:" + JSON.stringify(resp.body));
+                    $log.debug(moduleName + "@api/users-POST: respJob.body:" + JSON.stringify(resp.body));
                     var doc = resp.body;
-                    $log.info($fmt.sprintf("paint to created: %s", doc.title));
+                    $log.info($fmt.sprintf("user to created: %s", doc.displayName));
                     expect(doc._id).to.not.be.empty;
-                    paintsDocID = doc._id;
+                    usersDocID = doc._id;
                     expect(doc.__v).to.equal(0);
                     //remove added properties from mongodb
                     delete doc._id;
                     delete doc.__v;
-                    expect(doc).to.deep.equal(newPaint);
+                    //remove password property from source as is not send back
+                    delete newUser.password;
+                    expect(doc).to.deep.equal(newUser);
                     done();
                 }
             });
         });
-        it("should have 1 more paints", function (done) {
-            agent.get(paintsUrl).set("authorization", token).end(function (err, resp) {
+        it("should have 1 more user", function (done) {
+            agent.get(usersUrl).set("authorization", token).end(function (err, resp) {
                 if (err) {
                     $log.error("Error:" + err);
                 }
                 else {
                     expect(err).equals(null);
                     expect(resp.status).equals(200);
-                    var paints = resp.body;
-                    expect(paints).to.be.a("Array");
-                    expect(paints.length).to.be.equal(paintsInitialLenght + 1);
-                    $log.info($fmt.sprintf("paints initial length: %s current length:%s", paintsInitialLenght, paints.length));
+                    var listOfUsers = resp.body;
+                    expect(listOfUsers).to.be.a("Array");
+                    expect(listOfUsers.length).to.be.equal(usersInitialLenght + 1);
+                    $log.info($fmt.sprintf("users initial length: %s current length:%s", usersInitialLenght, listOfUsers.length));
                     done();
                 }
             });
         });
-        it("should find paint by id:", function (done) {
-            agent.get(paintsUrl + "/" + paintsDocID).set("authorization", token).end(function (err, resp) {
+        it("should find user by id:", function (done) {
+            agent.get(usersUrl + "/" + usersDocID).set("authorization", token).end(function (err, resp) {
                 if (err) {
                     $log.error("Error:" + err);
                 }
@@ -123,13 +120,13 @@ describe("Paints ", function () {
                     //remove added properties from mongodb
                     delete paint._id;
                     delete paint.__v;
-                    expect(paint).to.deep.equal(newPaint);
+                    expect(paint).to.deep.equal(newUser);
                     done();
                 }
             });
         });
-        it("should remove paint by id:", function (done) {
-            agent.del(paintsUrl + "/" + paintsDocID).set("authorization", token).end(function (err, resp) {
+        it("should remove user by id:", function (done) {
+            agent.del(usersUrl + "/" + usersDocID).set("authorization", token).end(function (err, resp) {
                 if (err) {
                     $log.error("Error:" + err);
                 }
@@ -141,27 +138,27 @@ describe("Paints ", function () {
                     //remove added properties from mongodb
                     delete paint._id;
                     delete paint.__v;
-                    expect(paint).to.deep.equal(newPaint);
+                    expect(paint).to.deep.equal(newUser);
                     done();
                 }
             });
         });
-        it("should have the same number of document", function (done) {
-            agent.get(paintsUrl).set("authorization", token).end(function (err, resp) {
+        it("should have the same number of documents", function (done) {
+            agent.get(usersUrl).set("authorization", token).end(function (err, resp) {
                 if (err) {
                     $log.error("Error:" + err);
                 }
                 else {
                     expect(err).equals(null);
                     expect(resp.status).equals(200);
-                    var paints = resp.body;
-                    expect(paints).to.be.a("Array");
-                    expect(paints.length).to.be.equal(paintsInitialLenght);
-                    $log.info($fmt.sprintf("paints initial length: %s current length:%s", paintsInitialLenght, paints.length));
+                    var listOfUsers = resp.body;
+                    expect(listOfUsers).to.be.a("Array");
+                    expect(listOfUsers.length).to.be.equal(usersInitialLenght);
+                    $log.info($fmt.sprintf("users initial length: %s current length:%s", usersInitialLenght, listOfUsers.length));
                     done();
                 }
             });
         });
     });
 });
-//# sourceMappingURL=paintsRoute-specs.js.map
+//# sourceMappingURL=usersRoute-specs.js.map

@@ -5,7 +5,8 @@ var app;
         "ngMaterial",
         "satellizer",
         "ui.router",
-        "ngMessages"
+        "ngMessages",
+        "smart-table"
     ]);
 })(app || (app = {}));
 var app;
@@ -598,6 +599,73 @@ var app;
             angular.module("app").controller("app.views.index.IndexController", app.views.index.IndexController);
         })(index = views.index || (views.index = {}));
     })(views = app.views || (app.views = {}));
+})(app || (app = {}));
+var app;
+(function (app) {
+    var views;
+    (function (views) {
+        var adm;
+        (function (adm) {
+            var users;
+            (function (_users) {
+                "use strict";
+                var UsersController = (function () {
+                    function UsersController($scope, $http, CST_API_URL, NotificationService, $log) {
+                        var _this = this;
+                        this.$scope = $scope;
+                        this.$http = $http;
+                        this.CST_API_URL = CST_API_URL;
+                        this.NotificationService = NotificationService;
+                        this.$log = $log;
+                        this.users = [];
+                        this.usersView = [];
+                        $http.get(this.CST_API_URL + "/users").error(function (err) {
+                            _this.$log.error("Error message: \n" + JSON.stringify(err), "Cannot load uers resources:");
+                            _this.NotificationService.error("Error message: \n" + JSON.stringify(err), "Cannot load users resources:");
+                        }).success(function (users) {
+                            _this.users = users;
+                            _this.usersView = [].concat(_this.users);
+                            _this.$log.debug("users loaded!");
+                        });
+                        this.$log.debug("UsersController: Constructor");
+                    }
+                    UsersController.$inject = [
+                        "$scope",
+                        "$http",
+                        "CST_API_URL",
+                        "NotificationService",
+                        "$log"
+                    ];
+                    return UsersController;
+                })();
+                _users.UsersController = UsersController;
+                angular.module("app").controller("app.views.adm.users.UsersController", app.views.adm.users.UsersController);
+            })(users = adm.users || (adm.users = {}));
+        })(adm = views.adm || (views.adm = {}));
+    })(views = app.views || (app.views = {}));
+})(app || (app = {}));
+var app;
+(function (app) {
+    var adm;
+    (function (adm) {
+        var users;
+        (function (users) {
+            "use strict";
+            route.$inject = [
+                "$stateProvider"
+            ];
+            function route($stateProvider) {
+                $stateProvider.state("users", {
+                    url: "/adm/users",
+                    templateUrl: "app/views/adm/users/users.html",
+                    controller: "app.views.adm.users.UsersController",
+                    controllerAs: "vm"
+                });
+            }
+            ;
+            angular.module("app").config(route);
+        })(users = adm.users || (adm.users = {}));
+    })(adm = app.adm || (app.adm = {}));
 })(app || (app = {}));
 var app;
 (function (app) {

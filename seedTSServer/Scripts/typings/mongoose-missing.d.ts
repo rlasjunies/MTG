@@ -3,6 +3,7 @@
         drop(success:Function, error:Function);
     }
     export interface Document {
+        _doc: any;
         __v: number;
     }
 }

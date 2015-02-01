@@ -3,26 +3,35 @@
         <h1>Create new account</h1>
 
         <md-input-container>
-            <input type="email" name="email" ng-model="vm.email" placeholder="Email address" required autofocus>
-            <!--<p class="help-block" ng-show="register.email.$dirty && register.email.$invalid">Please enter a proper email.</p>-->
-            <div ng-messages="register.vm.email.$error">
+            <label>Email address</label>
+            <input type="email" name="email" ng-model="vm.email" ng-required="" autofocus ng-maxlength="30" ng-minlength="4">
+            <div ng-messages="register.email.$error">
                 <div ng-message="required">Email is required.</div>
-                <div ng-message="md-maxlength">The name has to be less than 30 characters long.</div>
+                <div ng-message="minlength">The name has to be longer than 4.</div>
+                <div ng-message="maxlength">The name has to be less than 30 characters long.</div>
                 <div ng-message="email">Your email address is incorrect.</div>
             </div>
         </md-input-container>
 
+        <!--
+            <div ng-message='serverError'>Request Failed Due to Server Error!</div>
+        <div ng-message='notFound'>Not Found!</div>
+        <div ng-message='inProgress'> Please Wait! </div>
+        <div ng-message='required'> This field is required! </div>
+        <div ng-message='minlength'> This field is too short!</div>
+        <div ng-message='maxlength'> This field is too long!</div>
+        <div ng-message='email'> Email is not valid!</div>
+            -->
 
-
-        <!--<input name="email" type="email" ng-model="vm.email" class="form-control" placeholder="Email address" required="" autofocus="">-->
         <md-input-container>
-            <input name="password" type="password" ng-model="vm.password" placeholder="Password" required>
+            <label>Password</label>
+            <input name="password" type="password" ng-model="vm.password" ng-required>
         </md-input-container>
 
         <md-input-container>
-            <input name="password_confirm" type="password" ng-model="vm.passwordConfirm" placeholder="Confirm Password" required>
+            <label>Confirm password</label>
+            <input name="password_confirm" type="password" ng-model="vm.passwordConfirm" required>
         </md-input-container>
-        <!--<p class="help-block" ng-show="register.password_confirm.$dirty && register.password_confirm.$invalid">Please match the passowrd</p>-->
 
         <button ng-disabled="register.$invalid" type="submit">
             Submit

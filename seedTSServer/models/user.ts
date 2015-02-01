@@ -14,6 +14,16 @@ export interface IUserDocument extends mongoose.Document {
     comparePasswords(pwd, callback);
 }
 
+//TODO duplication between UserDoc / Objects?
+export interface IUserObject {
+    email: string;
+    password: string;
+    active: boolean;
+    googleId: string;
+    facebookId: string;
+    displayName: string;
+}
+
 export interface IUserModel extends mongoose.Model<IUserDocument> {
     googleID: string;
     displayName: string;
@@ -21,11 +31,11 @@ export interface IUserModel extends mongoose.Model<IUserDocument> {
 }
 
 // used to extend the toJSON function
-export interface ISchemaUser extends mongoose.Schema {
+export interface IUserSchema extends mongoose.Schema {
     methods: any
 }
 
-var userSchema: ISchemaUser =  <ISchemaUser> new mongoose.Schema();
+var userSchema: IUserSchema =  <IUserSchema> new mongoose.Schema();
 userSchema.add({
     email: String,
     password: String,
@@ -52,7 +62,7 @@ userSchema.pre("save", function (next) {
             }
 
             user.password = hash;
-            next();
+            return next();
         });
     });
 });

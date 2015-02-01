@@ -5,6 +5,7 @@ var moduleName = "localStratregy - ";
 var strategyOptions = { usernameField: "email" };
 function login() {
     return new passport_local.Strategy(strategyOptions, function (username, password, done) {
+        $log.profile("passport-login");
         var qryUser = { email: username };
         libuser.userModel().findOne(qryUser, function (err, dbUser) {
             if (err) {

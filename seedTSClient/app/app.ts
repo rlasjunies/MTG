@@ -6,6 +6,7 @@
             "ngMaterial",
             "satellizer",
             "ui.router",
-            "ngMessages"
+            "ngMessages",
+            "smart-table"
         ]);
 }

@@ -17,7 +17,7 @@ export function connect() {
 
     connectDB($Config.dbConnectString[process.env.NODE_ENV].replace("XXXXXX", $ConfigSecret.db[process.env.NODE_ENV]))
         .then(() => {
-            $log.info("Connected to DB!");
+            $log.debug("Connected to DB!");
         });
 }
 

@@ -1,20 +1,20 @@
 var $log = require("../../services/logger");
-var $paintsModel = require("../../models/paints");
-var moduleName = "paintsRoutes@";
+var $usersModel = require("../../models/user");
+var moduleName = "usersRoutes@";
 //Create
 function create(expReq, expRes, next) {
     $log.profile(moduleName + "@create");
     //$log.debug(moduleName + "@create\n" + expReq.body);
-    var paintModel = $paintsModel.paintModel();
-    var newPaint = new paintModel(expReq.body);
-    newPaint.validate(function (err) {
-        newPaint.save(function (err, paint) {
+    var user = $usersModel.userModel();
+    var newUser = new user(expReq.body);
+    newUser.validate(function (err) {
+        newUser.save(function (err, user) {
             if (err) {
                 return expRes.status(500).write({ message: "Error writing job!" });
             }
-            $log.debug(moduleName + "@create:\n" + paint);
+            $log.debug(moduleName + "@create:\n" + user);
             $log.profile(moduleName + "@create");
-            return expRes.status(200).send(paint);
+            return expRes.status(200).send(user);
         });
     });
 }
@@ -23,18 +23,18 @@ exports.create = create;
 //find
 function find(expReq, expRes, next) {
     $log.profile(moduleName + "@find");
-    var paints = $paintsModel.paintModel();
+    var users = $usersModel.userModel();
     var qry = {};
     if (expReq.params.id) {
         qry = { _id: expReq.params.id };
     }
-    paints.find(qry, function (err, paint) {
+    users.find(qry, function (err, user) {
         if (err) {
             return expRes.status(500).write({ message: "Error getting jobs!" });
         }
         $log.debug("expReq.params.id:" + expReq.params.id);
         $log.profile(moduleName + "@find");
-        expRes.status(200).send(paint);
+        expRes.status(200).send(user);
     });
 }
 exports.find = find;
@@ -42,16 +42,16 @@ exports.find = find;
 //remove
 function remove(expReq, expRes, next) {
     $log.profile(moduleName + "@remove");
-    var mdlPaints = $paintsModel.paintModel();
+    var mdlUsers = $usersModel.userModel();
     if (!expReq.params.id) {
         throw new Error("ID parameter is required!");
     }
-    mdlPaints.findByIdAndRemove(expReq.params.id, function (err, paints) {
+    mdlUsers.findByIdAndRemove(expReq.params.id, function (err, users) {
         if (err) {
-            return expRes.status(500).write({ message: "Error getting paints!" });
+            return expRes.status(500).write({ message: "Error getting users!" });
         }
         $log.profile(moduleName + "@remove");
-        expRes.status(200).send(paints);
+        expRes.status(200).send(users);
     });
 }
 exports.remove = remove;
@@ -59,20 +59,20 @@ exports.remove = remove;
 //update
 function update(expReq, expRes, next) {
     $log.profile(moduleName + "@update");
-    var mdlPaints = $paintsModel.paintModel();
-    var paint = $paintsModel.paintModel();
-    var newPaint = new paint(expReq.body);
+    var mdlUsers = $usersModel.userModel();
+    var userModel = $usersModel.userModel();
+    var newUser = new userModel(expReq.body);
     if (!expReq.params.id) {
         throw new Error("Is parameter is required!");
     }
-    mdlPaints.findByIdAndUpdate(expReq.params.id, newPaint, function (err, paints) {
+    mdlUsers.findByIdAndUpdate(expReq.params.id, newUser, function (err, users) {
         if (err) {
-            return expRes.status(500).write({ message: "Error updating paint!" });
+            return expRes.status(500).write({ message: "Error updating user!" });
         }
         $log.profile(moduleName + "@update");
-        expRes.status(200).send(paints);
+        expRes.status(200).send(users);
     });
 }
 exports.update = update;
 ;
-//# sourceMappingURL=paintsRoutes.js.map
+//# sourceMappingURL=usersRoutes.js.map

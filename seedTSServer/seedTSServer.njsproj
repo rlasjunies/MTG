@@ -40,6 +40,7 @@
     <Content Include="test-api\run.bat" />
     <Content Include="test-app\run.bat" />
     <TypeScriptCompile Include="api\paints\paintsData.ts" />
+    <TypeScriptCompile Include="api\users\usersRoutes.ts" />
     <TypeScriptCompile Include="models\aboutMe.ts" />
     <TypeScriptCompile Include="models\contacts.ts" />
     <TypeScriptCompile Include="models\journals.ts" />
@@ -94,6 +95,7 @@
     <TypeScriptCompile Include="Scripts\typings\underscore\underscore.d.ts" />
     <TypeScriptCompile Include="server.ts" />
     <TypeScriptCompile Include="services\logger.ts" />
+    <TypeScriptCompile Include="test-api\usersRoute-specs.ts" />
     <TypeScriptCompile Include="test-api\paintsRoute-specs.ts" />
     <TypeScriptCompile Include="test-app\calculator-spec.ts" />
     <TypeScriptCompile Include="test-app\jobs-checks.ts" />
@@ -102,6 +104,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="api\" />
+    <Folder Include="api\users\" />
     <Folder Include="api\paints\" />
     <Folder Include="Scripts\typings\angular-protractor\" />
     <Folder Include="Scripts\typings\bluebird\" />

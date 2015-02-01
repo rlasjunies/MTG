@@ -29,18 +29,6 @@ morgan.token("statuscolorized", (expReq, expRes): string => {
 });
 
 app.use(morgan(":date[iso] :method :url :statuscolorized :response-time ms - :res[content-length]"));
-//app.use(morgan("dev"));
-
-//app.use(morgan(function (req, res) {
-//    var color = 32; // green
-//    var status = res.statusCode;
-//    if (status >= 500) color = 31; // red
-//    else if (status >= 400) color = 33; // yellow
-//    else if (status >= 300) color = 36; // cyan
-//    ('\x1b[0m:method :url \x1b[' + color + 'm:status \x1b[0m:response-time ms - :res[content-length]\x1b[0m');
-//    return ;
-//}));
-
 
 passport.serializeUser((user, done: (err: any, id: any) => void) => {
     done(null, user.id);
@@ -63,10 +51,18 @@ app.post("/auth/facebook", xAuthFacebook.facebookAuth);
 app.post("/auth/google", xAuthGoogle.googleAuth);
 
 import $PaintsRoutes = require("./api/paints/paintsRoutes");
-app.post("/api/paints", $AuthLocal.authenticationCheck, $PaintsRoutes.create);
-app.get("/api/paints/:id?", $AuthLocal.authenticationCheck, $PaintsRoutes.find);
-app.delete("/api/paints/:id?", $AuthLocal.authenticationCheck, $PaintsRoutes.remove);
-app.put("/api/paints/:id?", $AuthLocal.authenticationCheck, $PaintsRoutes.update);
+var rootRoute = "/api/paints/";
+app.post(rootRoute, $AuthLocal.authenticationCheck, $PaintsRoutes.create);
+app.get(rootRoute + ":id?", $AuthLocal.authenticationCheck, $PaintsRoutes.find);
+app.delete(rootRoute + ":id?", $AuthLocal.authenticationCheck, $PaintsRoutes.remove);
+app.put(rootRoute + ":id?", $AuthLocal.authenticationCheck, $PaintsRoutes.update);
+
+import $UsersRoutes = require("./api/users/usersRoutes");
+rootRoute = "/api/users/";
+app.post(rootRoute, $AuthLocal.authenticationCheck, $UsersRoutes.create);
+app.get(rootRoute + ":id?", $AuthLocal.authenticationCheck, $UsersRoutes.find);
+app.delete(rootRoute + ":id?", $AuthLocal.authenticationCheck, $UsersRoutes.remove);
+app.put(rootRoute + ":id?", $AuthLocal.authenticationCheck, $UsersRoutes.update);
 
 app.use("/", express.static(__dirname + "/../seedTSClient/app"));
 app.use("/Scripts", express.static(__dirname + "/../seedTSClient/Scripts"));

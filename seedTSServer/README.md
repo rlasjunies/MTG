@@ -19,7 +19,7 @@ tests:
 * copy paste the following command line
 
 "c:\program files\MongoDB 2.6 Standard\bin\mongod" --dbpath C:\Dev\mongodb --repair
-"c:\program files\MongoDB 2.6 Standard\bin\mongod" --dbpath C:\Dev\mongodb
+"c:\program files\MongoDB 2.6 Standard\bin\mongod" --dbpath C:\Dev\mongodb --rest
 
 MongoDB commands lines:
 
@@ -111,3 +111,11 @@ https://console.developers.google.com/project
 #Facebook App ID
 https://developers.facebook.com/apps/
 
+#Git command line
+
+## define as not change some files or path
+git update-index --assume-unchanged path/to/file
+
+
+## remove the flag assume-unchanged
+git update-index --no-assume-unchanged path/to/file
