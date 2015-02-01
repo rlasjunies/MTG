@@ -581,11 +581,15 @@ var app;
                             _this.$log.debug("toggle RIGHT is done");
                         });
                     };
+                    this.isAuthenticated = this.$auth.isAuthenticated;
                     this.$log.debug("IndexController: Constructor");
+<<<<<<< HEAD
                     this.isAuthenticated = this.$auth.isAuthenticated();
                     $scope.$on("userupdated", function (event) {
                         _this.isAuthenticated = _this.$auth.isAuthenticated();
                     });
+=======
+>>>>>>> parent of a61d105... fix the switch between login/logout
                 }
                 IndexController.$inject = [
                     "$scope",

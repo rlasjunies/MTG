@@ -6,7 +6,8 @@
     }
 
     export class IndexController {
-        private isAuthenticated: boolean;
+        public isAuthenticated: Function;
+        // public $auth:  //any; //: services.AuthToken;
 
         static $inject = [
             "$scope",
@@ -20,12 +21,20 @@
             private $auth,
             private $mdSidenav: any,
             private $log: ng.ILogService) {
+            this.isAuthenticated = this.$auth.isAuthenticated;
             this.$log.debug("IndexController: Constructor");
             this.isAuthenticated = this.$auth.isAuthenticated();
 
+<<<<<<< HEAD
              $scope.$on("userupdated", (event: ng.IAngularEvent) => {
                 this.isAuthenticated = this.$auth.isAuthenticated();
              });
+=======
+            // TODO update to use angular.value
+            // $scope.$on("userupdated", (event: ng.IAngularEvent) => {
+            //    this.isAuthenticated = this.$auth.isAuthenticated();
+            // });
+>>>>>>> parent of a61d105... fix the switch between login/logout
         }
 
         toggleLeft  = (): void => {
@@ -39,7 +48,6 @@
                 this.$log.debug("toggle RIGHT is done");
             });
         }
-
     }
 
     angular

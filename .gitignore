@@ -3,7 +3,6 @@ packages
 node_modules
 seedTSClient
 bower_components
-
 #
 data
 .tscache
@@ -52,5 +51,3 @@ $RECYCLE.BIN/
 Network Trash Folder
 Temporary Items
 .apdisk
-seedTSServer/services/configSecret.js
-*.map
