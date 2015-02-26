@@ -6,7 +6,8 @@
             "ngMaterial",
             "satellizer",
             "ui.router",
-            "ngMessages",
-            "smart-table"
+        "ngMessages",
+        //TODO may be good to replace the loading bar control (ngControl), by the NGMD one
+            "angular-loading-bar"
         ]);
 }

@@ -37,6 +37,12 @@ db.users.remove({}); // remove all the documents in the collection users
 
 show collections
 
+
+MongoDB administration tool
+
+MongoVUE
+
+
 Format email using zurb.inliner
 
 ## Tests

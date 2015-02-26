@@ -15,12 +15,15 @@
             private NotificationService: app.services.NotificationService,
             private $log: ng.ILogService) {
 
-            this.$auth.logout();
-            this.$rootScope.$broadcast("userupdated");
-            this.$state.go("main");
+            this.$log.debug("LogoutController: Constructor");
 
+            this.$auth.logout();
+            //this.$rootScope.$broadcast("userupdated");
+           
             NotificationService.info("You are now logout!","Authentication message");
             this.$log.debug("LogoutController: Constructor");
+
+            this.$state.go("main");
         }
     }
 

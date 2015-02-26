@@ -1,7 +1,7 @@
 ﻿/// <reference path="app/app.ts" />
-/// <reference path="app/app.config.auth.ts" />
-/// <reference path="app/app.config.ts" />
 /// <reference path="app/app.constants.ts" />
+/// <reference path="app/app.config.ts" />
+/// <reference path="app/app.config.auth.ts" />
 /// <reference path="app/app.values.ts" />
 /// <reference path="app/authentication/auth.ts" />
 /// <reference path="app/authentication/authtoken.ts" />
@@ -12,7 +12,6 @@
 
 /// <reference path="app/app.run.ts" />
 
-/// <reference path="app/views/header/headercontroller.ts" />
 /// <reference path="app/views/paints/paintscontroller.ts" />
 /// <reference path="app/views/login/logincontroller.ts" />
 /// <reference path="app/views/logout/logoutcontroller.ts" />

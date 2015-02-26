@@ -164,4 +164,25 @@ describe("Paints ", function () {
         });
     });
 });
+// function loginUser(agent: sa.Agent) {
+//    return function () {
+//        this.timeout(10000);
+//        agent
+//            .post(url + "/auth/login")
+//            .send({ email: "test@g.c", password: "1234" })
+//            .end(onResponse);
+//        function onResponse(err, res) {
+//            //expect(res.status).to.equals(200);
+//            //agent.head ["authorization"] = "hjkl";
+//            console.log("................." + res);
+//            var loginAnswer = JSON.parse(res.text);
+//            token = loginAnswer.token;
+//            console.log("token:<<<<<<<<<<<<" + token);
+//            //res.text.should.include("Dashboard");
+//            //this.timeout(2000);
+//            //console.log("logged!!!!!!");
+//            return done();
+//        }
+//    };
+// }
 //# sourceMappingURL=paintsRoute-specs.js.map

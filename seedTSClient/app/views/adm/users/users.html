@@ -1,0 +1,18 @@
+﻿<div layout-fill layout="column" layout-align="center center">
+<!--<div>-->
+        <h1>Users</h1>
+
+    <div layout-fill style="padding-left:5px;padding-right:5px">
+        <md-grid-list class="gridListdemoBasicUsage" md-cols-sm="2" md-cols-md="3" md-cols-gt-md="5" md-row-height-gt-md="1:1" md-row-height="2:2"
+                      md-gutter="5px">
+            <md-grid-tile ng-class="{'green':user.active,'gray':!user.active}"
+                          ng-repeat="user in vm.usersView"
+                          ng-click="vm.onClick(user._id);">
+                {{user.email}}
+                <md-grid-tile-footer>
+                    <h3>{{user.displayName}}</h3>
+                </md-grid-tile-footer>
+            </md-grid-tile>
+        </md-grid-list>
+    </div>
+</div>

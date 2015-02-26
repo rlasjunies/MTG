@@ -52,7 +52,7 @@ exports.app.get(rootRoute + ":id?", $AuthLocal.authenticationCheck, $PaintsRoute
 exports.app.delete(rootRoute + ":id?", $AuthLocal.authenticationCheck, $PaintsRoutes.remove);
 exports.app.put(rootRoute + ":id?", $AuthLocal.authenticationCheck, $PaintsRoutes.update);
 var $UsersRoutes = require("./api/users/usersRoutes");
-rootRoute = "/api/users/";
+rootRoute = "/api/adm/users/";
 exports.app.post(rootRoute, $AuthLocal.authenticationCheck, $UsersRoutes.create);
 exports.app.get(rootRoute + ":id?", $AuthLocal.authenticationCheck, $UsersRoutes.find);
 exports.app.delete(rootRoute + ":id?", $AuthLocal.authenticationCheck, $UsersRoutes.remove);

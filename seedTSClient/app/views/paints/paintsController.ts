@@ -23,7 +23,7 @@
 
             $http.get(this.CST_API_URL + "/paints")
                 .error((err) => {
-                    this.$log.error("Error message: \n" + JSON.stringify(err), "Cannot load paints resources:");
+                    this.$log.warn("Error message: \n" + JSON.stringify(err), "Cannot load paints resources:");
                     this.NotificationService.error("Error message: \n" + JSON.stringify(err), "Cannot load paints resources:");
                 })
                 .success((paints: IPaint[]) => {

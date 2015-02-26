@@ -38,12 +38,12 @@
                         this.NotificationService.warning(msg);
                     }
 
-                    this.$rootScope.$broadcast("userupdated");
+                    //this.$rootScope.$broadcast("userupdated");
                     this.$state.go("main");
                 })
                 .catch((err) => {
                     this.$log.error("login:" + JSON.stringify(err));
-                    this.NotificationService.error("Error registering!");
+                    this.NotificationService.error("Error registering!" + JSON.stringify(err));
                     this.$rootScope.$broadcast("userupdated");
                 });
         }

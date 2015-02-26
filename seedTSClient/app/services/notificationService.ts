@@ -1,5 +1,4 @@
-﻿/// <reference path="../../scripts/typings/angular-material.d.ts" />
-module app.services {
+﻿module app.services {
     "use strict";
 
     //interface IToastr {
@@ -12,7 +11,7 @@ module app.services {
 
     //declare var toastr: IToastr;
 
-    class Config implements ngmd.toastConf {
+    class Config implements ng.material.toastConf {
         hideDelay: number;
         content: string;
     }
@@ -71,7 +70,7 @@ module app.services {
             this.$mdToast.show(toast);
         }
 
-        constructor(private $mdToast:ngmd.toastService, private $log:ng.ILogService) {
+        constructor(private $mdToast:ng.material.toastService, private $log:ng.ILogService) {
             this.toastConfig = new Config();
             //this.toastConfig.position = new ngmd.toastPosition();
             this.toastConfig.hideDelay = 1000;

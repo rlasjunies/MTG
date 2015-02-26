@@ -7,10 +7,16 @@
     function route($stateProvider: ng.ui.IStateProvider) {
         $stateProvider
             .state("register", {
-                url: "/register",
-                templateUrl: "app/views/register/register.html",
-                controller: "app.views.register.RegisterController",
-                controllerAs: "vm"
+            url: "/register",
+            views: {
+                'header': {},
+                'container': {
+                    templateUrl: "app/views/register/register.html",
+                    controller: "app.views.register.RegisterController",
+                    controllerAs: "vm"
+                },
+                'footer': {}
+            }
             });
     };
     angular

@@ -10,7 +10,7 @@
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <DebugType>full</DebugType>
     <DebugSymbols>true</DebugSymbols>
-    <TypeScriptToolsVersion>1.1</TypeScriptToolsVersion>
+    <TypeScriptToolsVersion>1.4</TypeScriptToolsVersion>
     <UseIISExpress>true</UseIISExpress>
     <IISExpressSSLPort />
     <IISExpressAnonymousAuthentication />
@@ -19,9 +19,14 @@
   </PropertyGroup>
   <ItemGroup>
     <Content Include="app\index.html" />
+    <Content Include="app\views\adm\users\userFooter.html" />
+    <Content Include="app\views\adm\users\user.html" />
+    <Content Include="app\views\adm\users\users.html" />
+    <Content Include="app\views\headerBackSave\headerBackSave.html" />
+    <Content Include="app\views\logout\logout.html" />
     <Content Include="app\views\sidenav\sidenav.html" />
     <Content Include="app\views\sitesettings\sitesettings.html" />
-    <Content Include="app\views\header\header.html" />
+    <Content Include="app\views\headerMain\headerMain.html" />
     <Content Include="app\views\paints\paints.html" />
     <Content Include="app\views\login\login.html" />
     <Content Include="app\views\main\main.html" />
@@ -39,6 +44,7 @@
     <Content Include="styles\bootstrap.min.css" />
     <Content Include="styles\bootswatch-superhero.css" />
     <Content Include="styles\main.css" />
+    <Content Include="styles\seedTS.css" />
     <Content Include="styles\toastr.css" />
     <Content Include="styles\toastr.min.css" />
     <Content Include="tests.html" />
@@ -72,6 +78,10 @@
     <TypeScriptCompile Include="app\services\sitesettings.service.ts" />
     <TypeScriptCompile Include="app\services\user.service.ts" />
     <TypeScriptCompile Include="app\app.route.ts" />
+    <TypeScriptCompile Include="app\views\adm\users\userController.ts" />
+    <TypeScriptCompile Include="app\views\adm\users\usersController.ts" />
+    <TypeScriptCompile Include="app\views\adm\users\usersRoute.ts" />
+    <TypeScriptCompile Include="app\views\headerBackSave\headerBackSaveController.ts" />
     <TypeScriptCompile Include="app\views\paints\paintsRoute.ts" />
     <TypeScriptCompile Include="app\views\login\loginRoute.ts" />
     <TypeScriptCompile Include="app\views\logout\logoutRoute.ts" />
@@ -82,13 +92,14 @@
     <TypeScriptCompile Include="app\views\sitesettings\sitesettings.controller.ts" />
     <TypeScriptCompile Include="app\views\sitesettings\sitesettings.module.ts" />
     <TypeScriptCompile Include="app\views\sitesettings\sitesettings.routes.ts" />
-    <TypeScriptCompile Include="app\views\header\headerController.ts" />
+    <TypeScriptCompile Include="app\views\headerMain\headerMainController.ts" />
     <TypeScriptCompile Include="app\views\paints\paintsController.ts" />
     <TypeScriptCompile Include="app\views\login\loginController.ts" />
     <TypeScriptCompile Include="app\views\logout\logoutController.ts" />
     <TypeScriptCompile Include="app\views\register\registerController.ts" />
     <TypeScriptCompile Include="app\views\register\validateEqualsDirective.ts" />
-    <TypeScriptCompile Include="scripts\typings\angular-material.d.ts" />
+    <TypeScriptCompile Include="scripts\typings\angular.missing.ts" />
+    <TypeScriptCompile Include="scripts\typings\angular-material.missing.d.ts" />
     <TypeScriptCompile Include="scripts\typings\angular-ui\angular-ui-router.d.ts" />
     <TypeScriptCompile Include="scripts\typings\angularjs\angular-animate.d.ts" />
     <TypeScriptCompile Include="scripts\typings\angularjs\angular-cookies.d.ts" />

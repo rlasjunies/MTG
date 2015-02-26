@@ -8,9 +8,19 @@
         $stateProvider
             .state("paints", {
                 url: "/paints",
-                templateUrl: "app/views/paints/paints.html",
-                controller: "app.views.paints.PaintsController",
-                controllerAs: "vm"
+                views: {
+                    'header': {
+                        templateUrl: "app/views/headerMain/headerMain.html",
+                        controller: "app.views.header.HeaderMainController",
+                        controllerAs: "vm"
+                    },
+                    'container': {
+                        templateUrl: "app/views/paints/paints.html",
+                        controller: "app.views.paints.PaintsController",
+                        controllerAs: "vm"
+                    },
+                    'footer': {}
+                }
             });
     };
     angular

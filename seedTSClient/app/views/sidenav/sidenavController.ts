@@ -32,7 +32,7 @@
 
         close():void{
             this.$mdSidenav("left").close().then(() => {
-                    this.$log.debug("toggle left is done");
+                    this.$log.debug("toggle left is done@sideNavController");
                 });
         }
     }

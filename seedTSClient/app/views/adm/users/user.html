@@ -1,0 +1,22 @@
+﻿<!--<div layout="column" layout-fill layout-align="center center">-->
+    <form name="userForm" ng-submit="vm.submit()" layout="column" layout-align="center center" novalidate>
+        <md-input-container>
+            <label>email</label>
+            <input type="email" ng-model="vm.user.email" name="email" required autofocus>
+            <div ng-messages="userForm.email.$error">
+                <div ng-message="required">Email is required.</div>
+                <div ng-message="email">Your email address is incorrect.</div>
+            </div>
+        </md-input-container>
+        <md-input-container>
+            <label>Display name</label>
+            <input type="text" name="displayName" ng-model="vm.user.displayName" class="form-control" required>
+            <div ng-messages="userForm.displayName.$error">
+                <div ng-message="required">Display name is required.</div>
+            </div>
+        </md-input-container>
+        <md-checkbox ng-model="vm.user.active" aria-label="active user">
+            Activated
+        </md-checkbox>
+    </form>
+<!--</div>-->

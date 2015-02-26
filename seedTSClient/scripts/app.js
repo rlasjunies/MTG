@@ -6,8 +6,34 @@ var app;
         "satellizer",
         "ui.router",
         "ngMessages",
-        "smart-table"
+        "angular-loading-bar"
     ]);
+})(app || (app = {}));
+var app;
+(function (app) {
+    var constants;
+    (function (constants) {
+        "use strict";
+        console.log("window.location@app.constant:" + window.location.protocol + "//" + window.location.host);
+        angular.module("app").constant("CST_URL", window.location.protocol + "//" + window.location.host + "/").constant("CST_API_URL", window.location.protocol + "//" + window.location.host + "/api").constant("CST_AUTH_URL", window.location.protocol + "//" + window.location.host + "/auth");
+    })(constants = app.constants || (app.constants = {}));
+})(app || (app = {}));
+var app;
+(function (app) {
+    var config;
+    (function (_config) {
+        "use strict";
+        config.$inject = ["$locationProvider"];
+        function config($locationProvider) {
+            $locationProvider.html5Mode(true);
+            console.log("window.location@config:" + window.location.protocol + "//" + window.location.host);
+            angular.module("app").constant("CST_URL", window.location.protocol + "//" + window.location.host + "/").constant("CST_API_URL", window.location.protocol + "//" + window.location.host + "/api").constant("CST_AUTH_URL", window.location.protocol + "//" + window.location.host + "/auth");
+        }
+        angular.module("app").config(['cfpLoadingBarProvider', function (cfpLoadingBarProvider) {
+            cfpLoadingBarProvider.includeSpinner = false;
+        }]);
+        angular.module("app").config(config);
+    })(config = app.config || (app.config = {}));
 })(app || (app = {}));
 var app;
 (function (app) {
@@ -18,55 +44,25 @@ var app;
             "use strict";
             config.$inject = [
                 "$authProvider",
-                "CST_AUTH_URL"
+                "$locationProvider"
             ];
-            function config($authProvider, CST_AUTH_URL) {
+            function config($authProvider, $locationProvider) {
+                var urlAuth = window.location.protocol + "//" + window.location.host + "/auth";
+                console.log("urlAuth" + urlAuth);
                 $authProvider.google({
                     clientId: "149876745472-k3ubq3pbtll17pmuohdjfom0fpinklmc.apps.googleusercontent.com",
-                    url: CST_AUTH_URL + "/google",
+                    url: urlAuth + "/google",
                 });
                 $authProvider.facebook({
                     clientId: "1608138689408302",
-                    url: CST_AUTH_URL + "/facebook",
+                    url: urlAuth + "/facebook",
                 });
-                $authProvider.loginUrl = CST_AUTH_URL + "/login";
-                $authProvider.signupUrl = CST_AUTH_URL + "/register";
+                $authProvider.loginUrl = urlAuth + "/login";
+                $authProvider.signupUrl = urlAuth + "/register";
             }
             angular.module("app").config(config);
         })(auth = _config.auth || (_config.auth = {}));
     })(config = app.config || (app.config = {}));
-})(app || (app = {}));
-var app;
-(function (app) {
-    var config;
-    (function (_config) {
-        "use strict";
-        config.$inject = ["$locationProvider"];
-        function config($locationProvider) {
-            $locationProvider.html5Mode(true);
-        }
-        angular.module("app").config(config);
-    })(config = app.config || (app.config = {}));
-})(app || (app = {}));
-var app;
-(function (app) {
-    var constants;
-    (function (constants) {
-        "use strict";
-        angular.module("app").constant("CST_URL", "http://localhost:3000/").constant("CST_API_URL", "http://localhost:3000/api").constant("CST_AUTH_URL", "http://localhost:3000/auth");
-    })(constants = app.constants || (app.constants = {}));
-})(app || (app = {}));
-var app;
-(function (app) {
-    var values;
-    (function (values) {
-        "use strict";
-        var currentUser = {
-            userId: "",
-            isAuthenticate: false
-        };
-        angular.module("app").value("valCurrentUser", currentUser);
-    })(values = app.values || (app.values = {}));
 })(app || (app = {}));
 var app;
 (function (app) {
@@ -278,44 +274,21 @@ var app;
         angular.module("app").run(run);
         run.$inject = [
             "$rootScope",
+            "$location",
+            "$window",
         ];
-        function run($rootScope) {
+        function run($rootScope, $location, $window) {
             $rootScope.$on("$routeChangeError", function () {
                 alert("routeChangeError raised!");
             });
+            $rootScope.goBack = function () {
+                $window.history.back();
+            };
+            $rootScope.save = function () {
+                $rootScope.$broadcast("save");
+            };
         }
     })(run = app.run || (app.run = {}));
-})(app || (app = {}));
-var app;
-(function (app) {
-    var views;
-    (function (views) {
-        var header;
-        (function (header) {
-            "use strict";
-            var HeaderController = (function () {
-                function HeaderController($scope, $auth, $log) {
-                    var _this = this;
-                    this.$scope = $scope;
-                    this.$auth = $auth;
-                    this.$log = $log;
-                    this.isAuthenticated = function () {
-                        return _this.$auth.isAuthenticated();
-                    };
-                    this.isAuthenticated = this.$auth.isAuthenticated;
-                    this.$log.debug("HeaderController: Constructor");
-                }
-                HeaderController.$inject = [
-                    "$scope",
-                    "$auth",
-                    "$log"
-                ];
-                return HeaderController;
-            })();
-            header.HeaderController = HeaderController;
-            angular.module("app").controller("app.views.header.HeaderController", app.views.header.HeaderController);
-        })(header = views.header || (views.header = {}));
-    })(views = app.views || (app.views = {}));
 })(app || (app = {}));
 var app;
 (function (app) {
@@ -334,7 +307,7 @@ var app;
                     this.$log = $log;
                     this.paints = [];
                     $http.get(this.CST_API_URL + "/paints").error(function (err) {
-                        _this.$log.error("Error message: \n" + JSON.stringify(err), "Cannot load paints resources:");
+                        _this.$log.warn("Error message: \n" + JSON.stringify(err), "Cannot load paints resources:");
                         _this.NotificationService.error("Error message: \n" + JSON.stringify(err), "Cannot load paints resources:");
                     }).success(function (paints) {
                         _this.paints = paints;
@@ -381,11 +354,10 @@ var app;
                                 msg = "Do not forget to active your account via the email sent!";
                                 _this.NotificationService.warning(msg);
                             }
-                            _this.$rootScope.$broadcast("userupdated");
                             _this.$state.go("main");
                         }).catch(function (err) {
                             _this.$log.error("login:" + JSON.stringify(err));
-                            _this.NotificationService.error("Error registering!");
+                            _this.NotificationService.error("Error registering!" + JSON.stringify(err));
                             _this.$rootScope.$broadcast("userupdated");
                         });
                     };
@@ -431,11 +403,11 @@ var app;
                     this.$state = $state;
                     this.NotificationService = NotificationService;
                     this.$log = $log;
+                    this.$log.debug("LogoutController: Constructor");
                     this.$auth.logout();
-                    this.$rootScope.$broadcast("userupdated");
-                    this.$state.go("main");
                     NotificationService.info("You are now logout!", "Authentication message");
                     this.$log.debug("LogoutController: Constructor");
+                    this.$state.go("main");
                 }
                 LogoutController.$inject = [
                     "$rootScope",
@@ -573,23 +545,16 @@ var app;
                     this.$log = $log;
                     this.toggleLeft = function () {
                         _this.$mdSidenav("left").toggle().then(function () {
-                            _this.$log.debug("toggle left is done");
                         });
                     };
-                    this.toggleRight = function () {
-                        _this.$mdSidenav("right").toggle().then(function () {
-                            _this.$log.debug("toggle RIGHT is done");
-                        });
+                    this.onSwipeRight = function () {
+                        _this.$mdSidenav("left").open();
+                    };
+                    this.onSwipeLeft = function () {
+                        _this.$mdSidenav("left").close();
                     };
                     this.isAuthenticated = this.$auth.isAuthenticated;
                     this.$log.debug("IndexController: Constructor");
-<<<<<<< HEAD
-                    this.isAuthenticated = this.$auth.isAuthenticated();
-                    $scope.$on("userupdated", function (event) {
-                        _this.isAuthenticated = _this.$auth.isAuthenticated();
-                    });
-=======
->>>>>>> parent of a61d105... fix the switch between login/logout
                 }
                 IndexController.$inject = [
                     "$scope",
@@ -613,17 +578,97 @@ var app;
             var users;
             (function (_users) {
                 "use strict";
+                var UserController = (function () {
+                    function UserController($scope, $rootScope, $http, CST_API_URL, NotificationService, $log, $stateParams, $mdBottomSheet) {
+                        var _this = this;
+                        this.$scope = $scope;
+                        this.$rootScope = $rootScope;
+                        this.$http = $http;
+                        this.CST_API_URL = CST_API_URL;
+                        this.NotificationService = NotificationService;
+                        this.$log = $log;
+                        this.$stateParams = $stateParams;
+                        this.$mdBottomSheet = $mdBottomSheet;
+                        if (!this.$stateParams.userId) {
+                            alert("UserId is missing to initialize the user detail view!");
+                            console.error("UserId is missing to initialize the user detail view!");
+                        }
+                        else {
+                            $http.get(this.CST_API_URL + app.adm.users.CST_URL_Users + "/" + this.$stateParams.userId).error(function (err) {
+                                _this.$log.error("Error message: \n" + JSON.stringify(err), "Cannot load uers resources:");
+                                _this.NotificationService.error("Error message: \n" + JSON.stringify(err), "Cannot load users resources:");
+                            }).success(function (users) {
+                                _this.user = users[0];
+                                _this.$log.debug("user loaded!:" + JSON.stringify(users));
+                            });
+                            this.$scope.$on("save", function () {
+                                $http.put(_this.CST_API_URL + app.adm.users.CST_URL_Users + "/" + _this.user._id, _this.user).error(function (err) {
+                                    _this.$log.error("Error message: \n" + JSON.stringify(err), "Cannot save uers resources:");
+                                    _this.NotificationService.error("Error message: \n" + JSON.stringify(err), "Cannot save users resources:");
+                                }).success(function (users) {
+                                    _this.user = users[0];
+                                    _this.$log.debug("user saved!:" + JSON.stringify(users));
+                                    _this.NotificationService.info("User saves!");
+                                });
+                                _this.$rootScope.goBack();
+                            });
+                            this.$scope.$watch(function () { return _this.$scope.userForm.$invalid; }, function (newValue, oldValue) {
+                                console.log("watch [" + newValue + "] -> [" + oldValue + "]");
+                                if (newValue) {
+                                    _this.$scope.$emit("invalid");
+                                }
+                                else {
+                                    _this.$scope.$emit("valid");
+                                }
+                            });
+                        }
+                        this.$log.debug("UserController: Constructor");
+                    }
+                    UserController.$inject = [
+                        "$scope",
+                        "$rootScope",
+                        "$http",
+                        "CST_API_URL",
+                        "NotificationService",
+                        "$log",
+                        "$stateParams",
+                        "$mdBottomSheet"
+                    ];
+                    return UserController;
+                })();
+                _users.UserController = UserController;
+                angular.module("app").controller("app.views.adm.users.UserController", app.views.adm.users.UserController);
+            })(users = adm.users || (adm.users = {}));
+        })(adm = views.adm || (views.adm = {}));
+    })(views = app.views || (app.views = {}));
+})(app || (app = {}));
+var app;
+(function (app) {
+    var views;
+    (function (views) {
+        var adm;
+        (function (adm) {
+            var users;
+            (function (_users) {
+                "use strict";
                 var UsersController = (function () {
-                    function UsersController($scope, $http, CST_API_URL, NotificationService, $log) {
+                    function UsersController($scope, $http, CST_API_URL, NotificationService, $log, $mdDialog, $filter, $state) {
                         var _this = this;
                         this.$scope = $scope;
                         this.$http = $http;
                         this.CST_API_URL = CST_API_URL;
                         this.NotificationService = NotificationService;
                         this.$log = $log;
+                        this.$mdDialog = $mdDialog;
+                        this.$filter = $filter;
+                        this.$state = $state;
                         this.users = [];
                         this.usersView = [];
-                        $http.get(this.CST_API_URL + "/users").error(function (err) {
+                        this.onClick = function (userID) {
+                            var userParams = new app.adm.users.UserRouteParams(userID);
+                            _this.$state.go("user", userParams);
+                        };
+                        $http.get(this.CST_API_URL + app.adm.users.CST_URL_Users).error(function (err) {
                             _this.$log.error("Error message: \n" + JSON.stringify(err), "Cannot load uers resources:");
                             _this.NotificationService.error("Error message: \n" + JSON.stringify(err), "Cannot load users resources:");
                         }).success(function (users) {
@@ -638,7 +683,10 @@ var app;
                         "$http",
                         "CST_API_URL",
                         "NotificationService",
-                        "$log"
+                        "$log",
+                        "$mdDialog",
+                        "$filter",
+                        "$state"
                     ];
                     return UsersController;
                 })();
@@ -655,21 +703,120 @@ var app;
         var users;
         (function (users) {
             "use strict";
+            var UserRouteParams = (function () {
+                function UserRouteParams(userId) {
+                    this.userId = userId;
+                }
+                return UserRouteParams;
+            })();
+            users.UserRouteParams = UserRouteParams;
+            users.CST_URL_Users = "/adm/users";
+            users.CST_State_Users = "users";
+            users.CST_State_User = "user";
             route.$inject = [
                 "$stateProvider"
             ];
             function route($stateProvider) {
-                $stateProvider.state("users", {
-                    url: "/adm/users",
-                    templateUrl: "app/views/adm/users/users.html",
-                    controller: "app.views.adm.users.UsersController",
-                    controllerAs: "vm"
+                $stateProvider.state(users.CST_State_Users, {
+                    url: users.CST_URL_Users,
+                    views: {
+                        'header': {
+                            templateUrl: "app/views/headerMain/headerMain.html",
+                            controller: "app.views.header.HeaderMainController",
+                            controllerAs: "vm"
+                        },
+                        'container': {
+                            templateUrl: "app/views/adm/users/users.html",
+                            controller: "app.views.adm.users.UsersController",
+                            controllerAs: "vm"
+                        },
+                        'footer': {}
+                    }
+                }).state(users.CST_State_User, {
+                    url: users.CST_URL_Users + "{userId}",
+                    views: {
+                        'header': {
+                            templateUrl: "app/views/headerBackSave/headerBackSave.html",
+                            controller: "app.views.header.HeaderBackSaveController",
+                            controllerAs: "vm"
+                        },
+                        'container': {
+                            templateUrl: "app/views/adm/users/user.html",
+                            controller: "app.views.adm.users.UserController",
+                            controllerAs: "vm"
+                        },
+                        'footer': {}
+                    }
                 });
             }
             ;
             angular.module("app").config(route);
         })(users = adm.users || (adm.users = {}));
     })(adm = app.adm || (app.adm = {}));
+})(app || (app = {}));
+var app;
+(function (app) {
+    var views;
+    (function (views) {
+        var header;
+        (function (header) {
+            "use strict";
+            var HeaderBackSaveController = (function () {
+                function HeaderBackSaveController($scope, $rootScope, $log, $state) {
+                    var _this = this;
+                    this.$scope = $scope;
+                    this.$rootScope = $rootScope;
+                    this.$log = $log;
+                    this.$state = $state;
+                    this.$log.debug("HeaderBackSaveController: Constructor");
+                    this.invalid = false;
+                    this.cleanUpFunc1 = this.$rootScope.$on("invalid", function () {
+                        _this.invalid = true;
+                    });
+                    this.cleanUpFunc2 = this.$rootScope.$on("valid", function () {
+                        _this.invalid = false;
+                    });
+                    $scope.$on('$destroy', function () {
+                        _this.cleanUpFunc1();
+                        _this.cleanUpFunc2();
+                    });
+                }
+                HeaderBackSaveController.$inject = [
+                    "$scope",
+                    "$rootScope",
+                    "$log",
+                    "$location"
+                ];
+                return HeaderBackSaveController;
+            })();
+            header.HeaderBackSaveController = HeaderBackSaveController;
+            angular.module("app").controller("app.views.header.HeaderBackSaveController", app.views.header.HeaderBackSaveController);
+        })(header = views.header || (views.header = {}));
+    })(views = app.views || (app.views = {}));
+})(app || (app = {}));
+var app;
+(function (app) {
+    var views;
+    (function (views) {
+        var header;
+        (function (header) {
+            "use strict";
+            var HeaderMainController = (function () {
+                function HeaderMainController($scope, $log) {
+                    this.$scope = $scope;
+                    this.$log = $log;
+                    this.$log.debug("HeaderMainController: Constructor");
+                }
+                HeaderMainController.$inject = [
+                    "$scope",
+                    "$log"
+                ];
+                return HeaderMainController;
+            })();
+            header.HeaderMainController = HeaderMainController;
+            angular.module("app").controller("app.views.header.HeaderMainController", app.views.header.HeaderMainController);
+        })(header = views.header || (views.header = {}));
+    })(views = app.views || (app.views = {}));
 })(app || (app = {}));
 var app;
 (function (app) {
@@ -684,9 +831,15 @@ var app;
             function route($stateProvider) {
                 $stateProvider.state("login", {
                     url: "/login",
-                    templateUrl: "app/views/login/login.html",
-                    controller: "app.views.login.LoginController",
-                    controllerAs: "vm"
+                    views: {
+                        'header': {},
+                        'container': {
+                            templateUrl: "app/views/login/login.html",
+                            controller: "app.views.login.LoginController",
+                            controllerAs: "vm"
+                        },
+                        'footer': {}
+                    }
                 });
             }
             ;
@@ -707,8 +860,15 @@ var app;
             function route($stateProvider) {
                 $stateProvider.state("logout", {
                     url: "/logout",
-                    controller: "app.views.logout.LogoutController",
-                    controllerAs: "vm"
+                    views: {
+                        'header': {},
+                        'container': {
+                            templateUrl: "app/views/logout/logout.html",
+                            controller: "app.views.logout.LogoutController",
+                            controllerAs: "vm"
+                        },
+                        'footer': {}
+                    }
                 });
             }
             ;
@@ -724,12 +884,14 @@ var app;
         (function (main) {
             "use strict";
             var MainController = (function () {
-                function MainController($log) {
+                function MainController($log, $mdSidenav) {
                     this.$log = $log;
+                    this.$mdSidenav = $mdSidenav;
                     this.$log.debug("MainController: Constructor");
                 }
                 MainController.$inject = [
-                    "$log"
+                    "$log",
+                    "$mdSidenav",
                 ];
                 return MainController;
             })();
@@ -751,9 +913,19 @@ var app;
             function route($stateProvider) {
                 $stateProvider.state("main", {
                     url: "/",
-                    templateUrl: "app/views/main/main.html",
-                    controller: "app.views.main.MainController",
-                    controllerAs: "vm"
+                    views: {
+                        'header': {
+                            templateUrl: "app/views/headerMain/headerMain.html",
+                            controller: "app.views.header.HeaderMainController",
+                            controllerAs: "vm"
+                        },
+                        'container': {
+                            templateUrl: "app/views/main/main.html",
+                            controller: "app.views.main.MainController",
+                            controllerAs: "vm"
+                        },
+                        'footer': {}
+                    }
                 });
             }
             ;
@@ -774,9 +946,19 @@ var app;
             function route($stateProvider) {
                 $stateProvider.state("paints", {
                     url: "/paints",
-                    templateUrl: "app/views/paints/paints.html",
-                    controller: "app.views.paints.PaintsController",
-                    controllerAs: "vm"
+                    views: {
+                        'header': {
+                            templateUrl: "app/views/headerMain/headerMain.html",
+                            controller: "app.views.header.HeaderMainController",
+                            controllerAs: "vm"
+                        },
+                        'container': {
+                            templateUrl: "app/views/paints/paints.html",
+                            controller: "app.views.paints.PaintsController",
+                            controllerAs: "vm"
+                        },
+                        'footer': {}
+                    }
                 });
             }
             ;
@@ -797,9 +979,15 @@ var app;
             function route($stateProvider) {
                 $stateProvider.state("register", {
                     url: "/register",
-                    templateUrl: "app/views/register/register.html",
-                    controller: "app.views.register.RegisterController",
-                    controllerAs: "vm"
+                    views: {
+                        'header': {},
+                        'container': {
+                            templateUrl: "app/views/register/register.html",
+                            controller: "app.views.register.RegisterController",
+                            controllerAs: "vm"
+                        },
+                        'footer': {}
+                    }
                 });
             }
             ;
@@ -826,7 +1014,7 @@ var app;
                 SidenavController.prototype.close = function () {
                     var _this = this;
                     this.$mdSidenav("left").close().then(function () {
-                        _this.$log.debug("toggle left is done");
+                        _this.$log.debug("toggle left is done@sideNavController");
                     });
                 };
                 SidenavController.$inject = [

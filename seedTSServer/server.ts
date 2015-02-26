@@ -58,7 +58,7 @@ app.delete(rootRoute + ":id?", $AuthLocal.authenticationCheck, $PaintsRoutes.rem
 app.put(rootRoute + ":id?", $AuthLocal.authenticationCheck, $PaintsRoutes.update);
 
 import $UsersRoutes = require("./api/users/usersRoutes");
-rootRoute = "/api/users/";
+rootRoute = "/api/adm/users/";
 app.post(rootRoute, $AuthLocal.authenticationCheck, $UsersRoutes.create);
 app.get(rootRoute + ":id?", $AuthLocal.authenticationCheck, $UsersRoutes.find);
 app.delete(rootRoute + ":id?", $AuthLocal.authenticationCheck, $UsersRoutes.remove);
