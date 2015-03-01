@@ -77,7 +77,7 @@ export function update(expReq: e.xRequest<e.IRouteParamId>, expRes: e.Response, 
         throw new Error("Is parameter is required!");
     }
 
-    mdlUsers.findByIdAndUpdate(expReq.params.id, newUser, (err, users) => {
+    mdlUsers.findByIdAndUpdate(expReq.params.id, expReq.body, (err, users) => {
         if (err) {
             return expRes.status(500).write({ message: "Error updating user!" });
         }

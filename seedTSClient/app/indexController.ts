@@ -2,12 +2,10 @@
     "use strict";
 
     interface IIndexScope {
-        // isAuthenticated(): boolean; 
     }
 
     export class IndexController {
         public isAuthenticated: Function;
-        // public $auth:  //any; //: services.AuthToken;
 
         static $inject = [
             "$scope",
@@ -18,10 +16,14 @@
 
         constructor(
             private $scope: ng.IScope,
-            private $auth,
+            private $auth: satellizer.IAuthService,
             private $mdSidenav: ng.material.ISideBar,
             private $log: ng.ILogService) {
             this.isAuthenticated = this.$auth.isAuthenticated;
+            if( !this.$auth.isAuthenticated()){
+                this.$auth.removeToken();
+            };
+
             this.$log.debug("IndexController: Constructor");
             //this.isAuthenticated = this.$auth.isAuthenticated();
 

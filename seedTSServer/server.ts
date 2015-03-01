@@ -70,7 +70,7 @@ app.use("/bower_components", express.static(__dirname + "/../seedTSClient/bower_
 app.use("/app", express.static(__dirname + "/../seedTSClient/app"));
 app.use("/styles", express.static(__dirname + "/../seedTSClient/styles"));
 app.use("/fonts", express.static(__dirname + "/../seedTSClient/fonts"));
-
+app.use("/images", express.static(__dirname + "/../seedTSClient/images"));
 
 if (process.env.NODE_ENV === "development") {
     // configure stuff here

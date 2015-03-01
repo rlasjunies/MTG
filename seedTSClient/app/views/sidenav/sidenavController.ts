@@ -22,6 +22,7 @@
             private $mdSidenav:any,
             private $log:ng.ILogService) {
             this.isAuthenticated = this.$auth.isAuthenticated;
+
             this.$log.debug("SidenavController: Constructor");
 
             // TODO update to use angular.value
@@ -32,7 +33,7 @@
 
         close():void{
             this.$mdSidenav("left").close().then(() => {
-                    this.$log.debug("toggle left is done@sideNavController");
+                    //this.$log.debug("toggle left is done@sideNavController");
                 });
         }
     }

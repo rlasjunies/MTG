@@ -1,0 +1,41 @@
+
+<div layout-fill layout="column" layout-align="center center">
+    <h1>DnD</h1>
+
+    <div layout-fill layout="row">
+        <div id="up"
+             style="width:200px;height:200px;background-color:grey"
+             ondrop="
+            var vm = angular.element(event.target).scope().vmdnd;
+            vm.onDrop(event);"
+             ondragover="
+    var vm = angular.element(event.target).scope().vmdnd;
+    vm.allowDrop(event);"></div>
+
+        <div id="down"
+             style="width:200px;height:200px;background-color:brown"
+             ondrop="
+    var vm = angular.element(event.target).scope().vmdnd;
+    vm.onDrop(event);"
+             ondragover="
+    var vm = angular.element(event.target).scope().vmdnd;
+    vm.allowDrop(event);">
+
+            <img id="dragme" src="/images/img_w3slogo.gif"
+                 draggable="true"
+                 ondragstart="
+    var vm = angular.element(event.target).scope().vmdnd;
+    vm.onDragStart(event);"
+                 ondragend="
+    var vm = angular.element(event.target).scope().vmdnd;
+    vm.onDragEnd(event);"
+                 style="width:200px;height:200px;">
+
+        </div>
+
+        <iframe src="/images/example.html"
+                width="500"
+                height="500"
+                style="border:2px solid orange"></iframe>
+    </div>
+</div>

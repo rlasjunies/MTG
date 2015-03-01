@@ -11,6 +11,8 @@ import $ConfigSecret = require("../services/configSecret");
 interface IGoogleProfile {
     sub: string; // GoogleID
     name: string;
+    email: string;
+    picture: string;
 }
 
 // TODO how to define an interface more precise
@@ -61,7 +63,7 @@ export function googleAuth(expReq: express.Request, expRes: express.Response) {
             var userModel = libUser.userModel();
 
             userModel.findOne({
-                googleId: profile.sub
+                email: profile.email
             }, (err, foundUser) => {
                     if (foundUser) {
                         return libToken.createSendToken(foundUser, expRes);
@@ -71,8 +73,10 @@ export function googleAuth(expReq: express.Request, expRes: express.Response) {
 
                     var userDoc: libUser.IUserDocument = new userModel({});
 
-                    userDoc.id = profile.sub;
+                    userDoc.email = profile.email;
                     userDoc.displayName = profile.name;
+                    userDoc.googleId = profile.sub;
+                    userDoc.picture = profile.picture;
 
                     userDoc.save((err) => {
                         // if (err) return next(err);

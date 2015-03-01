@@ -56,8 +56,8 @@
             url: CST_URL_Users + "{userId}",
             views: {
                 'header': {
-                    templateUrl: "app/views/headerBackSave/headerBackSave.html",
-                    controller: "app.views.header.HeaderBackSaveController",
+                    templateUrl: "app/views/headerBackDeleteSave/headerBackDeleteSave.html",
+                    controller: "app.views.header.HeaderBackDeleteSaveController",
                     controllerAs: "vm"
                 },
                 'container': {

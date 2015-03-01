@@ -28,7 +28,8 @@ var newUser: $userCol.IUserObject = {
     googleId: "googleid",
     facebookId:"facebookid",
     displayName: $faker.internet.userName(),
-    password: $faker.internet.password(8, true)
+    password: $faker.internet.password(8, true),
+    picture: $faker.internet.avatar()
 };
 
 describe("Users ", () => {

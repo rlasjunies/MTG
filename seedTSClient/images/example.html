@@ -1,0 +1,68 @@
+﻿<!doctype html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head profile="http://gmpg.org/xfn/11">
+    <title>  Cross Browser HTML5 Drag and Drop</title>
+
+     <!-- ID is 734 -->
+    <!-- Needed for Forms Feature Detection -->
+
+
+</head>
+
+<!-- variation of http://paulirish.com/2008/conditional-stylesheets-vs-css-hacks-answer-neither/ -->
+<!--[if lt IE 7 ]> <body class="ie6 ie8down ie9down custom oldIE"> <![endif]-->
+<!--[if IE 7 ]>    <body class="ie7 ie8down ie9down custom oldIE"> <![endif]-->
+<!--[if IE 8 ]>    <body class="ie8 ie8down ie9down custom oldIE"> <![endif]-->
+<!--[if IE 9 ]>    <body class="ie9 ie9down custom oldIE"> <![endif]-->
+<!--[if (gt IE 9) ]><body class="modern custom"> <![endif]-->
+<!--[!(IE)]><!-->
+<body class="notIE modern custom">
+    <!--<![endif]-->
+
+    <div id="pageContainer" class="designElement">
+        <div id="head" class="designElement">
+            <form method="get" id="search" action="https://www.google.com/search">
+                <input type="hidden" name="as_sitesearch" value="useragentman.com">
+                <input type="text" name="q">
+                <input type="submit" value="Search">
+            </form>
+
+
+            <h1>User Agent Man </h1>
+
+            <h2>Discoveries of a Client Side Web Developer	</h2>
+        </div>
+        <a href="http://www.useragentman.com/blog/2012/01/23/help-free-saeed-malekpour-sentenced-to-death-for-writing-code/" id="freeSaeed"><img src="/images/freeSaeed.jpg" alt="Free Saeed Malekpour, Website Developer" /></a>
+        <ul id="mainMenu">
+            <li ><a id="dragElIdFromIFrame" draggable="true"
+   href="http://www.useragentman.com/blog"
+   ondragstart="
+    event.dataTransfer.setData('text', event.target.id);
+    console.log('DragStart:' + event.target.id);"
+                    >Home</a></li>
+
+            <li><a href="http://www.useragentman.com/blog/about-me/">About</a></li>
+            <li><a href="http://www.useragentman.com/blog/current-projects/">Current Projects</a></li>
+            <li><a href="http://www.useragentman.com/blog/tools/">Development Tools</a></li>
+            <li><a href="http://www.useragentman.com/blog/the-infamous-zoltan-faq/">FAQ</a></li>
+            <li><a href="http://www.useragentman.com/blog/acknowledgments/">Acknowledgments</a></li>
+
+            <li class="rss"><a href="http://www.useragentman.com/blog/feed/">RSS</a></li>
+        </ul>
+
+
+
+    </div>
+
+
+
+
+
+    <div id="foot" class="designElement">
+        <p>&copy; 2009 - 2012 &mdash; Zoltan "Du Lac" Hawryluk <!-- <a href="http://www.useragentman.com/blog/sitemap/">Sitemap</a> &mdash;  &mdash; <a href="http://www.useragentman.com/blog/terms/">Terms of Use</a>&nbsp; &nbsp;--></p>
+
+    </div>
+
+</body>
+</html>

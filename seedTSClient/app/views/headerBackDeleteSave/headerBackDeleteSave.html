@@ -1,0 +1,32 @@
+﻿            <!-- CONTENT HEADER-->
+<md-toolbar name="header"
+            layout="row">
+
+    <!-- Toggle menu button -->
+    <md-button ng-click="goBack()"
+               aria-label="back"
+               layout="column">
+        <i class="fa fa-chevron-left fa-2x" 
+           style="padding-right:5px"></i>
+    </md-button>
+
+    <!-- Header -->
+    <h3 align="center"
+        class="md-toolbar-tools"
+        layout-align="center center">
+        <span>Edit</span>
+    </h3>
+
+    <!-- Toggle menu button -->
+    <md-button ng-click="delete()"
+               layout="column"
+               aria-label="delete">
+        <i class="fa fa-trash-o fa-2x" style="padding-right:5px"></i>
+    </md-button>
+    <md-button ng-click="save()"
+               layout="column"
+               aria-label="save"
+               ng-disabled="vm.invalid">
+        <i class="fa fa-check fa-2x" style="padding-right:5px"></i>
+    </md-button>
+</md-toolbar>

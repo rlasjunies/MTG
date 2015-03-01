@@ -1,5 +1,13 @@
 ﻿module app.views.logout {
     "use strict";
+
+    interface ILogoutRootSCope extends ng.IRootScopeService {
+        //USER_ISAUTHENTICATED: boolean;
+        //USER_DISPLAYNAME: string;
+        //USER_EMAIL: string;
+        USER_LOGGED: app.services.IUser;
+    }
+
     export class LogoutController {
         static $inject = [
             "$rootScope",
@@ -9,7 +17,7 @@
             "$log"
         ];
         constructor(
-            private $rootScope: ng.IScope,
+            private $rootScope: ILogoutRootSCope,
             private $auth : satellizer.IAuthService,
             private $state: ng.ui.IStateService,
             private NotificationService: app.services.NotificationService,
@@ -22,7 +30,10 @@
            
             NotificationService.info("You are now logout!","Authentication message");
             this.$log.debug("LogoutController: Constructor");
-
+            //this.$rootScope.USER_DISPLAYNAME = "";
+            //this.$rootScope.USER_EMAIL = "";
+            //this.$rootScope.USER_ISAUTHENTICATED = false;
+            this.$rootScope.USER_LOGGED = null;
             this.$state.go("main");
         }
     }

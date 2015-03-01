@@ -7,7 +7,8 @@ userSchema.add({
     active: Boolean,
     googleId: String,
     facebookId: String,
-    displayName: String
+    displayName: String,
+    picture: String
 });
 userSchema.pre("save", function (next) {
     var user = this;

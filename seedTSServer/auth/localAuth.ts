@@ -1,5 +1,6 @@
 ﻿import e = require("express");
 import jwt = require("jwt-simple"); 
+import moment = require("moment");
 
 import $Token = require("./token");
 import $EmailVerification = require("./emailVerification");
@@ -32,6 +33,10 @@ export function authenticationCheck(expReq: e.Request, expRes: e.Response, next)
         if (!payload.sub) {
             return expRes.status(401).send({ message: "Authentication failed" });
         } else {
+            if (moment.unix(payload.exp).diff(moment(), 'second') < 0){
+                console.log("!!!!token expired!!!");
+            }
+
             next();
         }
     }

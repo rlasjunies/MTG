@@ -31,6 +31,10 @@ module app.run {
         $rootScope.save = function(){
             $rootScope.$broadcast("save");
         }
+
+        $rootScope.delete = function () {
+            $rootScope.$broadcast("delete");
+        }
     
     }
 

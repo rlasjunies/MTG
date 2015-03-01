@@ -6,7 +6,8 @@ var app;
         "satellizer",
         "ui.router",
         "ngMessages",
-        "angular-loading-bar"
+        "angular-loading-bar",
+        "ngAnimate"
     ]);
 })(app || (app = {}));
 var app;
@@ -14,7 +15,6 @@ var app;
     var constants;
     (function (constants) {
         "use strict";
-        console.log("window.location@app.constant:" + window.location.protocol + "//" + window.location.host);
         angular.module("app").constant("CST_URL", window.location.protocol + "//" + window.location.host + "/").constant("CST_API_URL", window.location.protocol + "//" + window.location.host + "/api").constant("CST_AUTH_URL", window.location.protocol + "//" + window.location.host + "/auth");
     })(constants = app.constants || (app.constants = {}));
 })(app || (app = {}));
@@ -224,14 +224,29 @@ var app;
                 this.$http = $http;
             }
             UserService.prototype.getById = function (uniqueId) {
-                return this.$http.get("/api/users/" + uniqueId).then(function (response) {
+                return this.$http.get("/api/adm/users/" + uniqueId).then(function (response) {
+                    return response.data[0];
+                });
+            };
+            UserService.prototype.getAll = function () {
+                return this.$http.get("/api/adm/users/").then(function (response) {
+                    return response.data;
+                });
+            };
+            UserService.prototype.update = function (user) {
+                return this.$http.put("/api/adm/users/" + user._id, user).then(function (response) {
+                    return response.data;
+                });
+            };
+            UserService.prototype.delete = function (uniqueId) {
+                return this.$http.delete("/api/adm/users/" + uniqueId).then(function (response) {
                     return response.data;
                 });
             };
             UserService.$inject = ["$http"];
             return UserService;
         })();
-        angular.module("app").service("app.services.UserService", UserService);
+        angular.module("app").service("UserService", UserService);
     })(services = app.services || (app.services = {}));
 })(app || (app = {}));
 var app;
@@ -286,6 +301,9 @@ var app;
             };
             $rootScope.save = function () {
                 $rootScope.$broadcast("save");
+            };
+            $rootScope.delete = function () {
+                $rootScope.$broadcast("delete");
             };
         }
     })(run = app.run || (app.run = {}));
@@ -347,9 +365,10 @@ var app;
                     this.$log = $log;
                     this.submit = function () {
                         _this.$auth.login({ email: _this.email, password: _this.password }).then(function (response) {
-                            _this.$log.debug("login is fine!");
-                            var msg = "Thanks '" + response.data.user.email + "'for coming back!";
+                            var msg = "Thanks '" + response.data.user.email + "' for coming back!";
+                            _this.$log.debug(msg);
                             _this.NotificationService.success(msg);
+                            _this.$rootScope.USER_LOGGED = response.data.user;
                             if (!response.data.user.active) {
                                 msg = "Do not forget to active your account via the email sent!";
                                 _this.NotificationService.warning(msg);
@@ -358,19 +377,20 @@ var app;
                         }).catch(function (err) {
                             _this.$log.error("login:" + JSON.stringify(err));
                             _this.NotificationService.error("Error registering!" + JSON.stringify(err));
-                            _this.$rootScope.$broadcast("userupdated");
+                            _this.$rootScope.USER_LOGGED = null;
                         });
                     };
                     this.authenticate = function (provider) {
                         _this.$auth.authenticate(provider).then(function (response) {
-                            _this.$log.debug("login is fine!");
-                            _this.NotificationService.success("U are logged!");
-                            _this.$rootScope.$broadcast("userupdated");
+                            var msg = "Thanks '" + response.data.user.email + "' for coming back!";
+                            _this.$log.debug(msg);
+                            _this.NotificationService.success(msg);
+                            _this.$rootScope.USER_LOGGED = response.data.user;
                             _this.$state.go("main");
                         }).catch(function (err) {
                             _this.$log.error("login:" + JSON.stringify(err));
                             _this.NotificationService.error("Error registering!");
-                            _this.$rootScope.$broadcast("userupdated");
+                            _this.$rootScope.USER_LOGGED = null;
                         });
                     };
                     this.$log.debug("LoginController: Constructor");
@@ -407,6 +427,7 @@ var app;
                     this.$auth.logout();
                     NotificationService.info("You are now logout!", "Authentication message");
                     this.$log.debug("LogoutController: Constructor");
+                    this.$rootScope.USER_LOGGED = null;
                     this.$state.go("main");
                 }
                 LogoutController.$inject = [
@@ -554,6 +575,10 @@ var app;
                         _this.$mdSidenav("left").close();
                     };
                     this.isAuthenticated = this.$auth.isAuthenticated;
+                    if (!this.$auth.isAuthenticated()) {
+                        this.$auth.removeToken();
+                    }
+                    ;
                     this.$log.debug("IndexController: Constructor");
                 }
                 IndexController.$inject = [
@@ -576,10 +601,10 @@ var app;
         var adm;
         (function (adm) {
             var users;
-            (function (_users) {
+            (function (users) {
                 "use strict";
                 var UserController = (function () {
-                    function UserController($scope, $rootScope, $http, CST_API_URL, NotificationService, $log, $stateParams, $mdBottomSheet) {
+                    function UserController($scope, $rootScope, $http, CST_API_URL, NotificationService, $log, $stateParams, $mdBottomSheet, userService, $mdDialog) {
                         var _this = this;
                         this.$scope = $scope;
                         this.$rootScope = $rootScope;
@@ -589,28 +614,41 @@ var app;
                         this.$log = $log;
                         this.$stateParams = $stateParams;
                         this.$mdBottomSheet = $mdBottomSheet;
+                        this.userService = userService;
+                        this.$mdDialog = $mdDialog;
                         if (!this.$stateParams.userId) {
                             alert("UserId is missing to initialize the user detail view!");
                             console.error("UserId is missing to initialize the user detail view!");
                         }
                         else {
-                            $http.get(this.CST_API_URL + app.adm.users.CST_URL_Users + "/" + this.$stateParams.userId).error(function (err) {
+                            this.userService.getById(this.$stateParams.userId).then(function (user) {
+                                _this.user = user;
+                                _this.$log.debug("user loaded!:" + JSON.stringify(users));
+                            }).catch(function (err) {
                                 _this.$log.error("Error message: \n" + JSON.stringify(err), "Cannot load uers resources:");
                                 _this.NotificationService.error("Error message: \n" + JSON.stringify(err), "Cannot load users resources:");
-                            }).success(function (users) {
-                                _this.user = users[0];
-                                _this.$log.debug("user loaded!:" + JSON.stringify(users));
                             });
                             this.$scope.$on("save", function () {
-                                $http.put(_this.CST_API_URL + app.adm.users.CST_URL_Users + "/" + _this.user._id, _this.user).error(function (err) {
+                                _this.userService.update(_this.user).then(function (user) {
+                                    _this.$log.debug("user saved!:" + JSON.stringify(user));
+                                }).catch(function (err) {
                                     _this.$log.error("Error message: \n" + JSON.stringify(err), "Cannot save uers resources:");
                                     _this.NotificationService.error("Error message: \n" + JSON.stringify(err), "Cannot save users resources:");
-                                }).success(function (users) {
-                                    _this.user = users[0];
-                                    _this.$log.debug("user saved!:" + JSON.stringify(users));
-                                    _this.NotificationService.info("User saves!");
                                 });
                                 _this.$rootScope.goBack();
+                            });
+                            this.$scope.$on("delete", function () {
+                                var confirm = $mdDialog.confirm().title('Confirm deletion').content('Are going to delete the user:' + _this.user.displayName).ariaLabel('Lucky day').ok('Cancel').cancel('Delete');
+                                $mdDialog.show(confirm).then(function () {
+                                }, function () {
+                                    _this.userService.delete(_this.$stateParams.userId).then(function (user) {
+                                        _this.$log.debug("user deleted!:" + JSON.stringify(user));
+                                    }).catch(function (err) {
+                                        _this.$log.error("Error message: \n" + JSON.stringify(err), "Cannot save uers resources:");
+                                        _this.NotificationService.error("Error message: \n" + JSON.stringify(err), "Cannot save users resources:");
+                                    });
+                                    _this.$rootScope.goBack();
+                                });
                             });
                             this.$scope.$watch(function () { return _this.$scope.userForm.$invalid; }, function (newValue, oldValue) {
                                 console.log("watch [" + newValue + "] -> [" + oldValue + "]");
@@ -632,11 +670,13 @@ var app;
                         "NotificationService",
                         "$log",
                         "$stateParams",
-                        "$mdBottomSheet"
+                        "$mdBottomSheet",
+                        "UserService",
+                        "$mdDialog"
                     ];
                     return UserController;
                 })();
-                _users.UserController = UserController;
+                users.UserController = UserController;
                 angular.module("app").controller("app.views.adm.users.UserController", app.views.adm.users.UserController);
             })(users = adm.users || (adm.users = {}));
         })(adm = views.adm || (views.adm = {}));
@@ -652,7 +692,7 @@ var app;
             (function (_users) {
                 "use strict";
                 var UsersController = (function () {
-                    function UsersController($scope, $http, CST_API_URL, NotificationService, $log, $mdDialog, $filter, $state) {
+                    function UsersController($scope, $http, CST_API_URL, NotificationService, $log, $mdDialog, $filter, $state, UserService) {
                         var _this = this;
                         this.$scope = $scope;
                         this.$http = $http;
@@ -662,19 +702,20 @@ var app;
                         this.$mdDialog = $mdDialog;
                         this.$filter = $filter;
                         this.$state = $state;
+                        this.UserService = UserService;
                         this.users = [];
                         this.usersView = [];
                         this.onClick = function (userID) {
                             var userParams = new app.adm.users.UserRouteParams(userID);
                             _this.$state.go("user", userParams);
                         };
-                        $http.get(this.CST_API_URL + app.adm.users.CST_URL_Users).error(function (err) {
-                            _this.$log.error("Error message: \n" + JSON.stringify(err), "Cannot load uers resources:");
-                            _this.NotificationService.error("Error message: \n" + JSON.stringify(err), "Cannot load users resources:");
-                        }).success(function (users) {
+                        this.UserService.getAll().then(function (users) {
                             _this.users = users;
                             _this.usersView = [].concat(_this.users);
                             _this.$log.debug("users loaded!");
+                        }).catch(function (err) {
+                            _this.$log.error("Error message: \n" + JSON.stringify(err), "Cannot load uers resources:");
+                            _this.NotificationService.error("Error message: \n" + JSON.stringify(err), "Cannot load users resources:");
                         });
                         this.$log.debug("UsersController: Constructor");
                     }
@@ -686,7 +727,8 @@ var app;
                         "$log",
                         "$mdDialog",
                         "$filter",
-                        "$state"
+                        "$state",
+                        "UserService"
                     ];
                     return UsersController;
                 })();
@@ -736,8 +778,8 @@ var app;
                     url: users.CST_URL_Users + "{userId}",
                     views: {
                         'header': {
-                            templateUrl: "app/views/headerBackSave/headerBackSave.html",
-                            controller: "app.views.header.HeaderBackSaveController",
+                            templateUrl: "app/views/headerBackDeleteSave/headerBackDeleteSave.html",
+                            controller: "app.views.header.HeaderBackDeleteSaveController",
                             controllerAs: "vm"
                         },
                         'container': {
@@ -753,6 +795,136 @@ var app;
             angular.module("app").config(route);
         })(users = adm.users || (adm.users = {}));
     })(adm = app.adm || (app.adm = {}));
+})(app || (app = {}));
+var app;
+(function (app) {
+    var views;
+    (function (views) {
+        var dnd;
+        (function (dnd) {
+            "use strict";
+            var DndController = (function () {
+                function DndController($log, $mdSidenav, $scope, $animate, $compile) {
+                    var _this = this;
+                    this.$log = $log;
+                    this.$mdSidenav = $mdSidenav;
+                    this.$scope = $scope;
+                    this.$animate = $animate;
+                    this.$compile = $compile;
+                    this.onDragStart = function (evt) {
+                        var target = evt.target;
+                        evt.dataTransfer.setData("text", target.id);
+                        _this.ElSource = _this.find(target.id);
+                        console.log("Drag started: sourceId:" + target.id);
+                    };
+                    this.onDragEnd = function (evt) {
+                        _this.ElSource = null;
+                    };
+                    this.onDrop = function (evt) {
+                        evt.preventDefault();
+                        var sourceId = evt.dataTransfer.getData("text");
+                        var target = evt.target;
+                        var targetId = target.id;
+                        console.log("Drop: sourceId = " + sourceId);
+                        console.log("Drop: targetId =" + targetId);
+                        var targetEl = _this.find(targetId);
+                        _this.$animate.move(_this.ElSource, targetEl, null);
+                    };
+                    this.find = function (id) {
+                        return angular.element(document.querySelector("#" + id));
+                    };
+                    this.allowDrop = function (evt) {
+                        evt.preventDefault();
+                        console.log("allowDrop");
+                    };
+                    this.$log.debug("dndController: Constructor");
+                }
+                DndController.$inject = [
+                    "$log",
+                    "$mdSidenav",
+                    "$scope",
+                    "$animate",
+                    "$compile"
+                ];
+                return DndController;
+            })();
+            dnd.DndController = DndController;
+            angular.module("app").controller("app.views.dnd.DndController", app.views.dnd.DndController);
+        })(dnd = views.dnd || (views.dnd = {}));
+    })(views = app.views || (app.views = {}));
+})(app || (app = {}));
+var app;
+(function (app) {
+    var views;
+    (function (views) {
+        var main;
+        (function (main) {
+            "use strict";
+            route.$inject = [
+                "$stateProvider"
+            ];
+            function route($stateProvider) {
+                $stateProvider.state("dnd", {
+                    url: "/dnd",
+                    views: {
+                        'header': {
+                            templateUrl: "app/views/headerMain/headerMain.html",
+                            controller: "app.views.header.HeaderMainController",
+                            controllerAs: "vm"
+                        },
+                        'container': {
+                            templateUrl: "app/views/dnd/dnd.html",
+                            controller: "app.views.dnd.DndController",
+                            controllerAs: "vmdnd"
+                        },
+                        'footer': {}
+                    }
+                });
+            }
+            ;
+            angular.module("app").config(route);
+        })(main = views.main || (views.main = {}));
+    })(views = app.views || (app.views = {}));
+})(app || (app = {}));
+var app;
+(function (app) {
+    var views;
+    (function (views) {
+        var header;
+        (function (header) {
+            "use strict";
+            var HeaderBackDeleteSaveController = (function () {
+                function HeaderBackDeleteSaveController($scope, $rootScope, $log, $state) {
+                    var _this = this;
+                    this.$scope = $scope;
+                    this.$rootScope = $rootScope;
+                    this.$log = $log;
+                    this.$state = $state;
+                    this.$log.debug("HeaderBackSaveController: Constructor");
+                    this.invalid = false;
+                    this.cleanUpFunc1 = this.$rootScope.$on("invalid", function () {
+                        _this.invalid = true;
+                    });
+                    this.cleanUpFunc2 = this.$rootScope.$on("valid", function () {
+                        _this.invalid = false;
+                    });
+                    $scope.$on('$destroy', function () {
+                        _this.cleanUpFunc1();
+                        _this.cleanUpFunc2();
+                    });
+                }
+                HeaderBackDeleteSaveController.$inject = [
+                    "$scope",
+                    "$rootScope",
+                    "$log",
+                    "$location"
+                ];
+                return HeaderBackDeleteSaveController;
+            })();
+            header.HeaderBackDeleteSaveController = HeaderBackDeleteSaveController;
+            angular.module("app").controller("app.views.header.HeaderBackDeleteSaveController", app.views.header.HeaderBackDeleteSaveController);
+        })(header = views.header || (views.header = {}));
+    })(views = app.views || (app.views = {}));
 })(app || (app = {}));
 var app;
 (function (app) {
@@ -999,6 +1171,69 @@ var app;
 (function (app) {
     var views;
     (function (views) {
+        var setup;
+        (function (setup) {
+            "use strict";
+            var setupController = (function () {
+                function setupController($log, $mdSidenav, $scope, $animate, $compile) {
+                    this.$log = $log;
+                    this.$mdSidenav = $mdSidenav;
+                    this.$scope = $scope;
+                    this.$animate = $animate;
+                    this.$compile = $compile;
+                    this.$log.debug("dndController: Constructor");
+                }
+                setupController.$inject = [
+                    "$log",
+                    "$mdSidenav",
+                    "$scope",
+                    "$animate",
+                    "$compile"
+                ];
+                return setupController;
+            })();
+            setup.setupController = setupController;
+            angular.module("app").controller("app.views.setup.setupController", app.views.setup.setupController);
+        })(setup = views.setup || (views.setup = {}));
+    })(views = app.views || (app.views = {}));
+})(app || (app = {}));
+var app;
+(function (app) {
+    var views;
+    (function (views) {
+        var main;
+        (function (main) {
+            "use strict";
+            route.$inject = [
+                "$stateProvider"
+            ];
+            function route($stateProvider) {
+                $stateProvider.state("setup", {
+                    url: "/setup",
+                    views: {
+                        'header': {
+                            templateUrl: "app/views/headerMain/headerMain.html",
+                            controller: "app.views.header.HeaderMainController",
+                            controllerAs: "vm"
+                        },
+                        'container': {
+                            templateUrl: "app/views/setup/setup.html",
+                            controller: "app.views.setup.setupController",
+                            controllerAs: "vm"
+                        },
+                        'footer': {}
+                    }
+                });
+            }
+            ;
+            angular.module("app").config(route);
+        })(main = views.main || (views.main = {}));
+    })(views = app.views || (app.views = {}));
+})(app || (app = {}));
+var app;
+(function (app) {
+    var views;
+    (function (views) {
         var sidenav;
         (function (sidenav) {
             "use strict";
@@ -1012,9 +1247,7 @@ var app;
                     this.$log.debug("SidenavController: Constructor");
                 }
                 SidenavController.prototype.close = function () {
-                    var _this = this;
                     this.$mdSidenav("left").close().then(function () {
-                        _this.$log.debug("toggle left is done@sideNavController");
                     });
                 };
                 SidenavController.$inject = [

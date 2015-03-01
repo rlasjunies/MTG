@@ -63,6 +63,7 @@ exports.app.use("/bower_components", express.static(__dirname + "/../seedTSClien
 exports.app.use("/app", express.static(__dirname + "/../seedTSClient/app"));
 exports.app.use("/styles", express.static(__dirname + "/../seedTSClient/styles"));
 exports.app.use("/fonts", express.static(__dirname + "/../seedTSClient/fonts"));
+exports.app.use("/images", express.static(__dirname + "/../seedTSClient/images"));
 if (process.env.NODE_ENV === "development") {
 }
 exports.app.get("*", function (req, res, next) {

@@ -22,8 +22,11 @@
     <Content Include="app\views\adm\users\userFooter.html" />
     <Content Include="app\views\adm\users\user.html" />
     <Content Include="app\views\adm\users\users.html" />
+    <Content Include="app\views\setup\setup.html" />
+    <Content Include="app\views\headerBackDeleteSave\headerBackDeleteSave.html" />
     <Content Include="app\views\headerBackSave\headerBackSave.html" />
     <Content Include="app\views\logout\logout.html" />
+    <Content Include="app\views\dnd\dnd.html" />
     <Content Include="app\views\sidenav\sidenav.html" />
     <Content Include="app\views\sitesettings\sitesettings.html" />
     <Content Include="app\views\headerMain\headerMain.html" />
@@ -35,6 +38,9 @@
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
     <Content Include="fonts\glyphicons-halflings-regular.ttf" />
     <Content Include="fonts\glyphicons-halflings-regular.woff" />
+    <Content Include="images\empty_avatar_m.png" />
+    <Content Include="images\example.html" />
+    <Content Include="images\img_w3slogo.gif" />
     <Content Include="packages.config" />
     <Content Include="scripts\satellizer.js" />
     <Content Include="scripts\satellizer.min.js" />
@@ -56,6 +62,7 @@
     <Content Include="styles\bootstrap.css.map" />
     <Content Include="styles\toastr.less" />
     <Content Include="styles\toastr.scss" />
+    <Content Include="images\userBackground.jpg" />
     <None Include="web.Debug.config">
       <DependentUpon>web.config</DependentUpon>
     </None>
@@ -81,7 +88,12 @@
     <TypeScriptCompile Include="app\views\adm\users\userController.ts" />
     <TypeScriptCompile Include="app\views\adm\users\usersController.ts" />
     <TypeScriptCompile Include="app\views\adm\users\usersRoute.ts" />
+    <TypeScriptCompile Include="app\views\setup\setupController.ts" />
+    <TypeScriptCompile Include="app\views\setup\setupRoute.ts" />
+    <TypeScriptCompile Include="app\views\headerBackDeleteSave\headerBackDeleteSaveController.ts" />
     <TypeScriptCompile Include="app\views\headerBackSave\headerBackSaveController.ts" />
+    <TypeScriptCompile Include="app\views\dnd\dndController.ts" />
+    <TypeScriptCompile Include="app\views\dnd\dndRoute.ts" />
     <TypeScriptCompile Include="app\views\paints\paintsRoute.ts" />
     <TypeScriptCompile Include="app\views\login\loginRoute.ts" />
     <TypeScriptCompile Include="app\views\logout\logoutRoute.ts" />
@@ -145,6 +157,7 @@
     <TypeScriptRemoveComments>True</TypeScriptRemoveComments>
     <TypeScriptSourceMap>true</TypeScriptSourceMap>
     <TypeScriptOutFile>scripts\app.js</TypeScriptOutFile>
+    <TypeScriptTarget>ES5</TypeScriptTarget>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)' == 'Release'">
     <TypeScriptRemoveComments>true</TypeScriptRemoveComments>

@@ -41,15 +41,17 @@ function googleAuth(expReq, expRes) {
             }
             var userModel = libUser.userModel();
             userModel.findOne({
-                googleId: profile.sub
+                email: profile.email
             }, function (err, foundUser) {
                 if (foundUser) {
                     return libToken.createSendToken(foundUser, expRes);
                 }
                 var userModel = libUser.userModel();
                 var userDoc = new userModel({});
-                userDoc.id = profile.sub;
+                userDoc.email = profile.email;
                 userDoc.displayName = profile.name;
+                userDoc.googleId = profile.sub;
+                userDoc.picture = profile.picture;
                 userDoc.save(function (err) {
                     // if (err) return next(err);
                     if (err) {

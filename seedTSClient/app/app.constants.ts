@@ -13,7 +13,7 @@
     //    .value("CST_API_URL", "")
     //    .value("CST_AUTH_URL", "");
 
-    console.log("window.location@app.constant:" + window.location.protocol + "//" + window.location.host);
+    //console.log("window.location@app.constant:" + window.location.protocol + "//" + window.location.host);
     //update the URL constant to be based on site URL
     angular
         .module("app")

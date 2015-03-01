@@ -10,9 +10,23 @@ export interface IUserDocument extends mongoose.Document {
     googleId: string;
     facebookId: string;
     displayName: string;
+    picture: string;
     // toJSON(): void;
+    //firstName: string;
+    //lastName: string;
+    //roles: string[];
+    //timezoneOffset: number;
+    //createDate?: number;
+    //modifiedDate?: number;
+    //socialNetworks: ISocialNetwork[];
     comparePasswords(pwd, callback);
 }
+
+//export interface ISocialNetwork {
+//    name: string;
+//    username: string;
+//}
+
 
 //TODO duplication between UserDoc / Objects?
 export interface IUserObject {
@@ -22,6 +36,7 @@ export interface IUserObject {
     googleId: string;
     facebookId: string;
     displayName: string;
+    picture: string;
 }
 
 export interface IUserModel extends mongoose.Model<IUserDocument> {
@@ -42,7 +57,8 @@ userSchema.add({
     active: Boolean,
     googleId: String,
     facebookId: String,
-    displayName: String
+    displayName: String,
+    picture: String
 });
 
 userSchema.pre("save", function (next) {

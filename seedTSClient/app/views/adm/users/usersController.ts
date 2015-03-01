@@ -1,18 +1,18 @@
 ﻿module app.views.adm.users{
     "use strict";
 
-    export interface IUser {
-        _id: string;
-        email: string;
-        password: string;
-        active: boolean;
-        googleId: string;
-        facebookId: string;
-        displayName: string;
-    }
+    //export interface IUser {
+    //    _id: string;
+    //    email: string;
+    //    password: string;
+    //    active: boolean;
+    //    googleId: string;
+    //    facebookId: string;
+    //    displayName: string;
+    //}
     export class UsersController {
-        public users: IUser[] = [];
-        public usersView: IUser[] = [];
+        public users: app.services.IUsers = [];
+        public usersView: app.services.IUser[] = [];
 
         static $inject = [
             "$scope",
@@ -22,7 +22,8 @@
             "$log",
             "$mdDialog",
             "$filter",
-            "$state"
+            "$state",
+            "UserService"
         ];
         constructor(
             private $scope: ng.IScope,
@@ -32,18 +33,44 @@
             private $log: ng.ILogService,
             private $mdDialog,
             private $filter,
-            private $state : ng.ui.IStateService) {
+            private $state: ng.ui.IStateService,
+            private UserService:app.services.IUserService) {
 
-            $http.get(this.CST_API_URL + app.adm.users.CST_URL_Users)
-                .error((err) => {
-                    this.$log.error("Error message: \n" + JSON.stringify(err), "Cannot load uers resources:");
-                    this.NotificationService.error("Error message: \n" + JSON.stringify(err), "Cannot load users resources:");
-                })
-                .success((users: IUser[]) => {
-                    this.users = users;
-                    this.usersView = [].concat(this.users);
-                    this.$log.debug("users loaded!");
-                });
+            //$http.get(this.CST_API_URL + app.adm.users.CST_URL_Users)
+            //    .error((err) => {
+            //        this.$log.error("Error message: \n" + JSON.stringify(err), "Cannot load uers resources:");
+            //        this.NotificationService.error("Error message: \n" + JSON.stringify(err), "Cannot load users resources:");
+            //    })
+            //    .success((users: IUser[]) => {
+            //        this.users = users;
+            //        this.usersView = [].concat(this.users);
+            //        this.$log.debug("users loaded!");
+            //    });
+
+            this.UserService.getAll().then((users: app.services.IUsers): void => {
+                this.users = users;
+                this.usersView = [].concat(this.users);
+                this.$log.debug("users loaded!");
+            }).catch((err) => {
+                this.$log.error("Error message: \n" + JSON.stringify(err), "Cannot load uers resources:");
+                this.NotificationService.error("Error message: \n" + JSON.stringify(err), "Cannot load users resources:");
+            });
+
+            //this.UserService.getAll().catch((err) => {
+            //    this.$log.error("Error message: \n" + JSON.stringify(err), "Cannot load uers resources:");
+            //    this.NotificationService.error("Error message: \n" + JSON.stringify(err), "Cannot load users resources:");
+            //}).then((users: app.services.IUsers):void => {
+            //        this.users = users;
+            //        this.usersView = [].concat(this.users);
+            //        this.$log.debug("users loaded!");
+            //});
+
+
+                //.then((users: IUser[]) => {
+                //    this.users = users;
+                //    this.usersView = [].concat(this.users);
+                //    this.$log.debug("users loaded!");
+                //});
 
             this.$log.debug("UsersController: Constructor");
         }

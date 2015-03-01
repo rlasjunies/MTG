@@ -125,7 +125,7 @@ body {
     margin: 0 auto;
 }
 .alert-hidden {
-    visibility: : hidden;
+    visibility: hidden;
 }
 .ui-view-container {
     position: relative;

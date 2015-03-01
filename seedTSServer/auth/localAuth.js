@@ -1,4 +1,5 @@
 var jwt = require("jwt-simple");
+var moment = require("moment");
 var $Token = require("./token");
 var $EmailVerification = require("./emailVerification");
 var $log = require("../services/logger");
@@ -31,6 +32,9 @@ function authenticationCheck(expReq, expRes, next) {
             return expRes.status(401).send({ message: "Authentication failed" });
         }
         else {
+            if (moment.unix(payload.exp).diff(moment(), 'second') < 0) {
+                console.log("!!!!token expired!!!");
+            }
             next();
         }
     }

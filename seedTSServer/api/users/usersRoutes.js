@@ -65,7 +65,7 @@ function update(expReq, expRes, next) {
     if (!expReq.params.id) {
         throw new Error("Is parameter is required!");
     }
-    mdlUsers.findByIdAndUpdate(expReq.params.id, newUser, function (err, users) {
+    mdlUsers.findByIdAndUpdate(expReq.params.id, expReq.body, function (err, users) {
         if (err) {
             return expRes.status(500).write({ message: "Error updating user!" });
         }
