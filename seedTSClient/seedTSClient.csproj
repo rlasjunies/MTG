@@ -83,6 +83,7 @@
     <TypeScriptCompile Include="app\indexController.ts" />
     <TypeScriptCompile Include="app\services\notificationService.ts" />
     <TypeScriptCompile Include="app\services\sitesettings.service.ts" />
+    <TypeScriptCompile Include="app\services\userLogged.ts" />
     <TypeScriptCompile Include="app\services\user.service.ts" />
     <TypeScriptCompile Include="app\app.route.ts" />
     <TypeScriptCompile Include="app\views\adm\users\userController.ts" />

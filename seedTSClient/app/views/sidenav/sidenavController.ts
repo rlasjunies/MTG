@@ -6,29 +6,26 @@
     }
 
     export class SidenavController {
-        public isAuthenticated: Function;
+        // public isAuthenticated: Function;
         // public $auth:  //any; //: services.AuthToken;
 
         static $inject = [
             "$scope",
             "$auth",
             "$mdSidenav",
-            "$log"
+            "$log",
+            "UserLoggedService"
         ];
 
         constructor(
             private $scope: ng.IScope,
             private $auth,
             private $mdSidenav:any,
-            private $log:ng.ILogService) {
-            this.isAuthenticated = this.$auth.isAuthenticated;
+            private $log: ng.ILogService,
+            private UserLoggedService: app.services.IUserLoggedService) {
 
             this.$log.debug("SidenavController: Constructor");
 
-            // TODO update to use angular.value
-            // $scope.$on("userupdated", (event: ng.IAngularEvent) => {
-            //    this.isAuthenticated = this.$auth.isAuthenticated();
-            // });
         }
 
         close():void{

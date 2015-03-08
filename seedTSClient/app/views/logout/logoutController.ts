@@ -2,10 +2,6 @@
     "use strict";
 
     interface ILogoutRootSCope extends ng.IRootScopeService {
-        //USER_ISAUTHENTICATED: boolean;
-        //USER_DISPLAYNAME: string;
-        //USER_EMAIL: string;
-        USER_LOGGED: app.services.IUser;
     }
 
     export class LogoutController {
@@ -14,26 +10,25 @@
             "$auth",
             "$state",
             "NotificationService",
-            "$log"
+            "$log",
+            "UserLoggedService"
         ];
         constructor(
             private $rootScope: ILogoutRootSCope,
             private $auth : satellizer.IAuthService,
             private $state: ng.ui.IStateService,
             private NotificationService: app.services.NotificationService,
-            private $log: ng.ILogService) {
+            private $log: ng.ILogService,
+            private UserLoggedService:app.services.IUserLoggedService) {
 
             this.$log.debug("LogoutController: Constructor");
 
+            //clean the sanitizer authentication and the app global service userLogged
             this.$auth.logout();
-            //this.$rootScope.$broadcast("userupdated");
+            this.UserLoggedService.logout();
            
             NotificationService.info("You are now logout!","Authentication message");
             this.$log.debug("LogoutController: Constructor");
-            //this.$rootScope.USER_DISPLAYNAME = "";
-            //this.$rootScope.USER_EMAIL = "";
-            //this.$rootScope.USER_ISAUTHENTICATED = false;
-            this.$rootScope.USER_LOGGED = null;
             this.$state.go("main");
         }
     }

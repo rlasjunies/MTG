@@ -356,20 +356,21 @@ var app;
             "use strict";
             ;
             var LoginController = (function () {
-                function LoginController($rootScope, NotificationService, $state, $auth, $log) {
+                function LoginController($rootScope, NotificationService, $state, $auth, $log, UserLoggedService) {
                     var _this = this;
                     this.$rootScope = $rootScope;
                     this.NotificationService = NotificationService;
                     this.$state = $state;
                     this.$auth = $auth;
                     this.$log = $log;
+                    this.UserLoggedService = UserLoggedService;
                     this.submit = function () {
                         _this.$auth.login({ email: _this.email, password: _this.password }).then(function (response) {
+                            _this.UserLoggedService.login(response.data.user);
                             var msg = "Thanks '" + response.data.user.email + "' for coming back!";
                             _this.$log.debug(msg);
                             _this.NotificationService.success(msg);
-                            _this.$rootScope.USER_LOGGED = response.data.user;
-                            if (!response.data.user.active) {
+                            if (!_this.UserLoggedService.active) {
                                 msg = "Do not forget to active your account via the email sent!";
                                 _this.NotificationService.warning(msg);
                             }
@@ -377,20 +378,20 @@ var app;
                         }).catch(function (err) {
                             _this.$log.error("login:" + JSON.stringify(err));
                             _this.NotificationService.error("Error registering!" + JSON.stringify(err));
-                            _this.$rootScope.USER_LOGGED = null;
+                            _this.UserLoggedService.logout();
                         });
                     };
                     this.authenticate = function (provider) {
                         _this.$auth.authenticate(provider).then(function (response) {
+                            _this.UserLoggedService.login(response.data.user);
                             var msg = "Thanks '" + response.data.user.email + "' for coming back!";
                             _this.$log.debug(msg);
                             _this.NotificationService.success(msg);
-                            _this.$rootScope.USER_LOGGED = response.data.user;
                             _this.$state.go("main");
                         }).catch(function (err) {
                             _this.$log.error("login:" + JSON.stringify(err));
                             _this.NotificationService.error("Error registering!");
-                            _this.$rootScope.USER_LOGGED = null;
+                            _this.UserLoggedService.logout();
                         });
                     };
                     this.$log.debug("LoginController: Constructor");
@@ -400,7 +401,8 @@ var app;
                     "NotificationService",
                     "$state",
                     "$auth",
-                    "$log"
+                    "$log",
+                    "UserLoggedService"
                 ];
                 return LoginController;
             })();
@@ -417,17 +419,18 @@ var app;
         (function (logout) {
             "use strict";
             var LogoutController = (function () {
-                function LogoutController($rootScope, $auth, $state, NotificationService, $log) {
+                function LogoutController($rootScope, $auth, $state, NotificationService, $log, UserLoggedService) {
                     this.$rootScope = $rootScope;
                     this.$auth = $auth;
                     this.$state = $state;
                     this.NotificationService = NotificationService;
                     this.$log = $log;
+                    this.UserLoggedService = UserLoggedService;
                     this.$log.debug("LogoutController: Constructor");
                     this.$auth.logout();
+                    this.UserLoggedService.logout();
                     NotificationService.info("You are now logout!", "Authentication message");
                     this.$log.debug("LogoutController: Constructor");
-                    this.$rootScope.USER_LOGGED = null;
                     this.$state.go("main");
                 }
                 LogoutController.$inject = [
@@ -435,7 +438,8 @@ var app;
                     "$auth",
                     "$state",
                     "NotificationService",
-                    "$log"
+                    "$log",
+                    "UserLoggedService"
                 ];
                 return LogoutController;
             })();
@@ -596,6 +600,44 @@ var app;
 })(app || (app = {}));
 var app;
 (function (app) {
+    var services;
+    (function (services) {
+        "use strict";
+        var UserLoggedService = (function () {
+            function UserLoggedService($http, $auth) {
+                var _this = this;
+                this.$http = $http;
+                this.$auth = $auth;
+                this.login = function (userBackend) {
+                    _this.email = userBackend.email;
+                    _this.displayName = userBackend.displayName || "";
+                    _this.isAuthenticated = true;
+                    _this.active = userBackend.active;
+                    _this.picture = userBackend.picture || "";
+                };
+                this.logout = function () {
+                    _this.email = "";
+                    _this.displayName = "";
+                    _this.isAuthenticated = false;
+                    _this.active = false;
+                    _this.picture = "";
+                };
+                this.isAuthenticated = false;
+                this.$auth.logout();
+                this.$auth.removeToken();
+                this.logout();
+            }
+            UserLoggedService.$inject = [
+                "$http",
+                "$auth"
+            ];
+            return UserLoggedService;
+        })();
+        angular.module("app").service("UserLoggedService", UserLoggedService);
+    })(services = app.services || (app.services = {}));
+})(app || (app = {}));
+var app;
+(function (app) {
     var views;
     (function (views) {
         var adm;
@@ -651,7 +693,6 @@ var app;
                                 });
                             });
                             this.$scope.$watch(function () { return _this.$scope.userForm.$invalid; }, function (newValue, oldValue) {
-                                console.log("watch [" + newValue + "] -> [" + oldValue + "]");
                                 if (newValue) {
                                     _this.$scope.$emit("invalid");
                                 }
@@ -1004,7 +1045,11 @@ var app;
                 $stateProvider.state("login", {
                     url: "/login",
                     views: {
-                        'header': {},
+                        'header': {
+                            templateUrl: "app/views/headerMain/headerMain.html",
+                            controller: "app.views.header.HeaderMainController",
+                            controllerAs: "vm"
+                        },
                         'container': {
                             templateUrl: "app/views/login/login.html",
                             controller: "app.views.login.LoginController",
@@ -1238,12 +1283,12 @@ var app;
         (function (sidenav) {
             "use strict";
             var SidenavController = (function () {
-                function SidenavController($scope, $auth, $mdSidenav, $log) {
+                function SidenavController($scope, $auth, $mdSidenav, $log, UserLoggedService) {
                     this.$scope = $scope;
                     this.$auth = $auth;
                     this.$mdSidenav = $mdSidenav;
                     this.$log = $log;
-                    this.isAuthenticated = this.$auth.isAuthenticated;
+                    this.UserLoggedService = UserLoggedService;
                     this.$log.debug("SidenavController: Constructor");
                 }
                 SidenavController.prototype.close = function () {
@@ -1254,7 +1299,8 @@ var app;
                     "$scope",
                     "$auth",
                     "$mdSidenav",
-                    "$log"
+                    "$log",
+                    "UserLoggedService"
                 ];
                 return SidenavController;
             })();

@@ -13,6 +13,7 @@
         email: string;
         displayName: string;
         picture: string;
+        active: boolean;
     }
 
     export interface IUsers {

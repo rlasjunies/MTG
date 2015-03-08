@@ -6,10 +6,6 @@ module app.views.login {
     };
 
     interface ILoginRootSCope extends ng.IRootScopeService {
-        //USER_ISAUTHENTICATED: boolean;
-        //USER_DISPLAYNAME: string;
-        //USER_EMAIL: string;
-        USER_LOGGED: app.services.IUser;
     }
 
     export class LoginController implements register.IController {
@@ -21,69 +17,67 @@ module app.views.login {
             "NotificationService",
             "$state",
             "$auth",
-            "$log"
+            "$log",
+            "UserLoggedService"
         ];
         constructor (
             private $rootScope: ILoginRootSCope,
             private NotificationService: app.services.NotificationService,
             private $state: ng.ui.IStateService,
             private $auth: satellizer.IAuthService,
-            private $log:ng.ILogService) {
+            private $log: ng.ILogService,
+            private UserLoggedService: app.services.IUserLoggedService) {
             this.$log.debug("LoginController: Constructor");
         }
 
         submit = () => {
             this.$auth.login<app.authentication.IAuthenticationServerResponse>({ email: this.email, password: this.password })
                 .then((response) => {
+                    //Initialize the logged user
+                    this.UserLoggedService.login(response.data.user);
+
+                    //Welcome back the user
                     var msg = "Thanks '" + response.data.user.email + "' for coming back!";
-                    this.$log.debug(msg);                    
+                    this.$log.debug(msg);
                     this.NotificationService.success(msg);
 
-                    //this.$rootScope.$broadcast("userupdated");
-                    //this.$rootScope.USER_DISPLAYNAME = response.data.user.displayName;
-                    //this.$rootScope.USER_EMAIL = response.data.user.email;
-                    //this.$rootScope.USER_ISAUTHENTICATED = true;
-                    this.$rootScope.USER_LOGGED = response.data.user;
-
-                    if (!response.data.user.active) {
+                    //Notify if the user is not activated
+                    if (!this.UserLoggedService.active) {
                         msg = "Do not forget to active your account via the email sent!";
                         this.NotificationService.warning(msg);
                     }
-
+                    
+                    //Navigate to the main page
                     this.$state.go("main");
                 })
                 .catch((err) => {
                     this.$log.error("login:" + JSON.stringify(err));
                     this.NotificationService.error("Error registering!" + JSON.stringify(err));
 
-                    //this.$rootScope.$broadcast("userupdated");
-                    //this.$rootScope.USER_DISPLAYNAME = "";
-                    //this.$rootScope.USER_EMAIL = "";
-                    //this.$rootScope.USER_ISAUTHENTICATED = false;
-                    this.$rootScope.USER_LOGGED = null;
+                    //clean the user logged
+                    this.UserLoggedService.logout();
                 });
         }
 
         authenticate = (provider:string) => {
             this.$auth.authenticate<app.authentication.IAuthenticationServerResponse>(provider).then((response) => {
 
+                //initialize the user logged
+                this.UserLoggedService.login(response.data.user);
+
+                 //Welcome back the user
                 var msg = "Thanks '" + response.data.user.email + "' for coming back!";
                 this.$log.debug(msg);
                 this.NotificationService.success(msg);
-                //this.$rootScope.$broadcast("userupdated");
-                //this.$rootScope.USER_DISPLAYNAME = response.data.user.displayName;
-                //this.$rootScope.USER_EMAIL = response.data.user.email;
-                //this.$rootScope.USER_ISAUTHENTICATED = true;
-                this.$rootScope.USER_LOGGED = response.data.user;
+                
+                //Navigate to the main page
                 this.$state.go("main");
             }).catch((err) => {
                 this.$log.error("login:" + JSON.stringify(err));
                 this.NotificationService.error("Error registering!");
-                //this.$rootScope.$broadcast("userupdated");
-                //this.$rootScope.USER_DISPLAYNAME = "";
-                //this.$rootScope.USER_EMAIL = "";
-                //this.$rootScope.USER_ISAUTHENTICATED = false;
-                this.$rootScope.USER_LOGGED = null;
+
+                //clean the user logged
+                this.UserLoggedService.logout();
                 });
         };
     }

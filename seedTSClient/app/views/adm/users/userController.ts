@@ -92,7 +92,7 @@
                 });
 
                 this.$scope.$watch(() => this.$scope.userForm.$invalid,(newValue, oldValue) => {
-                    console.log("watch [" + newValue + "] -> [" + oldValue + "]");
+                    //console.log("watch [" + newValue + "] -> [" + oldValue + "]");
                     if (newValue) {
                         this.$scope.$emit("invalid");
                     } else {

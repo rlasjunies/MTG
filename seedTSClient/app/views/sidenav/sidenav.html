@@ -4,51 +4,54 @@
         <img class="background" src="/images/userBackground.jpg" />
 
         <!-- AVATAR-->
-            <!-- Not Authenticated -->
-            <div ng-hide="vmIndex.isAuthenticated()" class="avatar" style="align-content:center; background-color:white;">
-                <i class="fa fa-user fa-2x avatar" style="position:relative;top:8px;left:13px"></i>
-            </div>
+        <!-- Not Authenticated -->
+        <div ng-show="vmSideBar.UserLoggedService.picture==''" class="avatar" style="align-content:center; background-color:white;">
+            <i class="fa fa-user fa-2x avatar" style="position:relative;top:8px;left:13px"></i>
+        </div>
 
             <!-- Authenticated -->
             <!-- User having an picture / avatar-->
-            <img ng-show="vmIndex.isAuthenticated()" ng-if="USER_LOGGED.picture!=''" class="avatar" src="{{USER_LOGGED.picture}}" />
+        <img ng-show="vmSideBar.UserLoggedService.picture!=''" class="avatar" src="{{vmSideBar.UserLoggedService.picture}}" />
+
             <!-- User NOT having an picture / avatar-->
-            <div ng-show="vmIndex.isAuthenticated()" ng-if="USER_LOGGED.picture==''" class="avatar" style="align-content:center; background-color:white;">
-                <i class="fa fa-user fa-2x avatar" style="position:relative;top:8px;left:13px"></i>
-            </div>
+        <div ng-show="vmSideBar.UserLoggedService.isAuthenticated" ng-if="USER_LOGGED.picture==''" class="avatar" style="align-content:center; background-color:white;">
+            <i class="fa fa-user fa-2x avatar" style="position:relative;top:8px;left:13px"></i>
+        </div>
         
         <!-- Display name -->
-        <h5 ng-show="vmIndex.isAuthenticated()" class="displayName">{{USER_LOGGED.displayName}}</h5>
-        <h6 ng-show="vmIndex.isAuthenticated()" class="email">{{USER_LOGGED.email}}</h6>
+        <h5 ng-show="vmSideBar.UserLoggedService.isAuthenticated" class="displayName">{{vmSideBar.UserLoggedService.displayName}}</h5>
+        <h6 ng-show="vmSideBar.UserLoggedService.isAuthenticated" class="email">{{vmSideBar.UserLoggedService.email}}</h6>
 
         <!-- login / logout button-->
-        <md-button class="login md-raised md-primary" ng-href="/login"
+        <md-button class="login md-raised md-primary"
+                   ng-href="/login"
                    layout="column"
                    layout-align="center center"
                    style="padding:10px 10px 10px 10px"
-                   ng-hide="vmIndex.isAuthenticated()"
+                   ng-hide="vmSideBar.UserLoggedService.isAuthenticated"
+                   ng-click="vmSideBar.close()"
                    aria-label="login">
-            <!--<md-icon icon="..\bower_components\material-design-icons\navigation\2x_web\ic_menu_white_24dp.png"></md-icon>-->
             CONNEXION
-            <i class="fa fa-sign-in"></i>
-            <md-tooltip>Login</md-tooltip>
+            <!--<i class="fa fa-sign-in"></i>-->
         </md-button>
+        <md-button class="login md-raised md-primary"
+                   ng-href="/logout"
+                   layout="column"
+                   layout-align="center center"
+                   style="padding:10px 10px 10px 10px"
+                   ng-show="vmSideBar.UserLoggedService.isAuthenticated"
+                   aria-label="logout"
+                   ng-click="vmSideBar.close()">
+            DECONNEXION
+            <!--<i class="fa fa-sign-out fa-2x"></i>-->
+        </md-button>
+
     </div>
-    <md-button ng-href="/logout"
-               layout="column"
-               layout-align="center center"
-               style="padding:10px 10px 10px 10px"
-               ng-show="vmIndex.isAuthenticated()"
-               aria-label="logout">
-        <i class="fa fa-sign-out fa-2x"></i>
-        <!--<span class="ng-scope">Logout</span>-->
-        <md-tooltip>Logout</md-tooltip>
-        <!--<md-icon icon="..\bower_components\material-design-icons\navigation\2x_web\ic_menu_white_24dp.png"></md-icon>-->
-    </md-button>
     <md-button class="md-primary" ng-href="/" ng-click="vmSideBar.close()">Home</md-button>
     <md-button ng-href="/paints" ng-click="vmSideBar.close()">Paints</md-button>
     <md-button ng-href="/dnd" ng-click="vmSideBar.close()">DnD tests</md-button>
     <md-button ng-href="/adm/users" ng-click="vmSideBar.close()">Users</md-button>
     <div layout-fill style="height:100%;min-height:100%"></div>
     <md-button ng-href="/setup" ng-click="vmSideBar.close()">Setup</md-button>
+
 </md-content>
