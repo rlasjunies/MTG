@@ -47,7 +47,6 @@
                     this.NotificationService.error("Error message: \n" + JSON.stringify(err), "Cannot load users resources:");
                 });
 
-
                 //register event functions
 
                 //Save

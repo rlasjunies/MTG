@@ -1,10 +1,9 @@
-var $log = require("../../services/logger");
+var $ = require("../../services/mtg");
 var $usersModel = require("../../models/user");
 var moduleName = "usersRoutes@";
 //Create
 function create(expReq, expRes, next) {
-    $log.profile(moduleName + "@create");
-    //$log.debug(moduleName + "@create\n" + expReq.body);
+    $.log.profile(moduleName + "@create");
     var user = $usersModel.userModel();
     var newUser = new user(expReq.body);
     newUser.validate(function (err) {
@@ -12,8 +11,8 @@ function create(expReq, expRes, next) {
             if (err) {
                 return expRes.status(500).write({ message: "Error writing job!" });
             }
-            $log.debug(moduleName + "@create:\n" + user);
-            $log.profile(moduleName + "@create");
+            $.log.debug(moduleName + "@create:\n" + user);
+            $.log.profile(moduleName + "@create");
             return expRes.status(200).send(user);
         });
     });
@@ -22,7 +21,7 @@ exports.create = create;
 ;
 //find
 function find(expReq, expRes, next) {
-    $log.profile(moduleName + "@find");
+    $.log.profile(moduleName + "@find");
     var users = $usersModel.userModel();
     var qry = {};
     if (expReq.params.id) {
@@ -32,8 +31,8 @@ function find(expReq, expRes, next) {
         if (err) {
             return expRes.status(500).write({ message: "Error getting jobs!" });
         }
-        $log.debug("expReq.params.id:" + expReq.params.id);
-        $log.profile(moduleName + "@find");
+        $.log.debug("expReq.params.id:" + expReq.params.id);
+        $.log.profile(moduleName + "@find");
         expRes.status(200).send(user);
     });
 }
@@ -41,7 +40,7 @@ exports.find = find;
 ;
 //remove
 function remove(expReq, expRes, next) {
-    $log.profile(moduleName + "@remove");
+    $.log.profile(moduleName + "@remove");
     var mdlUsers = $usersModel.userModel();
     if (!expReq.params.id) {
         throw new Error("ID parameter is required!");
@@ -50,7 +49,7 @@ function remove(expReq, expRes, next) {
         if (err) {
             return expRes.status(500).write({ message: "Error getting users!" });
         }
-        $log.profile(moduleName + "@remove");
+        $.log.profile(moduleName + "@remove");
         expRes.status(200).send(users);
     });
 }
@@ -58,7 +57,7 @@ exports.remove = remove;
 ;
 //update
 function update(expReq, expRes, next) {
-    $log.profile(moduleName + "@update");
+    $.log.profile(moduleName + "@update");
     var mdlUsers = $usersModel.userModel();
     var userModel = $usersModel.userModel();
     var newUser = new userModel(expReq.body);
@@ -69,7 +68,7 @@ function update(expReq, expRes, next) {
         if (err) {
             return expRes.status(500).write({ message: "Error updating user!" });
         }
-        $log.profile(moduleName + "@update");
+        $.log.profile(moduleName + "@update");
         expRes.status(200).send(users);
     });
 }

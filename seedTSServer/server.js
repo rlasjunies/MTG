@@ -8,6 +8,12 @@ var xAuthFacebook = require("./auth/facebookAuth");
 var xAuthGoogle = require("./auth/googleAuth");
 var xEmailVerif = require("./auth/emailVerification");
 var $log = require("./services/logger");
+var path = require("path");
+//Initialisation of the $
+var $ = require("./services/mtg");
+$.server.rootPath = __dirname;
+$.server.dataPath = path.join($.server.rootPath, "data");
+$.server.picturesPath = path.join($.server.dataPath, "pictures");
 exports.app = express();
 process.env.NODE_ENV = process.env.NODE_ENV || "development";
 var xDb = require("./services/db");
@@ -38,25 +44,7 @@ exports.app.use(function (req, res, next) {
     res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
     next();
 });
-passport.use("local-register", xLocalStrategy.register());
-passport.use("local-login", xLocalStrategy.login());
-exports.app.post("/auth/register", passport.authenticate("local-register"), $AuthLocal.register);
-exports.app.post("/auth/login", passport.authenticate("local-login"), $AuthLocal.login);
-exports.app.get("/auth/verifyemail", xEmailVerif.verify);
-exports.app.post("/auth/facebook", xAuthFacebook.facebookAuth);
-exports.app.post("/auth/google", xAuthGoogle.googleAuth);
-var $PaintsRoutes = require("./api/paints/paintsRoutes");
-var rootRoute = "/api/paints/";
-exports.app.post(rootRoute, $AuthLocal.authenticationCheck, $PaintsRoutes.create);
-exports.app.get(rootRoute + ":id?", $AuthLocal.authenticationCheck, $PaintsRoutes.find);
-exports.app.delete(rootRoute + ":id?", $AuthLocal.authenticationCheck, $PaintsRoutes.remove);
-exports.app.put(rootRoute + ":id?", $AuthLocal.authenticationCheck, $PaintsRoutes.update);
-var $UsersRoutes = require("./api/users/usersRoutes");
-rootRoute = "/api/adm/users/";
-exports.app.post(rootRoute, $AuthLocal.authenticationCheck, $UsersRoutes.create);
-exports.app.get(rootRoute + ":id?", $AuthLocal.authenticationCheck, $UsersRoutes.find);
-exports.app.delete(rootRoute + ":id?", $AuthLocal.authenticationCheck, $UsersRoutes.remove);
-exports.app.put(rootRoute + ":id?", $AuthLocal.authenticationCheck, $UsersRoutes.update);
+//static files routes
 exports.app.use("/", express.static(__dirname + "/../seedTSClient/app"));
 exports.app.use("/Scripts", express.static(__dirname + "/../seedTSClient/Scripts"));
 exports.app.use("/bower_components", express.static(__dirname + "/../seedTSClient/bower_components"));
@@ -64,6 +52,36 @@ exports.app.use("/app", express.static(__dirname + "/../seedTSClient/app"));
 exports.app.use("/styles", express.static(__dirname + "/../seedTSClient/styles"));
 exports.app.use("/fonts", express.static(__dirname + "/../seedTSClient/fonts"));
 exports.app.use("/images", express.static(__dirname + "/../seedTSClient/images"));
+exports.app.use("/pictures", express.static($.server.picturesPath));
+//authentication strategy
+passport.use("local-register", xLocalStrategy.register());
+passport.use("local-login", xLocalStrategy.login());
+//authentication routes
+exports.app.post("/auth/register", passport.authenticate("local-register"), $AuthLocal.register);
+exports.app.post("/auth/login", passport.authenticate("local-login"), $AuthLocal.login);
+exports.app.get("/auth/verifyemail", xEmailVerif.verify);
+exports.app.post("/auth/facebook", xAuthFacebook.facebookAuth);
+exports.app.post("/auth/google", xAuthGoogle.googleAuth);
+//pictures routes
+var $PicturesRoutes = require("./api/pictures/picturesRoutes");
+rootRoute = "/api/pictures/";
+exports.app.post(rootRoute + "upload", $AuthLocal.authenticationCheck, $PicturesRoutes.uploadPicture);
+exports.app.get(rootRoute, $AuthLocal.authenticationCheck, $PicturesRoutes.getAllPictures);
+exports.app.delete(rootRoute, $AuthLocal.authenticationCheck, $PicturesRoutes.getAllPictures);
+//users routes
+var $UsersRoutes = require("./api/users/usersRoutes");
+rootRoute = "/api/adm/users/";
+exports.app.post(rootRoute, $AuthLocal.authenticationCheck, $UsersRoutes.create);
+exports.app.get(rootRoute + ":id?", $AuthLocal.authenticationCheck, $UsersRoutes.find);
+exports.app.delete(rootRoute + ":id?", $AuthLocal.authenticationCheck, $UsersRoutes.remove);
+exports.app.put(rootRoute + ":id?", $AuthLocal.authenticationCheck, $UsersRoutes.update);
+//paints routes
+var $PaintsRoutes = require("./api/paints/paintsRoutes");
+var rootRoute = "/api/paints/";
+exports.app.post(rootRoute, $AuthLocal.authenticationCheck, $PaintsRoutes.create);
+exports.app.get(rootRoute + ":id?", $AuthLocal.authenticationCheck, $PaintsRoutes.find);
+exports.app.delete(rootRoute + ":id?", $AuthLocal.authenticationCheck, $PaintsRoutes.remove);
+exports.app.put(rootRoute + ":id?", $AuthLocal.authenticationCheck, $PaintsRoutes.update);
 if (process.env.NODE_ENV === "development") {
 }
 exports.app.get("*", function (req, res, next) {

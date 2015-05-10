@@ -1,18 +1,4 @@
-﻿# jwt-server
-
-//TODO
-expiration of the token
-user management: to delete, activate, reactivate users
-please "login ..." while waiting the google, facebook, local server answer
-
-bugs:
- - several users are created when using google account, no profile.id is inserted 
- - reading the jobs values from the database does not work
-
-tests:
-- finalize the api tests with authentication
-- finalize tests e2e
-
+﻿
 ## Mongodb
 
 * open cmd window 
@@ -125,3 +111,14 @@ git update-index --assume-unchanged path/to/file
 
 ## remove the flag assume-unchanged
 git update-index --no-assume-unchanged path/to/file
+
+
+
+
+#Client Side
+
+# To get the latest stable version, use Bower from the command line.
+bower install angular-material
+
+# To get the most recent, latest committed-to-master version use:
+bower install angular-material#master

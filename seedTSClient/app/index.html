@@ -24,10 +24,10 @@
     <!-- LEFT MENU -->
     <md-sidenav layout="column"
                 class="site-sidenav md-sidenav-left md-whiteframe-z2"
-                md-component-id="left"
-                md-is-locked-open="$mdMedia('gt-md')">
+                md-component-id="left">
         <div ng-include="'../views/sidenav/sidenav.html'"></div>
     </md-sidenav>
+    <!--md-is-locked-open="$mdMedia('gt-md')">-->
 
     <!-- CONTENT -->
     <div layout="column" layout-fill>
@@ -42,13 +42,10 @@
     <script src="../bower_components/angular-messages/angular-messages.min.js"></script>
     <script src="../bower_components/angular-material/angular-material.js"></script>
     <script src="../bower_components/angular-loading-bar/build/loading-bar.js"></script>
-    <!--<script src="../bower_components/angular-smart-table/dist/smart-table.min.js"></script>-->
-    <!--<script src="../bower_components/jquery/dist/jquery.min.js"></script>-->
-    <!--<script src="../bower_components/bootstrap/dist/js/bootstrap.min.js"></script>-->
-
 
     <script src="../Scripts/angular-ui-router.min.js"></script>
     <script src="../bower_components/satellizer/satellizer.js"></script>
+    <script src="../bower_components/angular-file-upload/angular-file-upload.min.js"></script>
 
     <script src="../Scripts/app.js"></script>
 </body>

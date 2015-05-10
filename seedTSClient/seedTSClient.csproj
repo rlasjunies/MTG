@@ -22,6 +22,9 @@
     <Content Include="app\views\adm\users\userFooter.html" />
     <Content Include="app\views\adm\users\user.html" />
     <Content Include="app\views\adm\users\users.html" />
+    <Content Include="app\views\pictures\pictures.html" />
+    <Content Include="app\views\pictures\picturesUpload.html" />
+    <Content Include="app\views\pictures\picture.html" />
     <Content Include="app\views\setup\setup.html" />
     <Content Include="app\views\headerBackDeleteSave\headerBackDeleteSave.html" />
     <Content Include="app\views\headerBackSave\headerBackSave.html" />
@@ -42,8 +45,6 @@
     <Content Include="images\example.html" />
     <Content Include="images\img_w3slogo.gif" />
     <Content Include="packages.config" />
-    <Content Include="scripts\satellizer.js" />
-    <Content Include="scripts\satellizer.min.js" />
     <Content Include="styles\bootstrap-theme.css" />
     <Content Include="styles\bootstrap-theme.min.css" />
     <Content Include="styles\bootstrap.css" />
@@ -53,7 +54,6 @@
     <Content Include="styles\seedTS.css" />
     <Content Include="styles\toastr.css" />
     <Content Include="styles\toastr.min.css" />
-    <Content Include="tests.html" />
     <Content Include="web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -83,12 +83,17 @@
     <TypeScriptCompile Include="app\indexController.ts" />
     <TypeScriptCompile Include="app\services\notificationService.ts" />
     <TypeScriptCompile Include="app\services\sitesettings.service.ts" />
+    <TypeScriptCompile Include="app\views\pictures\pictures.service.ts" />
     <TypeScriptCompile Include="app\services\userLogged.ts" />
-    <TypeScriptCompile Include="app\services\user.service.ts" />
+    <TypeScriptCompile Include="app\views\adm\users\usersService.ts" />
     <TypeScriptCompile Include="app\app.route.ts" />
     <TypeScriptCompile Include="app\views\adm\users\userController.ts" />
     <TypeScriptCompile Include="app\views\adm\users\usersController.ts" />
     <TypeScriptCompile Include="app\views\adm\users\usersRoute.ts" />
+    <TypeScriptCompile Include="app\views\pictures\picturesController.ts" />
+    <TypeScriptCompile Include="app\views\pictures\picturesUploadController.ts" />
+    <TypeScriptCompile Include="app\views\pictures\picturesRoute.ts" />
+    <TypeScriptCompile Include="app\views\pictures\pictureController.ts" />
     <TypeScriptCompile Include="app\views\setup\setupController.ts" />
     <TypeScriptCompile Include="app\views\setup\setupRoute.ts" />
     <TypeScriptCompile Include="app\views\headerBackDeleteSave\headerBackDeleteSaveController.ts" />
@@ -111,6 +116,7 @@
     <TypeScriptCompile Include="app\views\logout\logoutController.ts" />
     <TypeScriptCompile Include="app\views\register\registerController.ts" />
     <TypeScriptCompile Include="app\views\register\validateEqualsDirective.ts" />
+    <TypeScriptCompile Include="scripts\typings\angular-file-upload.missing.d.ts" />
     <TypeScriptCompile Include="scripts\typings\angular.missing.ts" />
     <TypeScriptCompile Include="scripts\typings\angular-material.missing.d.ts" />
     <TypeScriptCompile Include="scripts\typings\angular-ui\angular-ui-router.d.ts" />

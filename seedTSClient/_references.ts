@@ -7,7 +7,7 @@
 /// <reference path="app/authentication/authtoken.ts" />
 /// <reference path="app/services/notificationservice.ts" />
 /// <reference path="app/services/sitesettings.service.ts" />
-/// <reference path="app/services/user.service.ts" />
+/// <reference path="app/views/adm/users/usersService.ts" />
 /// <reference path="app/authentication/authinterceptor.ts" />
 
 /// <reference path="app/app.run.ts" />

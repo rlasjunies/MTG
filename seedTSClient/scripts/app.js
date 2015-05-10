@@ -7,7 +7,8 @@ var app;
         "ui.router",
         "ngMessages",
         "angular-loading-bar",
-        "ngAnimate"
+        "ngAnimate",
+        "angularFileUpload"
     ]);
 })(app || (app = {}));
 var app;
@@ -431,7 +432,7 @@ var app;
                     this.UserLoggedService.logout();
                     NotificationService.info("You are now logout!", "Authentication message");
                     this.$log.debug("LogoutController: Constructor");
-                    this.$state.go("main");
+                    this.$state.go(appState.MAIN);
                 }
                 LogoutController.$inject = [
                     "$rootScope",
@@ -779,6 +780,12 @@ var app;
         })(adm = views.adm || (views.adm = {}));
     })(views = app.views || (app.views = {}));
 })(app || (app = {}));
+var appState;
+(function (appState) {
+    appState.users = "users";
+    appState.usersUrl = "/adm/users";
+    appState.user = "user";
+})(appState || (appState = {}));
 var app;
 (function (app) {
     var adm;
@@ -793,15 +800,12 @@ var app;
                 return UserRouteParams;
             })();
             users.UserRouteParams = UserRouteParams;
-            users.CST_URL_Users = "/adm/users";
-            users.CST_State_Users = "users";
-            users.CST_State_User = "user";
             route.$inject = [
                 "$stateProvider"
             ];
             function route($stateProvider) {
-                $stateProvider.state(users.CST_State_Users, {
-                    url: users.CST_URL_Users,
+                $stateProvider.state(appState.users, {
+                    url: appState.usersUrl,
                     views: {
                         'header': {
                             templateUrl: "app/views/headerMain/headerMain.html",
@@ -815,8 +819,8 @@ var app;
                         },
                         'footer': {}
                     }
-                }).state(users.CST_State_User, {
-                    url: users.CST_URL_Users + "{userId}",
+                }).state(appState.user, {
+                    url: appState.usersUrl + "/{userId}",
                     views: {
                         'header': {
                             templateUrl: "app/views/headerBackDeleteSave/headerBackDeleteSave.html",
@@ -1064,6 +1068,10 @@ var app;
         })(login = views.login || (views.login = {}));
     })(views = app.views || (app.views = {}));
 })(app || (app = {}));
+var appState;
+(function (appState) {
+    appState.LOGOUT = "LOGOUT";
+})(appState || (appState = {}));
 var app;
 (function (app) {
     var views;
@@ -1075,7 +1083,7 @@ var app;
                 "$stateProvider"
             ];
             function route($stateProvider) {
-                $stateProvider.state("logout", {
+                $stateProvider.state(appState.LOGOUT, {
                     url: "/logout",
                     views: {
                         'header': {},
@@ -1095,60 +1103,59 @@ var app;
 })(app || (app = {}));
 var app;
 (function (app) {
-    var views;
-    (function (views) {
-        var main;
-        (function (main) {
-            "use strict";
-            var MainController = (function () {
-                function MainController($log, $mdSidenav) {
-                    this.$log = $log;
-                    this.$mdSidenav = $mdSidenav;
-                    this.$log.debug("MainController: Constructor");
-                }
-                MainController.$inject = [
-                    "$log",
-                    "$mdSidenav",
-                ];
-                return MainController;
-            })();
-            main.MainController = MainController;
-            angular.module("app").controller("app.views.main.MainController", app.views.main.MainController);
-        })(main = views.main || (views.main = {}));
-    })(views = app.views || (app.views = {}));
+    var main;
+    (function (main) {
+        "use strict";
+        main.mainController_NAME = "app.main.MainController";
+        var MainController = (function () {
+            function MainController($log, $mdSidenav) {
+                this.$log = $log;
+                this.$mdSidenav = $mdSidenav;
+                this.$log.debug(app.main.mainController_NAME + " loaded!");
+            }
+            MainController.$inject = [
+                "$log",
+                "$mdSidenav",
+            ];
+            return MainController;
+        })();
+        main.MainController = MainController;
+        angular.module("app").controller(app.main.mainController_NAME, app.main.MainController);
+    })(main = app.main || (app.main = {}));
 })(app || (app = {}));
+var appState;
+(function (appState) {
+    appState.MAIN = "main";
+})(appState || (appState = {}));
 var app;
 (function (app) {
-    var views;
-    (function (views) {
-        var main;
-        (function (main) {
-            "use strict";
-            route.$inject = [
-                "$stateProvider"
-            ];
-            function route($stateProvider) {
-                $stateProvider.state("main", {
-                    url: "/",
-                    views: {
-                        'header': {
-                            templateUrl: "app/views/headerMain/headerMain.html",
-                            controller: "app.views.header.HeaderMainController",
-                            controllerAs: "vm"
-                        },
-                        'container': {
-                            templateUrl: "app/views/main/main.html",
-                            controller: "app.views.main.MainController",
-                            controllerAs: "vm"
-                        },
-                        'footer': {}
-                    }
-                });
-            }
-            ;
-            angular.module("app").config(route);
-        })(main = views.main || (views.main = {}));
-    })(views = app.views || (app.views = {}));
+    var main;
+    (function (main) {
+        "use strict";
+        route.$inject = [
+            "$stateProvider"
+        ];
+        function route($stateProvider) {
+            $stateProvider.state(appState.MAIN, {
+                url: "/",
+                views: {
+                    'header': {
+                        templateUrl: "app/views/headerMain/headerMain.html",
+                        controller: "app.views.header.HeaderMainController",
+                        controllerAs: "vm"
+                    },
+                    'container': {
+                        templateUrl: "app/views/main/main.html",
+                        controller: app.main.mainController_NAME,
+                        controllerAs: "vm"
+                    },
+                    'footer': {}
+                }
+            });
+        }
+        ;
+        angular.module("app").config(route);
+    })(main = app.main || (app.main = {}));
 })(app || (app = {}));
 var app;
 (function (app) {
@@ -1182,6 +1189,289 @@ var app;
             angular.module("app").config(route);
         })(paints = views.paints || (views.paints = {}));
     })(views = app.views || (app.views = {}));
+})(app || (app = {}));
+var app;
+(function (app) {
+    var pictures;
+    (function (pictures) {
+        "use strict";
+        pictures.pictureController_StringName = "app.pictures.PictureController";
+        var PictureController = (function () {
+            function PictureController($scope, $rootScope, $http, CST_API_URL, NotificationService, $log, $stateParams, $mdBottomSheet, pictureService, $mdDialog) {
+                var _this = this;
+                this.$scope = $scope;
+                this.$rootScope = $rootScope;
+                this.$http = $http;
+                this.CST_API_URL = CST_API_URL;
+                this.NotificationService = NotificationService;
+                this.$log = $log;
+                this.$stateParams = $stateParams;
+                this.$mdBottomSheet = $mdBottomSheet;
+                this.pictureService = pictureService;
+                this.$mdDialog = $mdDialog;
+                if (!this.$stateParams.fileName) {
+                    alert("fileName is missing to initialize the picture detail view!");
+                    console.error("fileName is missing to initialize the user detail view!");
+                }
+                else {
+                    this.$scope.$on("save", function () {
+                        _this.$rootScope.goBack();
+                    });
+                    this.$scope.$on("delete", function () {
+                        var confirm = $mdDialog.confirm().title('Confirm deletion').content('Are going to delete the fileName:' + _this.picture.fileName).ariaLabel('Lucky day').ok('Cancel').cancel('Delete');
+                        $mdDialog.show(confirm).then(function () {
+                        }, function () {
+                            _this.pictureService.delete(_this.$stateParams.fileName).then(function (picture) {
+                                _this.$log.debug("user deleted!:" + JSON.stringify(picture));
+                            }).catch(function (err) {
+                                _this.$log.error("Error message: \n" + JSON.stringify(err), "Cannot delete picture resource!");
+                                _this.NotificationService.error("Error message: \n" + JSON.stringify(err), "Cannot delete resource!");
+                            });
+                            _this.$rootScope.goBack();
+                        });
+                    });
+                }
+                this.$log.debug(pictures.pictureController_StringName + ": Constructor");
+            }
+            PictureController.$inject = [
+                "$scope",
+                "$rootScope",
+                "$http",
+                "CST_API_URL",
+                "NotificationService",
+                "$log",
+                "$stateParams",
+                "$mdBottomSheet",
+                app.pictures.picturesService_StringName,
+                "$mdDialog"
+            ];
+            return PictureController;
+        })();
+        pictures.PictureController = PictureController;
+        angular.module("app").controller(pictures.pictureController_StringName, app.pictures.PictureController);
+    })(pictures = app.pictures || (app.pictures = {}));
+})(app || (app = {}));
+var app;
+(function (app) {
+    var pictures;
+    (function (pictures) {
+        "use strict";
+        pictures.picturesService_StringName = "picturesService";
+        var PicturesService = (function () {
+            function PicturesService($http) {
+                this.$http = $http;
+            }
+            PicturesService.prototype.getAll = function () {
+                return this.$http.get("/api/pictures").then(function (response) {
+                    return response.data;
+                });
+            };
+            PicturesService.prototype.delete = function (fileNameToDelete) {
+                return this.$http.delete("/api/pictures/" + fileNameToDelete).then(function (response) {
+                    return response.data;
+                });
+            };
+            PicturesService.$inject = ["$http"];
+            return PicturesService;
+        })();
+        angular.module("app").service(app.pictures.picturesService_StringName, PicturesService);
+    })(pictures = app.pictures || (app.pictures = {}));
+})(app || (app = {}));
+var app;
+(function (app) {
+    var pictures;
+    (function (_pictures) {
+        "use strict";
+        _pictures.picturesController_StringName = "app.pictures.PicturesController";
+        var PicturesController = (function () {
+            function PicturesController($scope, $http, CST_API_URL, NotificationService, $log, $auth, $state, picturesService) {
+                var _this = this;
+                this.$scope = $scope;
+                this.$http = $http;
+                this.CST_API_URL = CST_API_URL;
+                this.NotificationService = NotificationService;
+                this.$log = $log;
+                this.$auth = $auth;
+                this.$state = $state;
+                this.picturesService = picturesService;
+                this.onClick = function (fileName) {
+                    var picturesParams = new app.pictures.PictureRouteParams(fileName);
+                    _this.$state.go("picture", picturesParams);
+                };
+                console.log(_pictures.picturesController_StringName + " loaded!");
+                picturesService.getAll().then(function (pictures) {
+                    _this.pictures = pictures.files;
+                }).catch(function (reason) {
+                    console.log("Error getting all pictures:" + reason);
+                });
+            }
+            PicturesController.$inject = [
+                "$scope",
+                "$http",
+                "CST_API_URL",
+                "NotificationService",
+                "$log",
+                "$auth",
+                "$state",
+                app.pictures.picturesService_StringName
+            ];
+            return PicturesController;
+        })();
+        _pictures.PicturesController = PicturesController;
+        angular.module("app").controller(app.pictures.picturesController_StringName, app.pictures.PicturesController);
+    })(pictures = app.pictures || (app.pictures = {}));
+})(app || (app = {}));
+var appState;
+(function (appState) {
+    "use strict";
+    appState.picturesLoad = "PICTUREUPLOAD";
+    appState.picturesLoadUrl = "/picturesupload";
+    appState.picturesList = "PICTURES";
+    appState.picturesListUrl = "/pictures";
+    appState.picture = "PICTURE";
+})(appState || (appState = {}));
+var app;
+(function (app) {
+    var pictures;
+    (function (pictures) {
+        "use strict";
+        var PictureRouteParams = (function () {
+            function PictureRouteParams(fileName) {
+                this.fileName = fileName;
+            }
+            return PictureRouteParams;
+        })();
+        pictures.PictureRouteParams = PictureRouteParams;
+        route.$inject = [
+            "$stateProvider"
+        ];
+        function route($stateProvider) {
+            $stateProvider.state(appState.picturesList, {
+                url: appState.picturesListUrl,
+                views: {
+                    'header': {
+                        templateUrl: "app/views/headerMain/headerMain.html",
+                        controller: "app.views.header.HeaderMainController",
+                        controllerAs: "vm"
+                    },
+                    'container': {
+                        templateUrl: "app/views/pictures/pictures.html",
+                        controller: app.pictures.picturesController_StringName,
+                        controllerAs: "vm"
+                    },
+                    'footer': {}
+                }
+            }).state(appState.picture, {
+                url: appState.picturesListUrl,
+                views: {
+                    'header': {
+                        templateUrl: "app/views/headerBackDeleteSave/headerBackDeleteSave.html",
+                        controller: "app.views.header.HeaderBackDeleteSaveController",
+                        controllerAs: "vm"
+                    },
+                    'container': {
+                        templateUrl: "app/views/pictures/picture.html",
+                        controller: app.pictures.pictureController_StringName,
+                        controllerAs: "vm"
+                    },
+                    'footer': {}
+                }
+            }).state(appState.picturesLoad, {
+                url: appState.picturesLoadUrl,
+                views: {
+                    'header': {
+                        templateUrl: "app/views/headerMain/headerMain.html",
+                        controller: "app.views.header.HeaderMainController",
+                        controllerAs: "vm"
+                    },
+                    'container': {
+                        templateUrl: "app/views/pictures/picturesUpload.html",
+                        controller: app.pictures.pictureUploadController_StringName,
+                        controllerAs: "vm"
+                    },
+                    'footer': {}
+                }
+            });
+        }
+        ;
+        angular.module("app").config(route);
+    })(pictures = app.pictures || (app.pictures = {}));
+})(app || (app = {}));
+var app;
+(function (app) {
+    var pictures;
+    (function (pictures) {
+        "use strict";
+        pictures.pictureUploadController_StringName = "app.pictures.PicturesUploadController";
+        var PicturesUploadController = (function () {
+            function PicturesUploadController($scope, $http, CST_API_URL, NotificationService, $log, FileUploader, $auth) {
+                this.$scope = $scope;
+                this.$http = $http;
+                this.CST_API_URL = CST_API_URL;
+                this.NotificationService = NotificationService;
+                this.$log = $log;
+                this.FileUploader = FileUploader;
+                this.$auth = $auth;
+                console.log(app.pictures.pictureUploadController_StringName + " loaded!");
+                var FileUploadConfig;
+                FileUploadConfig = {
+                    url: "/api/pictures/upload",
+                    autoUpload: true,
+                    removeAfterUpload: true,
+                    headers: {
+                        "authorization": "Bearer " + this.$auth.getToken()
+                    }
+                };
+                this.uploader = new this.FileUploader(FileUploadConfig);
+                this.uploader.onWhenAddingFileFailed = function (item, filter, options) {
+                    console.info('onWhenAddingFileFailed', item, filter, options);
+                };
+                this.uploader.onAfterAddingFile = function (fileItem) {
+                    console.info('onAfterAddingFile', fileItem);
+                };
+                this.uploader.onAfterAddingAll = function (addedFileItems) {
+                    console.info('onAfterAddingAll', addedFileItems);
+                };
+                this.uploader.onBeforeUploadItem = function (item) {
+                    console.info('onBeforeUploadItem', item);
+                };
+                this.uploader.onProgressItem = function (fileItem, progress) {
+                    console.info('onProgressItem', fileItem, progress);
+                };
+                this.uploader.onProgressAll = function (progress) {
+                    console.info('onProgressAll', progress);
+                };
+                this.uploader.onSuccessItem = function (fileItem, response, status, headers) {
+                    console.info('onSuccessItem', fileItem, response, status, headers);
+                };
+                this.uploader.onErrorItem = function (fileItem, response, status, headers) {
+                    console.info('onErrorItem', fileItem, response, status, headers);
+                };
+                this.uploader.onCancelItem = function (fileItem, response, status, headers) {
+                    console.info('onCancelItem', fileItem, response, status, headers);
+                };
+                this.uploader.onCompleteItem = function (fileItem, response, status, headers) {
+                    console.info('onCompleteItem', fileItem, response, status, headers);
+                };
+                this.uploader.onCompleteAll = function () {
+                    console.info('onCompleteAll');
+                };
+                console.info('uploader', this.uploader);
+            }
+            PicturesUploadController.$inject = [
+                "$scope",
+                "$http",
+                "CST_API_URL",
+                "NotificationService",
+                "$log",
+                "FileUploader",
+                "$auth",
+            ];
+            return PicturesUploadController;
+        })();
+        pictures.PicturesUploadController = PicturesUploadController;
+        angular.module("app").controller(app.pictures.pictureUploadController_StringName, app.pictures.PicturesUploadController);
+    })(pictures = app.pictures || (app.pictures = {}));
 })(app || (app = {}));
 var app;
 (function (app) {

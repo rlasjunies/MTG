@@ -1,5 +1,7 @@
-﻿module app.views.main {
+﻿module app.main {
     "use strict";
+    export var mainController_NAME: string = "app.main.MainController";
+
     export class MainController {
         static $inject = [
             "$log",
@@ -8,11 +10,11 @@
         constructor(private $log: ng.ILogService,
             private $mdSidenav: any
             ) {
-            this.$log.debug("MainController: Constructor");
+            this.$log.debug(app.main.mainController_NAME + " loaded!");
         }
     }
 
     angular
         .module("app")
-        .controller("app.views.main.MainController", app.views.main.MainController);
+        .controller( app.main.mainController_NAME, app.main.MainController);
 }

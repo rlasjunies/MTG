@@ -7,6 +7,8 @@
     <RootNamespace>seedTS</RootNamespace>
     <NodeExeArguments>
     </NodeExeArguments>
+    <ToolsVersionPromptShown>1.4</ToolsVersionPromptShown>
+    <TypeScriptToolsVersion>1.4</TypeScriptToolsVersion>
   </PropertyGroup>
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -40,6 +42,7 @@
     <Content Include="test-api\run.bat" />
     <Content Include="test-app\run.bat" />
     <TypeScriptCompile Include="api\paints\paintsData.ts" />
+    <TypeScriptCompile Include="api\pictures\picturesRoutes.ts" />
     <TypeScriptCompile Include="api\users\usersRoutes.ts" />
     <TypeScriptCompile Include="models\aboutMe.ts" />
     <TypeScriptCompile Include="models\contacts.ts" />
@@ -56,9 +59,12 @@
     <TypeScriptCompile Include="Scripts\typings\express-ext.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\faker.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\form-data\form-data.d.ts" />
+    <TypeScriptCompile Include="Scripts\typings\formidable.modif.d.ts" />
+    <TypeScriptCompile Include="Scripts\typings\fs-extra\fs-extra.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\mocha\mocha.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\mongoose-missing.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\morgan\morgan.d.ts" />
+    <TypeScriptCompile Include="Scripts\typings\nedb\nedb.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\selenium-webdriver\selenium-webdriver.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\sprintf\sprintf.d.ts" />
     <TypeScriptCompile Include="Scripts\typings\superagent\superagent.d.ts" />
@@ -95,6 +101,8 @@
     <TypeScriptCompile Include="Scripts\typings\underscore\underscore.d.ts" />
     <TypeScriptCompile Include="server.ts" />
     <TypeScriptCompile Include="services\logger.ts" />
+    <TypeScriptCompile Include="services\mtg.ts" />
+    <TypeScriptCompile Include="services\string+.ts" />
     <TypeScriptCompile Include="test-api\usersRoute-specs.ts" />
     <TypeScriptCompile Include="test-api\paintsRoute-specs.ts" />
     <TypeScriptCompile Include="test-app\calculator-spec.ts" />
@@ -104,15 +112,22 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="api\" />
+    <Folder Include="api\pictures\" />
     <Folder Include="api\users\" />
     <Folder Include="api\paints\" />
+    <Folder Include="data\" />
+    <Folder Include="data\db\" />
+    <Folder Include="data\pictures\" />
     <Folder Include="Scripts\typings\angular-protractor\" />
     <Folder Include="Scripts\typings\bluebird\" />
     <Folder Include="Scripts\typings\chai-as-promised\" />
     <Folder Include="Scripts\typings\chai\" />
     <Folder Include="Scripts\typings\form-data\" />
+    <Folder Include="Scripts\typings\formidable\" />
+    <Folder Include="Scripts\typings\fs-extra\" />
     <Folder Include="Scripts\typings\mocha\" />
     <Folder Include="Scripts\typings\morgan\" />
+    <Folder Include="Scripts\typings\nedb\" />
     <Folder Include="Scripts\typings\selenium-webdriver\" />
     <Folder Include="Scripts\typings\sprintf\" />
     <Folder Include="Scripts\typings\superagent\" />

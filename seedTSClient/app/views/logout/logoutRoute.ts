@@ -1,4 +1,8 @@
-﻿module app.views.logout {
+﻿module appState{
+    export var LOGOUT: string = "LOGOUT";
+}
+
+module app.views.logout {
     "use strict";
 
     route.$inject = [
@@ -6,7 +10,7 @@
     ];
     function route($stateProvider: ng.ui.IStateProvider) {
         $stateProvider
-            .state("logout", {
+            .state(appState.LOGOUT, {
             url: "/logout",
             views: {
                 'header': {},

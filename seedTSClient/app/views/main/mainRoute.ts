@@ -1,4 +1,7 @@
-﻿module app.views.main {
+﻿module appState{
+    export var MAIN: string = "main";
+}
+module app.main {
     "use strict";
 
     route.$inject = [
@@ -6,7 +9,7 @@
     ];
     function route($stateProvider: ng.ui.IStateProvider) {
         $stateProvider
-            .state("main", {
+            .state(appState.MAIN, {
                 url: "/",
                 views: {
                     'header': {
@@ -16,7 +19,7 @@
                     },
                     'container': {
                         templateUrl: "app/views/main/main.html",
-                        controller: "app.views.main.MainController",
+                        controller: app.main.mainController_NAME,
                         controllerAs: "vm"
                     },
                     'footer': { }

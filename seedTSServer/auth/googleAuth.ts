@@ -25,7 +25,7 @@ interface IGoogleProfile {
 
 export function googleAuth(expReq: express.Request, expRes: express.Response) {
     var tsBody = <ts.IAuthGoogleBody>expReq.body;
-    console.log(tsBody.code);
+    //console.log(tsBody.code);
 
     var opt: libRequest.Options = {
         url: "https://accounts.google.com/o/oauth2/token",
@@ -40,7 +40,7 @@ export function googleAuth(expReq: express.Request, expRes: express.Response) {
     };
 
     libRequest.post(opt, (err, response, token) => {
-        console.log("\ngoogleAuth - token: " + JSON.stringify(token));
+        //console.log("\ngoogleAuth - token: " + JSON.stringify(token));
         if (err) {
             throw err;
         }
@@ -55,7 +55,7 @@ export function googleAuth(expReq: express.Request, expRes: express.Response) {
         requestParams.headers = headers;
         requestParams.json = true;
         libRequest.get(requestParams, (err, response, profile: IGoogleProfile) => {
-            console.log("\ngoogleAuth:" + err + response + JSON.stringify(profile));
+            //console.log("\ngoogleAuth:" + err + response + JSON.stringify(profile));
             if (err) {
                 throw err;
             }

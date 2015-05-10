@@ -29,7 +29,7 @@
            
             NotificationService.info("You are now logout!","Authentication message");
             this.$log.debug("LogoutController: Constructor");
-            this.$state.go("main");
+            this.$state.go(appState.MAIN);
         }
     }
 

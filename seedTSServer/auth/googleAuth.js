@@ -10,7 +10,7 @@ var $ConfigSecret = require("../services/configSecret");
 // }
 function googleAuth(expReq, expRes) {
     var tsBody = expReq.body;
-    console.log(tsBody.code);
+    //console.log(tsBody.code);
     var opt = {
         url: "https://accounts.google.com/o/oauth2/token",
         json: true,
@@ -23,7 +23,7 @@ function googleAuth(expReq, expRes) {
         }
     };
     libRequest.post(opt, function (err, response, token) {
-        console.log("\ngoogleAuth - token: " + JSON.stringify(token));
+        //console.log("\ngoogleAuth - token: " + JSON.stringify(token));
         if (err) {
             throw err;
         }
@@ -35,7 +35,7 @@ function googleAuth(expReq, expRes) {
         requestParams.headers = headers;
         requestParams.json = true;
         libRequest.get(requestParams, function (err, response, profile) {
-            console.log("\ngoogleAuth:" + err + response + JSON.stringify(profile));
+            //console.log("\ngoogleAuth:" + err + response + JSON.stringify(profile));
             if (err) {
                 throw err;
             }
