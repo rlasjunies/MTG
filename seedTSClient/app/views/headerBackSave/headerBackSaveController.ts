@@ -30,11 +30,11 @@
             //set and manage the save button valid state
             this.invalid = false;
 
-            this.cleanUpFunc1 = this.$rootScope.$on("invalid",() => {
+            this.cleanUpFunc1 = this.$rootScope.$on(appRootScopeEvent.invalidForm,() => {
                 this.invalid = true;
             });
 
-            this.cleanUpFunc2 = this.$rootScope.$on("valid",() => {
+            this.cleanUpFunc2 = this.$rootScope.$on(appRootScopeEvent.validForm,() => {
                 this.invalid = false;
             });
 

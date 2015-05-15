@@ -21,20 +21,19 @@ module app.adm.users {
     route.$inject = [
         "$stateProvider"
     ];
-
     function route($stateProvider: ng.ui.IStateProvider) {
         $stateProvider
             .state(appState.users, {
             url: appState.usersUrl,
                 views: {
                     'header': {
-                        templateUrl: "app/views/headerMain/headerMain.html",
-                        controller: "app.views.header.HeaderMainController",
+                        templateUrl: app.header.headerMainTemplate_StringName, 
+                        controller: app.header.headerMainController_StringName,
                         controllerAs: "vm"
                     },
                     'container': {
-                        templateUrl: "app/views/adm/users/users.html",
-                        controller: "app.views.adm.users.UsersController",
+                        templateUrl: app.users.usersTemplate_StringName,
+                        controller: app.users.usersController_StringName,
                         controllerAs: "vm"
                     },
                     'footer': {}
@@ -44,13 +43,13 @@ module app.adm.users {
             url: appState.usersUrl + "/{userId}",
             views: {
                 'header': {
-                    templateUrl: "app/views/headerBackDeleteSave/headerBackDeleteSave.html",
-                    controller: "app.views.header.HeaderBackDeleteSaveController",
+                    templateUrl: app.header.headerBackDeleteSaveTemplate_StringName,
+                    controller: app.header.HeaderBackDeleteSaveController,
                     controllerAs: "vm"
                 },
                 'container': {
-                    templateUrl: "app/views/adm/users/user.html",
-                    controller: "app.views.adm.users.UserController",
+                    templateUrl: app.users.userTemplate_StringName,
+                    controller: app.users.userController_StringName,
                     controllerAs: "vm"
                 },
                 'footer': {}

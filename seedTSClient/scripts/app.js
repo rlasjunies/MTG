@@ -282,6 +282,14 @@ var app;
         ;
     })(authentication = app.authentication || (app.authentication = {}));
 })(app || (app = {}));
+var appRootScopeEvent;
+(function (appRootScopeEvent) {
+    appRootScopeEvent.invalidForm = "invalid";
+    appRootScopeEvent.validForm = "valid";
+    appRootScopeEvent.delete_ = "delete";
+    appRootScopeEvent.addNew = "add";
+    appRootScopeEvent.save = "save";
+})(appRootScopeEvent || (appRootScopeEvent = {}));
 var app;
 (function (app) {
     var run;
@@ -292,20 +300,30 @@ var app;
             "$rootScope",
             "$location",
             "$window",
+            "$state",
         ];
-        function run($rootScope, $location, $window) {
+        function run($rootScope, $location, $window, $state) {
             $rootScope.$on("$routeChangeError", function () {
                 alert("routeChangeError raised!");
+            });
+            $rootScope.previousState = { name: "", params: {} };
+            $rootScope.$on('$stateChangeSuccess', function (event, toState, toParams, fromState, fromParams) {
+                $rootScope.previousState.name = fromState.name;
+                $rootScope.previousState.params = fromParams;
             });
             $rootScope.goBack = function () {
                 $window.history.back();
             };
             $rootScope.save = function () {
-                $rootScope.$broadcast("save");
+                $rootScope.$broadcast(appRootScopeEvent.save);
             };
             $rootScope.delete = function () {
-                $rootScope.$broadcast("delete");
+                $rootScope.$broadcast(appRootScopeEvent.delete_);
             };
+            $rootScope.addNew = function () {
+                $rootScope.$broadcast(appRootScopeEvent.addNew);
+            };
+            $rootScope.headerTitle = "";
         }
     })(run = app.run || (app.run = {}));
 })(app || (app = {}));
@@ -357,9 +375,10 @@ var app;
             "use strict";
             ;
             var LoginController = (function () {
-                function LoginController($rootScope, NotificationService, $state, $auth, $log, UserLoggedService) {
+                function LoginController($rootScope, $scope, NotificationService, $state, $auth, $log, UserLoggedService) {
                     var _this = this;
                     this.$rootScope = $rootScope;
+                    this.$scope = $scope;
                     this.NotificationService = NotificationService;
                     this.$state = $state;
                     this.$auth = $auth;
@@ -396,9 +415,14 @@ var app;
                         });
                     };
                     this.$log.debug("LoginController: Constructor");
+                    this.$rootScope.headerTitle = "";
+                    this.$scope.$on("$destroy", function () {
+                        _this.$rootScope.headerTitle = "";
+                    });
                 }
                 LoginController.$inject = [
                     "$rootScope",
+                    "$scope",
                     "NotificationService",
                     "$state",
                     "$auth",
@@ -542,18 +566,296 @@ angular.module("app").directive("x", function () {
 });
 var app;
 (function (app) {
-    var route;
-    (function (_route) {
+    var pictures;
+    (function (pictures) {
         "use strict";
+        pictures.picturesService_StringName = "picturesService";
+        var PicturesService = (function () {
+            function PicturesService($http) {
+                this.$http = $http;
+            }
+            PicturesService.prototype.getAll = function () {
+                return this.$http.get("/api/pictures").then(function (response) {
+                    return response.data;
+                });
+            };
+            PicturesService.prototype.delete = function (fileNameToDelete) {
+                return this.$http.delete("/api/pictures/" + fileNameToDelete).then(function (response) {
+                    return response.data;
+                });
+            };
+            PicturesService.$inject = ["$http"];
+            return PicturesService;
+        })();
+        angular.module("app").service(app.pictures.picturesService_StringName, PicturesService);
+    })(pictures = app.pictures || (app.pictures = {}));
+})(app || (app = {}));
+var app;
+(function (app) {
+    var pictures;
+    (function (pictures) {
+        "use strict";
+        pictures.pictureTemplate_StringName = "app/views/pictures/picture.html";
+        pictures.pictureController_StringName = "app.pictures.PictureController";
+        var PictureController = (function () {
+            function PictureController($scope, $rootScope, NotificationService, $log, $stateParams, picturesService, $mdDialog) {
+                var _this = this;
+                this.$scope = $scope;
+                this.$rootScope = $rootScope;
+                this.NotificationService = NotificationService;
+                this.$log = $log;
+                this.$stateParams = $stateParams;
+                this.picturesService = picturesService;
+                this.$mdDialog = $mdDialog;
+                if (!this.$stateParams.fileName) {
+                    alert("fileName is missing to initialize the picture detail view!");
+                    console.error("fileName is missing to initialize the user detail view!");
+                }
+                else {
+                    this.pictureFileName = this.$stateParams.fileName;
+                    this.$scope.$on("delete", function () {
+                        var confirm = $mdDialog.confirm().title('Confirm deletion').content('Are going to delete the fileName:' + _this.pictureFileName).ariaLabel('Lucky day').ok('Cancel').cancel('Delete');
+                        $mdDialog.show(confirm).then(function () {
+                        }, function () {
+                            _this.picturesService.delete(_this.$stateParams.fileName).then(function (picture) {
+                                _this.$log.debug("user deleted!:" + JSON.stringify(picture));
+                            }).catch(function (err) {
+                                _this.$log.error("Error message: \n" + JSON.stringify(err), "Cannot delete picture resource!");
+                                _this.NotificationService.error("Error message: \n" + JSON.stringify(err), "Cannot delete resource!");
+                            });
+                            _this.$rootScope.goBack();
+                        });
+                    });
+                }
+                this.$log.debug(pictures.pictureController_StringName + ": Constructor");
+            }
+            PictureController.$inject = [
+                "$scope",
+                "$rootScope",
+                "NotificationService",
+                "$log",
+                "$stateParams",
+                "picturesService",
+                "$mdDialog"
+            ];
+            return PictureController;
+        })();
+        pictures.PictureController = PictureController;
+        angular.module("app").controller(pictures.pictureController_StringName, app.pictures.PictureController);
+    })(pictures = app.pictures || (app.pictures = {}));
+})(app || (app = {}));
+var app;
+(function (app) {
+    var pictures;
+    (function (pictures) {
+        "use strict";
+        pictures.picturesTemplate_StringName = "app/views/pictures/pictures.html";
+        pictures.picturesController_StringName = "app.pictures.PicturesController";
+        var PicturesController = (function () {
+            function PicturesController($rootScope, $scope, $http, CST_API_URL, NotificationService, $log, $auth, $state, picturesService) {
+                var _this = this;
+                this.$rootScope = $rootScope;
+                this.$scope = $scope;
+                this.$http = $http;
+                this.CST_API_URL = CST_API_URL;
+                this.NotificationService = NotificationService;
+                this.$log = $log;
+                this.$auth = $auth;
+                this.$state = $state;
+                this.picturesService = picturesService;
+                this.onClick = function (fileName) {
+                    var picturesParams = new app.pictures.PictureRouteParams(fileName);
+                    _this.$state.go(appState.picture, picturesParams);
+                };
+                console.log(pictures.picturesController_StringName + " loaded!");
+                this.$rootScope.headerTitle = "";
+                this.$scope.$on("$destroy", function () {
+                    _this.$rootScope.headerTitle = "";
+                });
+                this.$scope.$on(appRootScopeEvent.addNew, function () {
+                    _this.$state.go(appState.picturesLoad);
+                });
+                picturesService.getAll().then(function (picturesFromServer) {
+                    _this.pictures = picturesFromServer.files;
+                }).catch(function (reason) {
+                    console.log("Error getting all pictures:" + reason);
+                });
+            }
+            PicturesController.$inject = [
+                "$rootScope",
+                "$scope",
+                "$http",
+                "CST_API_URL",
+                "NotificationService",
+                "$log",
+                "$auth",
+                "$state",
+                app.pictures.picturesService_StringName
+            ];
+            return PicturesController;
+        })();
+        pictures.PicturesController = PicturesController;
+        angular.module("app").controller(app.pictures.picturesController_StringName, app.pictures.PicturesController);
+    })(pictures = app.pictures || (app.pictures = {}));
+})(app || (app = {}));
+var app;
+(function (app) {
+    var pictures;
+    (function (pictures) {
+        "use strict";
+        pictures.pictureUploadTemplate_StringName = "app/views/pictures/picturesUpload.html";
+        pictures.pictureUploadController_StringName = "app.pictures.PicturesUploadController";
+        var PicturesUploadController = (function () {
+            function PicturesUploadController($scope, $rootScope, $http, CST_API_URL, NotificationService, $log, FileUploader, $auth, $state) {
+                var _this = this;
+                this.$scope = $scope;
+                this.$rootScope = $rootScope;
+                this.$http = $http;
+                this.CST_API_URL = CST_API_URL;
+                this.NotificationService = NotificationService;
+                this.$log = $log;
+                this.FileUploader = FileUploader;
+                this.$auth = $auth;
+                this.$state = $state;
+                console.log(app.pictures.pictureUploadController_StringName + " loaded!");
+                var FileUploadConfig;
+                FileUploadConfig = {
+                    url: "/api/pictures/upload",
+                    autoUpload: true,
+                    removeAfterUpload: true,
+                    headers: {
+                        "authorization": "Bearer " + this.$auth.getToken()
+                    }
+                };
+                this.uploader = new this.FileUploader(FileUploadConfig);
+                this.uploader.onWhenAddingFileFailed = function (item, filter, options) {
+                    console.info('onWhenAddingFileFailed', item, filter, options);
+                };
+                this.uploader.onAfterAddingFile = function (fileItem) {
+                    console.info('onAfterAddingFile', fileItem);
+                };
+                this.uploader.onAfterAddingAll = function (addedFileItems) {
+                    console.info('onAfterAddingAll', addedFileItems);
+                };
+                this.uploader.onBeforeUploadItem = function (item) {
+                    console.info('onBeforeUploadItem', item);
+                };
+                this.uploader.onProgressItem = function (fileItem, progress) {
+                    console.info('onProgressItem', fileItem, progress);
+                };
+                this.uploader.onProgressAll = function (progress) {
+                    console.info('onProgressAll', progress);
+                };
+                this.uploader.onSuccessItem = function (fileItem, response, status, headers) {
+                    console.info('onSuccessItem', fileItem, response, status, headers);
+                };
+                this.uploader.onErrorItem = function (fileItem, response, status, headers) {
+                    console.info('onErrorItem', fileItem, response, status, headers);
+                };
+                this.uploader.onCancelItem = function (fileItem, response, status, headers) {
+                    console.info('onCancelItem', fileItem, response, status, headers);
+                };
+                this.uploader.onCompleteItem = function (fileItem, response, status, headers) {
+                    console.info('onCompleteItem', fileItem, response, status, headers);
+                };
+                this.uploader.onCompleteAll = function () {
+                    console.info('onCompleteAll');
+                    _this.$rootScope.goBack();
+                };
+                console.info('uploader', this.uploader);
+            }
+            PicturesUploadController.$inject = [
+                "$scope",
+                "$rootScope",
+                "$http",
+                "CST_API_URL",
+                "NotificationService",
+                "$log",
+                "FileUploader",
+                "$auth",
+                "$state"
+            ];
+            return PicturesUploadController;
+        })();
+        pictures.PicturesUploadController = PicturesUploadController;
+        angular.module("app").controller(app.pictures.pictureUploadController_StringName, app.pictures.PicturesUploadController);
+    })(pictures = app.pictures || (app.pictures = {}));
+})(app || (app = {}));
+var appState;
+(function (appState) {
+    "use strict";
+    appState.picturesLoad = "PICTUREUPLOAD";
+    appState.picturesLoadUrl = "/picturesupload";
+    appState.picturesList = "PICTURES";
+    appState.picturesListUrl = "/pictures";
+    appState.picture = "PICTURE";
+})(appState || (appState = {}));
+var app;
+(function (app) {
+    var pictures;
+    (function (pictures) {
+        "use strict";
+        var PictureRouteParams = (function () {
+            function PictureRouteParams(fileName) {
+                this.fileName = fileName;
+            }
+            return PictureRouteParams;
+        })();
+        pictures.PictureRouteParams = PictureRouteParams;
         route.$inject = [
-            "$urlRouterProvider"
+            "$stateProvider"
         ];
-        function route($urlRouterProvider) {
-            $urlRouterProvider.otherwise("/");
+        function route($stateProvider) {
+            $stateProvider.state(appState.picturesList, {
+                url: appState.picturesListUrl,
+                views: {
+                    'header': {
+                        templateUrl: app.header.headerAddTemplate_StringName,
+                        controller: app.header.headerAddController_StringName,
+                        controllerAs: "vm"
+                    },
+                    'container': {
+                        templateUrl: app.pictures.picturesTemplate_StringName,
+                        controller: app.pictures.picturesController_StringName,
+                        controllerAs: "vm"
+                    },
+                    'footer': {}
+                }
+            }).state(appState.picture, {
+                url: appState.picturesListUrl + "/{fileName}",
+                views: {
+                    'header': {
+                        templateUrl: app.header.headerBackDeleteSaveTemplate_StringName,
+                        controller: app.header.headerBackDeleteSaveController_StringName,
+                        controllerAs: "vm"
+                    },
+                    'container': {
+                        templateUrl: app.pictures.pictureTemplate_StringName,
+                        controller: app.pictures.pictureController_StringName,
+                        controllerAs: "vm"
+                    },
+                    'footer': {}
+                }
+            }).state(appState.picturesLoad, {
+                url: appState.picturesLoadUrl,
+                views: {
+                    'header': {
+                        templateUrl: app.header.headerMainTemplate_StringName,
+                        controller: app.header.headerMainController_StringName,
+                        controllerAs: "vm"
+                    },
+                    'container': {
+                        templateUrl: app.pictures.pictureUploadTemplate_StringName,
+                        controller: app.pictures.pictureUploadController_StringName,
+                        controllerAs: "vm"
+                    },
+                    'footer': {}
+                }
+            });
         }
         ;
         angular.module("app").config(route);
-    })(route = app.route || (app.route = {}));
+    })(pictures = app.pictures || (app.pictures = {}));
 })(app || (app = {}));
 var app;
 (function (app) {
@@ -601,6 +903,31 @@ var app;
 })(app || (app = {}));
 var app;
 (function (app) {
+    var header;
+    (function (header) {
+        "use strict";
+        header.headerAddTemplate_StringName = "app/views/headerAdd/headerAdd.html";
+        header.headerAddController_StringName = "app.header.AddController";
+        var HeaderAddController = (function () {
+            function HeaderAddController($scope, $rootScope, $log) {
+                this.$scope = $scope;
+                this.$rootScope = $rootScope;
+                this.$log = $log;
+                this.$log.debug(header.headerAddController_StringName + " loaded!");
+            }
+            HeaderAddController.$inject = [
+                "$scope",
+                "$rootScope",
+                "$log"
+            ];
+            return HeaderAddController;
+        })();
+        header.HeaderAddController = HeaderAddController;
+        angular.module("app").controller(header.headerAddController_StringName, app.header.HeaderAddController);
+    })(header = app.header || (app.header = {}));
+})(app || (app = {}));
+var app;
+(function (app) {
     var services;
     (function (services) {
         "use strict";
@@ -639,146 +966,153 @@ var app;
 })(app || (app = {}));
 var app;
 (function (app) {
-    var views;
-    (function (views) {
-        var adm;
-        (function (adm) {
-            var users;
-            (function (users) {
-                "use strict";
-                var UserController = (function () {
-                    function UserController($scope, $rootScope, $http, CST_API_URL, NotificationService, $log, $stateParams, $mdBottomSheet, userService, $mdDialog) {
-                        var _this = this;
-                        this.$scope = $scope;
-                        this.$rootScope = $rootScope;
-                        this.$http = $http;
-                        this.CST_API_URL = CST_API_URL;
-                        this.NotificationService = NotificationService;
-                        this.$log = $log;
-                        this.$stateParams = $stateParams;
-                        this.$mdBottomSheet = $mdBottomSheet;
-                        this.userService = userService;
-                        this.$mdDialog = $mdDialog;
-                        if (!this.$stateParams.userId) {
-                            alert("UserId is missing to initialize the user detail view!");
-                            console.error("UserId is missing to initialize the user detail view!");
-                        }
-                        else {
-                            this.userService.getById(this.$stateParams.userId).then(function (user) {
-                                _this.user = user;
-                                _this.$log.debug("user loaded!:" + JSON.stringify(users));
-                            }).catch(function (err) {
-                                _this.$log.error("Error message: \n" + JSON.stringify(err), "Cannot load uers resources:");
-                                _this.NotificationService.error("Error message: \n" + JSON.stringify(err), "Cannot load users resources:");
-                            });
-                            this.$scope.$on("save", function () {
-                                _this.userService.update(_this.user).then(function (user) {
-                                    _this.$log.debug("user saved!:" + JSON.stringify(user));
-                                }).catch(function (err) {
-                                    _this.$log.error("Error message: \n" + JSON.stringify(err), "Cannot save uers resources:");
-                                    _this.NotificationService.error("Error message: \n" + JSON.stringify(err), "Cannot save users resources:");
-                                });
-                                _this.$rootScope.goBack();
-                            });
-                            this.$scope.$on("delete", function () {
-                                var confirm = $mdDialog.confirm().title('Confirm deletion').content('Are going to delete the user:' + _this.user.displayName).ariaLabel('Lucky day').ok('Cancel').cancel('Delete');
-                                $mdDialog.show(confirm).then(function () {
-                                }, function () {
-                                    _this.userService.delete(_this.$stateParams.userId).then(function (user) {
-                                        _this.$log.debug("user deleted!:" + JSON.stringify(user));
-                                    }).catch(function (err) {
-                                        _this.$log.error("Error message: \n" + JSON.stringify(err), "Cannot save uers resources:");
-                                        _this.NotificationService.error("Error message: \n" + JSON.stringify(err), "Cannot save users resources:");
-                                    });
-                                    _this.$rootScope.goBack();
-                                });
-                            });
-                            this.$scope.$watch(function () { return _this.$scope.userForm.$invalid; }, function (newValue, oldValue) {
-                                if (newValue) {
-                                    _this.$scope.$emit("invalid");
-                                }
-                                else {
-                                    _this.$scope.$emit("valid");
-                                }
-                            });
-                        }
-                        this.$log.debug("UserController: Constructor");
-                    }
-                    UserController.$inject = [
-                        "$scope",
-                        "$rootScope",
-                        "$http",
-                        "CST_API_URL",
-                        "NotificationService",
-                        "$log",
-                        "$stateParams",
-                        "$mdBottomSheet",
-                        "UserService",
-                        "$mdDialog"
-                    ];
-                    return UserController;
-                })();
-                users.UserController = UserController;
-                angular.module("app").controller("app.views.adm.users.UserController", app.views.adm.users.UserController);
-            })(users = adm.users || (adm.users = {}));
-        })(adm = views.adm || (views.adm = {}));
-    })(views = app.views || (app.views = {}));
+    var route;
+    (function (_route) {
+        "use strict";
+        route.$inject = [
+            "$urlRouterProvider"
+        ];
+        function route($urlRouterProvider) {
+            $urlRouterProvider.otherwise("/");
+        }
+        ;
+        angular.module("app").config(route);
+    })(route = app.route || (app.route = {}));
 })(app || (app = {}));
 var app;
 (function (app) {
-    var views;
-    (function (views) {
-        var adm;
-        (function (adm) {
-            var users;
-            (function (_users) {
-                "use strict";
-                var UsersController = (function () {
-                    function UsersController($scope, $http, CST_API_URL, NotificationService, $log, $mdDialog, $filter, $state, UserService) {
-                        var _this = this;
-                        this.$scope = $scope;
-                        this.$http = $http;
-                        this.CST_API_URL = CST_API_URL;
-                        this.NotificationService = NotificationService;
-                        this.$log = $log;
-                        this.$mdDialog = $mdDialog;
-                        this.$filter = $filter;
-                        this.$state = $state;
-                        this.UserService = UserService;
-                        this.users = [];
-                        this.usersView = [];
-                        this.onClick = function (userID) {
-                            var userParams = new app.adm.users.UserRouteParams(userID);
-                            _this.$state.go("user", userParams);
-                        };
-                        this.UserService.getAll().then(function (users) {
-                            _this.users = users;
-                            _this.usersView = [].concat(_this.users);
-                            _this.$log.debug("users loaded!");
+    var users;
+    (function (users) {
+        "use strict";
+        users.userTemplate_StringName = "app/views/adm/users/user.html";
+        users.userController_StringName = "app.users.UserController";
+        var UserController = (function () {
+            function UserController($scope, $rootScope, $http, CST_API_URL, NotificationService, $log, $stateParams, $mdBottomSheet, UserService, $mdDialog) {
+                var _this = this;
+                this.$scope = $scope;
+                this.$rootScope = $rootScope;
+                this.$http = $http;
+                this.CST_API_URL = CST_API_URL;
+                this.NotificationService = NotificationService;
+                this.$log = $log;
+                this.$stateParams = $stateParams;
+                this.$mdBottomSheet = $mdBottomSheet;
+                this.UserService = UserService;
+                this.$mdDialog = $mdDialog;
+                if (!this.$stateParams.userId) {
+                    alert("UserId is missing to initialize the user detail view!");
+                    console.error("UserId is missing to initialize the user detail view!");
+                }
+                else {
+                    this.UserService.getById(this.$stateParams.userId).then(function (user) {
+                        _this.user = user;
+                        _this.$log.debug("user loaded!:" + JSON.stringify(users));
+                    }).catch(function (err) {
+                        _this.$log.error("Error message: \n" + JSON.stringify(err), "Cannot load uers resources:");
+                        _this.NotificationService.error("Error message: \n" + JSON.stringify(err), "Cannot load users resources:");
+                    });
+                    this.$scope.$on("save", function () {
+                        _this.UserService.update(_this.user).then(function (user) {
+                            _this.$log.debug("user saved!:" + JSON.stringify(user));
                         }).catch(function (err) {
-                            _this.$log.error("Error message: \n" + JSON.stringify(err), "Cannot load uers resources:");
-                            _this.NotificationService.error("Error message: \n" + JSON.stringify(err), "Cannot load users resources:");
+                            _this.$log.error("Error message: \n" + JSON.stringify(err), "Cannot save uers resources:");
+                            _this.NotificationService.error("Error message: \n" + JSON.stringify(err), "Cannot save users resources:");
                         });
-                        this.$log.debug("UsersController: Constructor");
-                    }
-                    UsersController.$inject = [
-                        "$scope",
-                        "$http",
-                        "CST_API_URL",
-                        "NotificationService",
-                        "$log",
-                        "$mdDialog",
-                        "$filter",
-                        "$state",
-                        "UserService"
-                    ];
-                    return UsersController;
-                })();
-                _users.UsersController = UsersController;
-                angular.module("app").controller("app.views.adm.users.UsersController", app.views.adm.users.UsersController);
-            })(users = adm.users || (adm.users = {}));
-        })(adm = views.adm || (views.adm = {}));
-    })(views = app.views || (app.views = {}));
+                        _this.$rootScope.goBack();
+                    });
+                    this.$scope.$on("delete", function () {
+                        var confirm = $mdDialog.confirm().title('Confirm deletion').content('Are going to delete the user:' + _this.user.displayName).ariaLabel('Lucky day').ok('Cancel').cancel('Delete');
+                        $mdDialog.show(confirm).then(function () {
+                        }, function () {
+                            _this.UserService.delete(_this.$stateParams.userId).then(function (user) {
+                                _this.$log.debug("user deleted!:" + JSON.stringify(user));
+                            }).catch(function (err) {
+                                _this.$log.error("Error message: \n" + JSON.stringify(err), "Cannot save uers resources:");
+                                _this.NotificationService.error("Error message: \n" + JSON.stringify(err), "Cannot save users resources:");
+                            });
+                            _this.$rootScope.goBack();
+                        });
+                    });
+                    this.$scope.$watch(function () { return _this.$scope.userForm.$invalid; }, function (newValue, oldValue) {
+                        if (newValue) {
+                            _this.$scope.$emit(appRootScopeEvent.invalidForm);
+                        }
+                        else {
+                            _this.$scope.$emit(appRootScopeEvent.validForm);
+                        }
+                    });
+                }
+                this.$log.debug("UserController: Constructor");
+            }
+            UserController.$inject = [
+                "$scope",
+                "$rootScope",
+                "$http",
+                "CST_API_URL",
+                "NotificationService",
+                "$log",
+                "$stateParams",
+                "$mdBottomSheet",
+                "UserService",
+                "$mdDialog"
+            ];
+            return UserController;
+        })();
+        users.UserController = UserController;
+        angular.module("app").controller(app.users.userController_StringName, app.users.UserController);
+    })(users = app.users || (app.users = {}));
+})(app || (app = {}));
+var app;
+(function (app) {
+    var users;
+    (function (_users) {
+        "use strict";
+        _users.usersTemplate_StringName = "app/views/adm/users/users.html";
+        _users.usersController_StringName = "app.users.UsersController";
+        var UsersController = (function () {
+            function UsersController($scope, $http, CST_API_URL, NotificationService, $log, $mdDialog, $filter, $state, UserService) {
+                var _this = this;
+                this.$scope = $scope;
+                this.$http = $http;
+                this.CST_API_URL = CST_API_URL;
+                this.NotificationService = NotificationService;
+                this.$log = $log;
+                this.$mdDialog = $mdDialog;
+                this.$filter = $filter;
+                this.$state = $state;
+                this.UserService = UserService;
+                this.users = [];
+                this.usersView = [];
+                this.onClick = function (userID) {
+                    var userParams = new app.adm.users.UserRouteParams(userID);
+                    _this.$state.go("user", userParams);
+                };
+                this.UserService.getAll().then(function (users) {
+                    _this.users = users;
+                    _this.usersView = [].concat(_this.users);
+                    _this.$log.debug("users loaded!");
+                }).catch(function (err) {
+                    _this.$log.error("Error message: \n" + JSON.stringify(err), "Cannot load uers resources:");
+                    _this.NotificationService.error("Error message: \n" + JSON.stringify(err), "Cannot load users resources:");
+                });
+                this.$log.debug("UsersController: Constructor");
+            }
+            UsersController.$inject = [
+                "$scope",
+                "$http",
+                "CST_API_URL",
+                "NotificationService",
+                "$log",
+                "$mdDialog",
+                "$filter",
+                "$state",
+                "UserService"
+            ];
+            return UsersController;
+        })();
+        _users.UsersController = UsersController;
+        angular.module("app").controller(app.users.usersController_StringName, app.users.UsersController);
+    })(users = app.users || (app.users = {}));
 })(app || (app = {}));
 var appState;
 (function (appState) {
@@ -808,13 +1142,13 @@ var app;
                     url: appState.usersUrl,
                     views: {
                         'header': {
-                            templateUrl: "app/views/headerMain/headerMain.html",
-                            controller: "app.views.header.HeaderMainController",
+                            templateUrl: app.header.headerMainTemplate_StringName,
+                            controller: app.header.headerMainController_StringName,
                             controllerAs: "vm"
                         },
                         'container': {
-                            templateUrl: "app/views/adm/users/users.html",
-                            controller: "app.views.adm.users.UsersController",
+                            templateUrl: app.users.usersTemplate_StringName,
+                            controller: app.users.usersController_StringName,
                             controllerAs: "vm"
                         },
                         'footer': {}
@@ -823,13 +1157,13 @@ var app;
                     url: appState.usersUrl + "/{userId}",
                     views: {
                         'header': {
-                            templateUrl: "app/views/headerBackDeleteSave/headerBackDeleteSave.html",
-                            controller: "app.views.header.HeaderBackDeleteSaveController",
+                            templateUrl: app.header.headerBackDeleteSaveTemplate_StringName,
+                            controller: app.header.HeaderBackDeleteSaveController,
                             controllerAs: "vm"
                         },
                         'container': {
-                            templateUrl: "app/views/adm/users/user.html",
-                            controller: "app.views.adm.users.UserController",
+                            templateUrl: app.users.userTemplate_StringName,
+                            controller: app.users.userController_StringName,
                             controllerAs: "vm"
                         },
                         'footer': {}
@@ -840,6 +1174,148 @@ var app;
             angular.module("app").config(route);
         })(users = adm.users || (adm.users = {}));
     })(adm = app.adm || (app.adm = {}));
+})(app || (app = {}));
+var app;
+(function (app) {
+    var views;
+    (function (views) {
+        var setup;
+        (function (setup) {
+            "use strict";
+            var setupController = (function () {
+                function setupController($log, $mdSidenav, $scope, $animate, $compile) {
+                    this.$log = $log;
+                    this.$mdSidenav = $mdSidenav;
+                    this.$scope = $scope;
+                    this.$animate = $animate;
+                    this.$compile = $compile;
+                    this.$log.debug("dndController: Constructor");
+                }
+                setupController.$inject = [
+                    "$log",
+                    "$mdSidenav",
+                    "$scope",
+                    "$animate",
+                    "$compile"
+                ];
+                return setupController;
+            })();
+            setup.setupController = setupController;
+            angular.module("app").controller("app.views.setup.setupController", app.views.setup.setupController);
+        })(setup = views.setup || (views.setup = {}));
+    })(views = app.views || (app.views = {}));
+})(app || (app = {}));
+var app;
+(function (app) {
+    var views;
+    (function (views) {
+        var main;
+        (function (main) {
+            "use strict";
+            route.$inject = [
+                "$stateProvider"
+            ];
+            function route($stateProvider) {
+                $stateProvider.state("setup", {
+                    url: "/setup",
+                    views: {
+                        'header': {
+                            templateUrl: "app/views/headerMain/headerMain.html",
+                            controller: app.header.headerMainController_StringName,
+                            controllerAs: "vm"
+                        },
+                        'container': {
+                            templateUrl: "app/views/setup/setup.html",
+                            controller: "app.views.setup.setupController",
+                            controllerAs: "vm"
+                        },
+                        'footer': {}
+                    }
+                });
+            }
+            ;
+            angular.module("app").config(route);
+        })(main = views.main || (views.main = {}));
+    })(views = app.views || (app.views = {}));
+})(app || (app = {}));
+var app;
+(function (app) {
+    var header;
+    (function (header) {
+        "use strict";
+        header.headerBackDeleteSaveTemplate_StringName = "app/views/headerBackDeleteSave/headerBackDeleteSave.html";
+        header.headerBackDeleteSaveController_StringName = "app.header.BackDeleteSaveController";
+        var HeaderBackDeleteSaveController = (function () {
+            function HeaderBackDeleteSaveController($scope, $rootScope, $log, $state) {
+                var _this = this;
+                this.$scope = $scope;
+                this.$rootScope = $rootScope;
+                this.$log = $log;
+                this.$state = $state;
+                this.$log.debug(header.headerBackDeleteSaveController_StringName + ": Constructor");
+                this.invalid = false;
+                this.cleanUpFunc1 = this.$rootScope.$on(appRootScopeEvent.invalidForm, function () {
+                    _this.invalid = true;
+                });
+                this.cleanUpFunc2 = this.$rootScope.$on(appRootScopeEvent.validForm, function () {
+                    _this.invalid = false;
+                });
+                $scope.$on('$destroy', function () {
+                    _this.cleanUpFunc1();
+                    _this.cleanUpFunc2();
+                });
+            }
+            HeaderBackDeleteSaveController.$inject = [
+                "$scope",
+                "$rootScope",
+                "$log",
+                "$location"
+            ];
+            return HeaderBackDeleteSaveController;
+        })();
+        header.HeaderBackDeleteSaveController = HeaderBackDeleteSaveController;
+        angular.module("app").controller(header.headerBackDeleteSaveController_StringName, app.header.HeaderBackDeleteSaveController);
+    })(header = app.header || (app.header = {}));
+})(app || (app = {}));
+var app;
+(function (app) {
+    var views;
+    (function (views) {
+        var header;
+        (function (header) {
+            "use strict";
+            var HeaderBackSaveController = (function () {
+                function HeaderBackSaveController($scope, $rootScope, $log, $state) {
+                    var _this = this;
+                    this.$scope = $scope;
+                    this.$rootScope = $rootScope;
+                    this.$log = $log;
+                    this.$state = $state;
+                    this.$log.debug("HeaderBackSaveController: Constructor");
+                    this.invalid = false;
+                    this.cleanUpFunc1 = this.$rootScope.$on(appRootScopeEvent.invalidForm, function () {
+                        _this.invalid = true;
+                    });
+                    this.cleanUpFunc2 = this.$rootScope.$on(appRootScopeEvent.validForm, function () {
+                        _this.invalid = false;
+                    });
+                    $scope.$on('$destroy', function () {
+                        _this.cleanUpFunc1();
+                        _this.cleanUpFunc2();
+                    });
+                }
+                HeaderBackSaveController.$inject = [
+                    "$scope",
+                    "$rootScope",
+                    "$log",
+                    "$location"
+                ];
+                return HeaderBackSaveController;
+            })();
+            header.HeaderBackSaveController = HeaderBackSaveController;
+            angular.module("app").controller("app.views.header.HeaderBackSaveController", app.views.header.HeaderBackSaveController);
+        })(header = views.header || (views.header = {}));
+    })(views = app.views || (app.views = {}));
 })(app || (app = {}));
 var app;
 (function (app) {
@@ -914,7 +1390,7 @@ var app;
                     views: {
                         'header': {
                             templateUrl: "app/views/headerMain/headerMain.html",
-                            controller: "app.views.header.HeaderMainController",
+                            controller: app.header.headerMainController_StringName,
                             controllerAs: "vm"
                         },
                         'container': {
@@ -935,104 +1411,33 @@ var app;
 (function (app) {
     var views;
     (function (views) {
-        var header;
-        (function (header) {
+        var paints;
+        (function (paints) {
             "use strict";
-            var HeaderBackDeleteSaveController = (function () {
-                function HeaderBackDeleteSaveController($scope, $rootScope, $log, $state) {
-                    var _this = this;
-                    this.$scope = $scope;
-                    this.$rootScope = $rootScope;
-                    this.$log = $log;
-                    this.$state = $state;
-                    this.$log.debug("HeaderBackSaveController: Constructor");
-                    this.invalid = false;
-                    this.cleanUpFunc1 = this.$rootScope.$on("invalid", function () {
-                        _this.invalid = true;
-                    });
-                    this.cleanUpFunc2 = this.$rootScope.$on("valid", function () {
-                        _this.invalid = false;
-                    });
-                    $scope.$on('$destroy', function () {
-                        _this.cleanUpFunc1();
-                        _this.cleanUpFunc2();
-                    });
-                }
-                HeaderBackDeleteSaveController.$inject = [
-                    "$scope",
-                    "$rootScope",
-                    "$log",
-                    "$location"
-                ];
-                return HeaderBackDeleteSaveController;
-            })();
-            header.HeaderBackDeleteSaveController = HeaderBackDeleteSaveController;
-            angular.module("app").controller("app.views.header.HeaderBackDeleteSaveController", app.views.header.HeaderBackDeleteSaveController);
-        })(header = views.header || (views.header = {}));
-    })(views = app.views || (app.views = {}));
-})(app || (app = {}));
-var app;
-(function (app) {
-    var views;
-    (function (views) {
-        var header;
-        (function (header) {
-            "use strict";
-            var HeaderBackSaveController = (function () {
-                function HeaderBackSaveController($scope, $rootScope, $log, $state) {
-                    var _this = this;
-                    this.$scope = $scope;
-                    this.$rootScope = $rootScope;
-                    this.$log = $log;
-                    this.$state = $state;
-                    this.$log.debug("HeaderBackSaveController: Constructor");
-                    this.invalid = false;
-                    this.cleanUpFunc1 = this.$rootScope.$on("invalid", function () {
-                        _this.invalid = true;
-                    });
-                    this.cleanUpFunc2 = this.$rootScope.$on("valid", function () {
-                        _this.invalid = false;
-                    });
-                    $scope.$on('$destroy', function () {
-                        _this.cleanUpFunc1();
-                        _this.cleanUpFunc2();
-                    });
-                }
-                HeaderBackSaveController.$inject = [
-                    "$scope",
-                    "$rootScope",
-                    "$log",
-                    "$location"
-                ];
-                return HeaderBackSaveController;
-            })();
-            header.HeaderBackSaveController = HeaderBackSaveController;
-            angular.module("app").controller("app.views.header.HeaderBackSaveController", app.views.header.HeaderBackSaveController);
-        })(header = views.header || (views.header = {}));
-    })(views = app.views || (app.views = {}));
-})(app || (app = {}));
-var app;
-(function (app) {
-    var views;
-    (function (views) {
-        var header;
-        (function (header) {
-            "use strict";
-            var HeaderMainController = (function () {
-                function HeaderMainController($scope, $log) {
-                    this.$scope = $scope;
-                    this.$log = $log;
-                    this.$log.debug("HeaderMainController: Constructor");
-                }
-                HeaderMainController.$inject = [
-                    "$scope",
-                    "$log"
-                ];
-                return HeaderMainController;
-            })();
-            header.HeaderMainController = HeaderMainController;
-            angular.module("app").controller("app.views.header.HeaderMainController", app.views.header.HeaderMainController);
-        })(header = views.header || (views.header = {}));
+            route.$inject = [
+                "$stateProvider"
+            ];
+            function route($stateProvider) {
+                $stateProvider.state("paints", {
+                    url: "/paints",
+                    views: {
+                        'header': {
+                            templateUrl: "app/views/headerMain/headerMain.html",
+                            controller: app.header.headerMainController_StringName,
+                            controllerAs: "vm"
+                        },
+                        'container': {
+                            templateUrl: "app/views/paints/paints.html",
+                            controller: "app.views.paints.PaintsController",
+                            controllerAs: "vm"
+                        },
+                        'footer': {}
+                    }
+                });
+            }
+            ;
+            angular.module("app").config(route);
+        })(paints = views.paints || (views.paints = {}));
     })(views = app.views || (app.views = {}));
 })(app || (app = {}));
 var app;
@@ -1051,7 +1456,7 @@ var app;
                     views: {
                         'header': {
                             templateUrl: "app/views/headerMain/headerMain.html",
-                            controller: "app.views.header.HeaderMainController",
+                            controller: app.header.headerMainController_StringName,
                             controllerAs: "vm"
                         },
                         'container': {
@@ -1108,14 +1513,17 @@ var app;
         "use strict";
         main.mainController_NAME = "app.main.MainController";
         var MainController = (function () {
-            function MainController($log, $mdSidenav) {
+            function MainController($log, $mdSidenav, $rootScope) {
                 this.$log = $log;
                 this.$mdSidenav = $mdSidenav;
+                this.$rootScope = $rootScope;
                 this.$log.debug(app.main.mainController_NAME + " loaded!");
+                this.$rootScope.headerTitle = "";
             }
             MainController.$inject = [
                 "$log",
                 "$mdSidenav",
+                "$rootScope",
             ];
             return MainController;
         })();
@@ -1141,8 +1549,8 @@ var app;
                 views: {
                     'header': {
                         templateUrl: "app/views/headerMain/headerMain.html",
-                        controller: "app.views.header.HeaderMainController",
-                        controllerAs: "vm"
+                        controller: app.header.headerMainController_StringName,
+                        controllerAs: "vm",
                     },
                     'container': {
                         templateUrl: "app/views/main/main.html",
@@ -1156,322 +1564,6 @@ var app;
         ;
         angular.module("app").config(route);
     })(main = app.main || (app.main = {}));
-})(app || (app = {}));
-var app;
-(function (app) {
-    var views;
-    (function (views) {
-        var paints;
-        (function (paints) {
-            "use strict";
-            route.$inject = [
-                "$stateProvider"
-            ];
-            function route($stateProvider) {
-                $stateProvider.state("paints", {
-                    url: "/paints",
-                    views: {
-                        'header': {
-                            templateUrl: "app/views/headerMain/headerMain.html",
-                            controller: "app.views.header.HeaderMainController",
-                            controllerAs: "vm"
-                        },
-                        'container': {
-                            templateUrl: "app/views/paints/paints.html",
-                            controller: "app.views.paints.PaintsController",
-                            controllerAs: "vm"
-                        },
-                        'footer': {}
-                    }
-                });
-            }
-            ;
-            angular.module("app").config(route);
-        })(paints = views.paints || (views.paints = {}));
-    })(views = app.views || (app.views = {}));
-})(app || (app = {}));
-var app;
-(function (app) {
-    var pictures;
-    (function (pictures) {
-        "use strict";
-        pictures.pictureController_StringName = "app.pictures.PictureController";
-        var PictureController = (function () {
-            function PictureController($scope, $rootScope, $http, CST_API_URL, NotificationService, $log, $stateParams, $mdBottomSheet, pictureService, $mdDialog) {
-                var _this = this;
-                this.$scope = $scope;
-                this.$rootScope = $rootScope;
-                this.$http = $http;
-                this.CST_API_URL = CST_API_URL;
-                this.NotificationService = NotificationService;
-                this.$log = $log;
-                this.$stateParams = $stateParams;
-                this.$mdBottomSheet = $mdBottomSheet;
-                this.pictureService = pictureService;
-                this.$mdDialog = $mdDialog;
-                if (!this.$stateParams.fileName) {
-                    alert("fileName is missing to initialize the picture detail view!");
-                    console.error("fileName is missing to initialize the user detail view!");
-                }
-                else {
-                    this.$scope.$on("save", function () {
-                        _this.$rootScope.goBack();
-                    });
-                    this.$scope.$on("delete", function () {
-                        var confirm = $mdDialog.confirm().title('Confirm deletion').content('Are going to delete the fileName:' + _this.picture.fileName).ariaLabel('Lucky day').ok('Cancel').cancel('Delete');
-                        $mdDialog.show(confirm).then(function () {
-                        }, function () {
-                            _this.pictureService.delete(_this.$stateParams.fileName).then(function (picture) {
-                                _this.$log.debug("user deleted!:" + JSON.stringify(picture));
-                            }).catch(function (err) {
-                                _this.$log.error("Error message: \n" + JSON.stringify(err), "Cannot delete picture resource!");
-                                _this.NotificationService.error("Error message: \n" + JSON.stringify(err), "Cannot delete resource!");
-                            });
-                            _this.$rootScope.goBack();
-                        });
-                    });
-                }
-                this.$log.debug(pictures.pictureController_StringName + ": Constructor");
-            }
-            PictureController.$inject = [
-                "$scope",
-                "$rootScope",
-                "$http",
-                "CST_API_URL",
-                "NotificationService",
-                "$log",
-                "$stateParams",
-                "$mdBottomSheet",
-                app.pictures.picturesService_StringName,
-                "$mdDialog"
-            ];
-            return PictureController;
-        })();
-        pictures.PictureController = PictureController;
-        angular.module("app").controller(pictures.pictureController_StringName, app.pictures.PictureController);
-    })(pictures = app.pictures || (app.pictures = {}));
-})(app || (app = {}));
-var app;
-(function (app) {
-    var pictures;
-    (function (pictures) {
-        "use strict";
-        pictures.picturesService_StringName = "picturesService";
-        var PicturesService = (function () {
-            function PicturesService($http) {
-                this.$http = $http;
-            }
-            PicturesService.prototype.getAll = function () {
-                return this.$http.get("/api/pictures").then(function (response) {
-                    return response.data;
-                });
-            };
-            PicturesService.prototype.delete = function (fileNameToDelete) {
-                return this.$http.delete("/api/pictures/" + fileNameToDelete).then(function (response) {
-                    return response.data;
-                });
-            };
-            PicturesService.$inject = ["$http"];
-            return PicturesService;
-        })();
-        angular.module("app").service(app.pictures.picturesService_StringName, PicturesService);
-    })(pictures = app.pictures || (app.pictures = {}));
-})(app || (app = {}));
-var app;
-(function (app) {
-    var pictures;
-    (function (_pictures) {
-        "use strict";
-        _pictures.picturesController_StringName = "app.pictures.PicturesController";
-        var PicturesController = (function () {
-            function PicturesController($scope, $http, CST_API_URL, NotificationService, $log, $auth, $state, picturesService) {
-                var _this = this;
-                this.$scope = $scope;
-                this.$http = $http;
-                this.CST_API_URL = CST_API_URL;
-                this.NotificationService = NotificationService;
-                this.$log = $log;
-                this.$auth = $auth;
-                this.$state = $state;
-                this.picturesService = picturesService;
-                this.onClick = function (fileName) {
-                    var picturesParams = new app.pictures.PictureRouteParams(fileName);
-                    _this.$state.go("picture", picturesParams);
-                };
-                console.log(_pictures.picturesController_StringName + " loaded!");
-                picturesService.getAll().then(function (pictures) {
-                    _this.pictures = pictures.files;
-                }).catch(function (reason) {
-                    console.log("Error getting all pictures:" + reason);
-                });
-            }
-            PicturesController.$inject = [
-                "$scope",
-                "$http",
-                "CST_API_URL",
-                "NotificationService",
-                "$log",
-                "$auth",
-                "$state",
-                app.pictures.picturesService_StringName
-            ];
-            return PicturesController;
-        })();
-        _pictures.PicturesController = PicturesController;
-        angular.module("app").controller(app.pictures.picturesController_StringName, app.pictures.PicturesController);
-    })(pictures = app.pictures || (app.pictures = {}));
-})(app || (app = {}));
-var appState;
-(function (appState) {
-    "use strict";
-    appState.picturesLoad = "PICTUREUPLOAD";
-    appState.picturesLoadUrl = "/picturesupload";
-    appState.picturesList = "PICTURES";
-    appState.picturesListUrl = "/pictures";
-    appState.picture = "PICTURE";
-})(appState || (appState = {}));
-var app;
-(function (app) {
-    var pictures;
-    (function (pictures) {
-        "use strict";
-        var PictureRouteParams = (function () {
-            function PictureRouteParams(fileName) {
-                this.fileName = fileName;
-            }
-            return PictureRouteParams;
-        })();
-        pictures.PictureRouteParams = PictureRouteParams;
-        route.$inject = [
-            "$stateProvider"
-        ];
-        function route($stateProvider) {
-            $stateProvider.state(appState.picturesList, {
-                url: appState.picturesListUrl,
-                views: {
-                    'header': {
-                        templateUrl: "app/views/headerMain/headerMain.html",
-                        controller: "app.views.header.HeaderMainController",
-                        controllerAs: "vm"
-                    },
-                    'container': {
-                        templateUrl: "app/views/pictures/pictures.html",
-                        controller: app.pictures.picturesController_StringName,
-                        controllerAs: "vm"
-                    },
-                    'footer': {}
-                }
-            }).state(appState.picture, {
-                url: appState.picturesListUrl,
-                views: {
-                    'header': {
-                        templateUrl: "app/views/headerBackDeleteSave/headerBackDeleteSave.html",
-                        controller: "app.views.header.HeaderBackDeleteSaveController",
-                        controllerAs: "vm"
-                    },
-                    'container': {
-                        templateUrl: "app/views/pictures/picture.html",
-                        controller: app.pictures.pictureController_StringName,
-                        controllerAs: "vm"
-                    },
-                    'footer': {}
-                }
-            }).state(appState.picturesLoad, {
-                url: appState.picturesLoadUrl,
-                views: {
-                    'header': {
-                        templateUrl: "app/views/headerMain/headerMain.html",
-                        controller: "app.views.header.HeaderMainController",
-                        controllerAs: "vm"
-                    },
-                    'container': {
-                        templateUrl: "app/views/pictures/picturesUpload.html",
-                        controller: app.pictures.pictureUploadController_StringName,
-                        controllerAs: "vm"
-                    },
-                    'footer': {}
-                }
-            });
-        }
-        ;
-        angular.module("app").config(route);
-    })(pictures = app.pictures || (app.pictures = {}));
-})(app || (app = {}));
-var app;
-(function (app) {
-    var pictures;
-    (function (pictures) {
-        "use strict";
-        pictures.pictureUploadController_StringName = "app.pictures.PicturesUploadController";
-        var PicturesUploadController = (function () {
-            function PicturesUploadController($scope, $http, CST_API_URL, NotificationService, $log, FileUploader, $auth) {
-                this.$scope = $scope;
-                this.$http = $http;
-                this.CST_API_URL = CST_API_URL;
-                this.NotificationService = NotificationService;
-                this.$log = $log;
-                this.FileUploader = FileUploader;
-                this.$auth = $auth;
-                console.log(app.pictures.pictureUploadController_StringName + " loaded!");
-                var FileUploadConfig;
-                FileUploadConfig = {
-                    url: "/api/pictures/upload",
-                    autoUpload: true,
-                    removeAfterUpload: true,
-                    headers: {
-                        "authorization": "Bearer " + this.$auth.getToken()
-                    }
-                };
-                this.uploader = new this.FileUploader(FileUploadConfig);
-                this.uploader.onWhenAddingFileFailed = function (item, filter, options) {
-                    console.info('onWhenAddingFileFailed', item, filter, options);
-                };
-                this.uploader.onAfterAddingFile = function (fileItem) {
-                    console.info('onAfterAddingFile', fileItem);
-                };
-                this.uploader.onAfterAddingAll = function (addedFileItems) {
-                    console.info('onAfterAddingAll', addedFileItems);
-                };
-                this.uploader.onBeforeUploadItem = function (item) {
-                    console.info('onBeforeUploadItem', item);
-                };
-                this.uploader.onProgressItem = function (fileItem, progress) {
-                    console.info('onProgressItem', fileItem, progress);
-                };
-                this.uploader.onProgressAll = function (progress) {
-                    console.info('onProgressAll', progress);
-                };
-                this.uploader.onSuccessItem = function (fileItem, response, status, headers) {
-                    console.info('onSuccessItem', fileItem, response, status, headers);
-                };
-                this.uploader.onErrorItem = function (fileItem, response, status, headers) {
-                    console.info('onErrorItem', fileItem, response, status, headers);
-                };
-                this.uploader.onCancelItem = function (fileItem, response, status, headers) {
-                    console.info('onCancelItem', fileItem, response, status, headers);
-                };
-                this.uploader.onCompleteItem = function (fileItem, response, status, headers) {
-                    console.info('onCompleteItem', fileItem, response, status, headers);
-                };
-                this.uploader.onCompleteAll = function () {
-                    console.info('onCompleteAll');
-                };
-                console.info('uploader', this.uploader);
-            }
-            PicturesUploadController.$inject = [
-                "$scope",
-                "$http",
-                "CST_API_URL",
-                "NotificationService",
-                "$log",
-                "FileUploader",
-                "$auth",
-            ];
-            return PicturesUploadController;
-        })();
-        pictures.PicturesUploadController = PicturesUploadController;
-        angular.module("app").controller(app.pictures.pictureUploadController_StringName, app.pictures.PicturesUploadController);
-    })(pictures = app.pictures || (app.pictures = {}));
 })(app || (app = {}));
 var app;
 (function (app) {
@@ -1500,69 +1592,6 @@ var app;
             ;
             angular.module("app").config(route);
         })(register = views.register || (views.register = {}));
-    })(views = app.views || (app.views = {}));
-})(app || (app = {}));
-var app;
-(function (app) {
-    var views;
-    (function (views) {
-        var setup;
-        (function (setup) {
-            "use strict";
-            var setupController = (function () {
-                function setupController($log, $mdSidenav, $scope, $animate, $compile) {
-                    this.$log = $log;
-                    this.$mdSidenav = $mdSidenav;
-                    this.$scope = $scope;
-                    this.$animate = $animate;
-                    this.$compile = $compile;
-                    this.$log.debug("dndController: Constructor");
-                }
-                setupController.$inject = [
-                    "$log",
-                    "$mdSidenav",
-                    "$scope",
-                    "$animate",
-                    "$compile"
-                ];
-                return setupController;
-            })();
-            setup.setupController = setupController;
-            angular.module("app").controller("app.views.setup.setupController", app.views.setup.setupController);
-        })(setup = views.setup || (views.setup = {}));
-    })(views = app.views || (app.views = {}));
-})(app || (app = {}));
-var app;
-(function (app) {
-    var views;
-    (function (views) {
-        var main;
-        (function (main) {
-            "use strict";
-            route.$inject = [
-                "$stateProvider"
-            ];
-            function route($stateProvider) {
-                $stateProvider.state("setup", {
-                    url: "/setup",
-                    views: {
-                        'header': {
-                            templateUrl: "app/views/headerMain/headerMain.html",
-                            controller: "app.views.header.HeaderMainController",
-                            controllerAs: "vm"
-                        },
-                        'container': {
-                            templateUrl: "app/views/setup/setup.html",
-                            controller: "app.views.setup.setupController",
-                            controllerAs: "vm"
-                        },
-                        'footer': {}
-                    }
-                });
-            }
-            ;
-            angular.module("app").config(route);
-        })(main = views.main || (views.main = {}));
     })(views = app.views || (app.views = {}));
 })(app || (app = {}));
 var app;
@@ -1665,5 +1694,28 @@ var app;
             });
         }
     })(sitesettings = app.sitesettings || (app.sitesettings = {}));
+})(app || (app = {}));
+var app;
+(function (app) {
+    var header;
+    (function (header) {
+        "use strict";
+        header.headerMainTemplate_StringName = "app/views/headerMain/headerMain.html";
+        header.headerMainController_StringName = "app.header.MainController";
+        var HeaderMainController = (function () {
+            function HeaderMainController($scope, $log) {
+                this.$scope = $scope;
+                this.$log = $log;
+                this.$log.debug("HeaderMainController: Constructor");
+            }
+            HeaderMainController.$inject = [
+                "$scope",
+                "$log"
+            ];
+            return HeaderMainController;
+        })();
+        header.HeaderMainController = HeaderMainController;
+        angular.module("app").controller(header.headerMainController_StringName, app.header.HeaderMainController);
+    })(header = app.header || (app.header = {}));
 })(app || (app = {}));
 //# sourceMappingURL=app.js.map

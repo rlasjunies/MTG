@@ -1,5 +1,8 @@
-﻿module app.views.header {
+﻿module app.header {
     "use strict";
+
+    export var headerBackDeleteSaveTemplate_StringName = "app/views/headerBackDeleteSave/headerBackDeleteSave.html";
+    export var headerBackDeleteSaveController_StringName = "app.header.BackDeleteSaveController";
 
     interface IHeaderScope {
         // isAuthenticated(): boolean; 
@@ -25,16 +28,16 @@
             private $log: ng.ILogService,
             private $state: ng.ui.IStateService) {
 
-            this.$log.debug("HeaderBackSaveController: Constructor");
+            this.$log.debug(headerBackDeleteSaveController_StringName + ": Constructor");
 
             //set and manage the save button valid state
             this.invalid = false;
 
-            this.cleanUpFunc1 = this.$rootScope.$on("invalid",() => {
+            this.cleanUpFunc1 = this.$rootScope.$on(appRootScopeEvent.invalidForm,() => {
                 this.invalid = true;
             });
 
-            this.cleanUpFunc2 = this.$rootScope.$on("valid",() => {
+            this.cleanUpFunc2 = this.$rootScope.$on(appRootScopeEvent.validForm,() => {
                 this.invalid = false;
             });
 
@@ -47,6 +50,6 @@
     }
 angular
     .module("app")
-    .controller("app.views.header.HeaderBackDeleteSaveController", app.views.header.HeaderBackDeleteSaveController);
+    .controller(headerBackDeleteSaveController_StringName, app.header.HeaderBackDeleteSaveController);
 }
 

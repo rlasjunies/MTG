@@ -1,32 +1,32 @@
-﻿            <!-- CONTENT HEADER-->
-<md-toolbar name="header"
-            layout="row">
+﻿<!-- CONTENT HEADER-->
+<md-toolbar>
+    <div class="md-toolbar-tools">
+        <!-- Toggle menu button -->
+        <md-button ng-click="goBack()"
+                   aria-label="back"
+                   layout="column">
+            <md-icon class="fa fa-chevron-left fa-2x menu"></md-icon>
+        </md-button>
 
-    <!-- Toggle menu button -->
-    <md-button ng-click="goBack()"
-               aria-label="back"
-               layout="column">
-        <i class="fa fa-chevron-left fa-2x" 
-           style="padding-right:5px"></i>
-    </md-button>
+        <!-- Header -->
+        <span flex></span>
+            <img ng-show="!headerTitle" ng-src="/pictures/0logoBlanc.png" style="height:64px;" />
+            <span>{{headerTitle}}</span>
+        <span flex></span>
 
-    <!-- Header -->
-    <h3 align="center"
-        class="md-toolbar-tools"
-        layout-align="center center">
-        <span>Edit</span>
-    </h3>
-
-    <!-- Toggle menu button -->
-    <md-button ng-click="delete()"
-               layout="column"
-               aria-label="delete">
-        <i class="fa fa-trash-o fa-2x" style="padding-right:5px"></i>
-    </md-button>
-    <md-button ng-click="save()"
-               layout="column"
-               aria-label="save"
-               ng-disabled="vm.invalid">
-        <i class="fa fa-check fa-2x" style="padding-right:5px"></i>
-    </md-button>
+        <!-- Toggle menu button -->
+        <md-button class="md-icon-button"
+                   ng-click="delete()"
+                   layout="column"
+                   aria-label="delete">
+            <md-icon class="fa fa-trash-o fa-2x menu"></md-icon>
+        </md-button>
+        <md-button class="md-icon-button"
+                   ng-click="save()"
+                   layout="column"
+                   aria-label="save"
+                   ng-disabled="vm.invalid">
+            <md-icon class="fa fa-check fa-2x menu"></md-icon>
+        </md-button>
+    </div>
 </md-toolbar>

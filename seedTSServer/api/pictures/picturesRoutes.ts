@@ -52,18 +52,24 @@ export function getAllPictures(expReq: e.xRequest<e.IRouteParamId>, expRes: e.Re
 
 export function deletePicture(expReq: e.xRequest<e.IRouteParamId>, expRes: e.Response, next) {
     var fileNameToDel: string;
-    $.log.error("Not implemented yet");
-    //fs.remove(fileNameToDel,(err: Error) => {
-    //    if (!err) {
-    //        expRes
-    //            .status(200)
-    //            .header({ 'content-type': 'application/json' })
-    //            .send({ file: fileNameToDel });
-    //    } else {
-    //        expRes
-    //            .status(500)
-    //            .header({ 'content-type': 'application/json' })
-    //            .send({ error: err });
-    //    }
-    //});
+
+    if (!expReq.params.id) {
+        throw new Error("Id parameter is required!");
+    }else{
+        fileNameToDel = expReq.params.id;
+
+        fs.remove(path.join($.server.picturesPath, fileNameToDel),(err: Error) => {
+            if (!err) {
+                expRes
+                    .status(200)
+                    .header({ 'content-type': 'application/json' })
+                    .send({});
+            } else {
+                expRes
+                    .status(500)
+                    .header({ 'content-type': 'application/json' })
+                    .send({ error: err });
+            }
+        }) ;
+    }
 }

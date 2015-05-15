@@ -18,5 +18,14 @@
 /// <reference path="app/views/register/registercontroller.ts" />
 /// <reference path="app/views/register/validateequalsdirective.ts" />
 
+/// <reference path="app/views/pictures/pictures.service.ts" />
+/// <reference path="app/views/pictures/picturecontroller.ts" />
+/// <reference path="app/views/pictures/picturescontroller.ts" />
+/// <reference path="app/views/pictures/picturesuploadcontroller.ts" />
+/// <reference path="app/views/pictures/picturesroute.ts" />
+
+
+
+
 
 

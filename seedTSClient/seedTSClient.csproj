@@ -22,6 +22,7 @@
     <Content Include="app\views\adm\users\userFooter.html" />
     <Content Include="app\views\adm\users\user.html" />
     <Content Include="app\views\adm\users\users.html" />
+    <Content Include="app\views\headerAdd\headerAdd.html" />
     <Content Include="app\views\pictures\pictures.html" />
     <Content Include="app\views\pictures\picturesUpload.html" />
     <Content Include="app\views\pictures\picture.html" />
@@ -83,6 +84,7 @@
     <TypeScriptCompile Include="app\indexController.ts" />
     <TypeScriptCompile Include="app\services\notificationService.ts" />
     <TypeScriptCompile Include="app\services\sitesettings.service.ts" />
+    <TypeScriptCompile Include="app\views\headerAdd\headerAddController.ts" />
     <TypeScriptCompile Include="app\views\pictures\pictures.service.ts" />
     <TypeScriptCompile Include="app\services\userLogged.ts" />
     <TypeScriptCompile Include="app\views\adm\users\usersService.ts" />

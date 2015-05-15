@@ -1,0 +1,16 @@
+﻿<div layout-fill layout="column" layout-align="center center">
+    <h1>Pictures</h1>
+    <div layout-fill style="padding-left:5px;padding-right:5px">
+        <md-grid-list class="gridListdemoBasicUsage" md-cols-sm="2" md-cols-md="3" md-cols-gt-md="5" md-row-height-gt-md="1:1" md-row-height="2:2"
+                      md-gutter="5px">
+            <md-grid-tile ng-class=""
+                          ng-repeat="picture in vm.pictures"
+                          ng-click="vm.onClick(picture);">
+                <img ng-src="/pictures/{{picture}}" alt="{{picture}}" style="max-width:100%;max-height:100%;" />
+                <md-grid-tile-footer>
+                    <h3>{{picture}}</h3>
+                </md-grid-tile-footer>
+            </md-grid-tile>
+        </md-grid-list>
+    </div>
+</div>

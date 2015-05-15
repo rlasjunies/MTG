@@ -20,7 +20,6 @@
         };
     }
 
-
     factory.$inject = [
         "$auth"
     ];

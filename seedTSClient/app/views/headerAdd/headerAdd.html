@@ -1,0 +1,27 @@
+﻿<!-- CONTENT HEADER-->
+<md-toolbar>
+    <div class="md-toolbar-tools">
+
+        <!-- Toggle menu button -->
+        <md-button class="md-icon-button"
+                   ng-click="vmIndex.toggleLeft()"
+                   aria-label="Settings"
+                   style="vertical-align:middle">
+            <md-icon class="fa fa-bars fa-2x menu"></md-icon>
+        </md-button>
+
+        <!-- Header -->
+        <span flex></span>
+            <img ng-show="!headerTitle" ng-src="/pictures/0logoBlanc.png" style="height:64px;" />
+            <span>{{headerTitle}}</span>
+        <span flex></span>
+
+        <!-- add button-->
+        <md-button class="md-icon-button"
+                   ng-click="addNew()"
+                   layout="column"
+                   aria-label="add">
+            <md-icon class="fa fa-plus fa-2x menu"></md-icon>
+        </md-button>
+    </div>
+</md-toolbar>

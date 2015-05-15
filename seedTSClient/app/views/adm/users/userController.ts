@@ -1,5 +1,8 @@
-﻿module app.views.adm.users {
+﻿module app.users {
     "use strict";
+
+    export var userTemplate_StringName = "app/views/adm/users/user.html";
+    export var userController_StringName = "app.users.UserController";
 
     interface IUserScope extends ng.IScope {
         userForm: any;
@@ -28,7 +31,7 @@
             private $log: ng.ILogService,
             private $stateParams: app.adm.users.IUserStateParams,
             private $mdBottomSheet: any,
-            private userService: app.services.IUserService,
+            private UserService: app.services.IUserService,
             private $mdDialog: any) {
 
             //console.log("stateparam:" + JSON.stringify(this.$stateParams));
@@ -39,7 +42,7 @@
                 //userID exists
 
                 //call the back end to retrieve the val
-                this.userService.getById(this.$stateParams.userId).then((user: app.services.IUser) => {
+                this.UserService.getById(this.$stateParams.userId).then((user: app.services.IUser) => {
                     this.user = user;
                     this.$log.debug("user loaded!:" + JSON.stringify(users));
                 }).catch((err) => {
@@ -52,7 +55,7 @@
                 //Save
                 this.$scope.$on("save",() => {
 
-                    this.userService.update(this.user)
+                    this.UserService.update(this.user)
                         .then((user: app.services.IUser) => {
                         this.$log.debug("user saved!:" + JSON.stringify(user));
                         //this.NotificationService.info("User saved!");
@@ -77,7 +80,7 @@
                     //.targetEvent(ev);
                     $mdDialog.show(confirm).then(() => { },() => {
                         //$scope.alert = 'You decided to get rid of your debt.';
-                        this.userService.delete(this.$stateParams.userId)
+                        this.UserService.delete(this.$stateParams.userId)
                             .then((user: app.services.IUser) => {
                             this.$log.debug("user deleted!:" + JSON.stringify(user));
                             //this.NotificationService.info("User saved!");
@@ -90,12 +93,13 @@
                     });
                 });
 
+                //Raise event to the app when the form is invalid
                 this.$scope.$watch(() => this.$scope.userForm.$invalid,(newValue, oldValue) => {
                     //console.log("watch [" + newValue + "] -> [" + oldValue + "]");
                     if (newValue) {
-                        this.$scope.$emit("invalid");
+                        this.$scope.$emit(appRootScopeEvent.invalidForm);
                     } else {
-                        this.$scope.$emit("valid");
+                        this.$scope.$emit(appRootScopeEvent.validForm);
                     }
                 });
             }
@@ -107,5 +111,5 @@
 
     angular
         .module("app")
-        .controller("app.views.adm.users.UserController", app.views.adm.users.UserController);
+        .controller(app.users.userController_StringName, app.users.UserController);
 }

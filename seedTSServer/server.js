@@ -67,7 +67,7 @@ var $PicturesRoutes = require("./api/pictures/picturesRoutes");
 rootRoute = "/api/pictures/";
 exports.app.post(rootRoute + "upload", $AuthLocal.authenticationCheck, $PicturesRoutes.uploadPicture);
 exports.app.get(rootRoute, $AuthLocal.authenticationCheck, $PicturesRoutes.getAllPictures);
-exports.app.delete(rootRoute, $AuthLocal.authenticationCheck, $PicturesRoutes.getAllPictures);
+exports.app.delete(rootRoute + ":id", $AuthLocal.authenticationCheck, $PicturesRoutes.deletePicture);
 //users routes
 var $UsersRoutes = require("./api/users/usersRoutes");
 rootRoute = "/api/adm/users/";

@@ -14,8 +14,9 @@ module app.main {
                 views: {
                     'header': {
                         templateUrl: "app/views/headerMain/headerMain.html",
-                        controller: "app.views.header.HeaderMainController",
-                        controllerAs: "vm"
+                        controller: app.header.headerMainController_StringName,
+                        controllerAs: "vm",
+
                     },
                     'container': {
                         templateUrl: "app/views/main/main.html",

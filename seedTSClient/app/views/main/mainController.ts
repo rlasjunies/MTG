@@ -6,11 +6,15 @@
         static $inject = [
             "$log",
             "$mdSidenav",
+            "$rootScope",
         ];
         constructor(private $log: ng.ILogService,
-            private $mdSidenav: any
+            private $mdSidenav: any,
+            private $rootScope: ng.IRootScopeService
             ) {
             this.$log.debug(app.main.mainController_NAME + " loaded!");
+
+            this.$rootScope.headerTitle = "";
         }
     }
 

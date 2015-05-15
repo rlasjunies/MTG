@@ -11,7 +11,7 @@
                 views: {
                     'header': {
                         templateUrl: "app/views/headerMain/headerMain.html",
-                        controller: "app.views.header.HeaderMainController",
+                        controller: app.header.headerMainController_StringName,
                         controllerAs: "vm"
                     },
                     'container': {

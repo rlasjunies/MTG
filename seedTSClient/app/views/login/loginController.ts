@@ -14,6 +14,7 @@ module app.views.login {
 
         static $inject = [
             "$rootScope",
+            "$scope",
             "NotificationService",
             "$state",
             "$auth",
@@ -22,12 +23,19 @@ module app.views.login {
         ];
         constructor (
             private $rootScope: ILoginRootSCope,
+            private $scope: ng.IScope,
             private NotificationService: app.services.NotificationService,
             private $state: ng.ui.IStateService,
             private $auth: satellizer.IAuthService,
             private $log: ng.ILogService,
             private UserLoggedService: app.services.IUserLoggedService) {
             this.$log.debug("LoginController: Constructor");
+
+            this.$rootScope.headerTitle = "";
+
+            this.$scope.$on("$destroy",() => {
+                this.$rootScope.headerTitle = "";
+            });
         }
 
         submit = () => {
@@ -56,7 +64,7 @@ module app.views.login {
 
                     //clean the user logged
                     this.UserLoggedService.logout();
-                });
+                })
         }
 
         authenticate = (provider:string) => {

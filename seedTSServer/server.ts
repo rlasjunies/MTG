@@ -74,7 +74,7 @@ import $PicturesRoutes = require("./api/pictures/picturesRoutes");
 rootRoute = "/api/pictures/";
 app.post(rootRoute + "upload", $AuthLocal.authenticationCheck, $PicturesRoutes.uploadPicture);
 app.get(rootRoute, $AuthLocal.authenticationCheck, $PicturesRoutes.getAllPictures);
-app.delete(rootRoute, $AuthLocal.authenticationCheck, $PicturesRoutes.getAllPictures);
+app.delete(rootRoute + ":id", $AuthLocal.authenticationCheck, $PicturesRoutes.deletePicture);
 
 //users routes
 import $UsersRoutes = require("./api/users/usersRoutes");

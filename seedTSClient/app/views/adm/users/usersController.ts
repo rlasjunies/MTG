@@ -1,5 +1,9 @@
-﻿module app.views.adm.users{
+﻿module app.users{
     "use strict";
+
+    export var usersTemplate_StringName = "app/views/adm/users/users.html";
+    export var usersController_StringName = "app.users.UsersController";
+
 
     //export interface IUser {
     //    _id: string;
@@ -75,15 +79,13 @@
             this.$log.debug("UsersController: Constructor");
         }
 
-
         onClick = (userID: string): void => {
             var userParams: app.adm.users.UserRouteParams = new app.adm.users.UserRouteParams(userID);
             this.$state.go("user", userParams);
         }
     }
 
-
     angular
         .module("app")
-        .controller("app.views.adm.users.UsersController", app.views.adm.users.UsersController);
+        .controller(app.users.usersController_StringName, app.users.UsersController);
 }
