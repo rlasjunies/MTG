@@ -25,13 +25,13 @@
     <md-sidenav layout="column"
                 class="site-sidenav md-sidenav-left md-whiteframe-z2"
                 md-component-id="left">
-        <div ng-include="'../views/sidenav/sidenav.html'"></div>
+        <div ng-include="'../app/sidenav/sidenav.html'"></div>
     </md-sidenav>
     <!--md-is-locked-open="$mdMedia('gt-md')">-->
 
     <!-- CONTENT -->
     <div layout="column" layout-fill>
-        <md-toolbar ui-view="header"></md-toolbar>
+        <md-toolbar md-scroll-shrink ui-view="header"></md-toolbar>
         <md-content ui-view="container"></md-content>
         <div ui-view="footer"></div>
     </div>

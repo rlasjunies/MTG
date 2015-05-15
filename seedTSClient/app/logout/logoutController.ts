@@ -1,5 +1,9 @@
-﻿module app.views.logout {
+﻿module app.logout {
     "use strict";
+
+    export var logoutTemplate_StringName = "app/logout/logout.html";
+    export var logoutController_StringName = "app.logout.LogoutController";
+
 
     interface ILogoutRootSCope extends ng.IRootScopeService {
     }
@@ -21,19 +25,17 @@
             private $log: ng.ILogService,
             private UserLoggedService:app.services.IUserLoggedService) {
 
-            this.$log.debug("LogoutController: Constructor");
-
             //clean the sanitizer authentication and the app global service userLogged
             this.$auth.logout();
             this.UserLoggedService.logout();
            
             NotificationService.info("You are now logout!","Authentication message");
-            this.$log.debug("LogoutController: Constructor");
-            this.$state.go(appState.MAIN);
+            this.$log.debug(app.logout.logoutController_StringName + "loaded!");
+            this.$state.go(appState.mainState);
         }
     }
 
     angular
         .module("app")
-        .controller("app.views.logout.LogoutController", app.views.logout.LogoutController);
+        .controller(app.logout.logoutController_StringName, app.logout.LogoutController);
 }

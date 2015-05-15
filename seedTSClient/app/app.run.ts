@@ -11,14 +11,6 @@ module appRootScopeEvent{
     export var save: string = "save";
 
 }
-//this.cleanUpFunc1 = this.$rootScope.$on("invalid",() => {
-//    this.invalid = true;
-//});
-
-//$scope.$on('$destroy',() => {
-//    this.cleanUpFunc2();
-//});
-
 
 module app.run {
     "use strict";
@@ -39,17 +31,19 @@ module app.run {
         $window: ng.IWindowService,
         $state: ng.ui.IStateService): void {
 
-        $rootScope.$on("$routeChangeError",(): void => {
-            alert("routeChangeError raised!");
-        });
+        $rootScope.headerConfiguration = new app.header.HeaderConfiguration();
 
-        // previous state handling
-        $rootScope.previousState = {name: "", params: {}};
-        $rootScope.$on('$stateChangeSuccess', function (event, toState, toParams, fromState, fromParams) {
-            // store previous state in $rootScope
-            $rootScope.previousState.name = fromState.name;
-            $rootScope.previousState.params = fromParams;
-        });
+        //$rootScope.$on("$routeChangeError",(): void => {
+        //    alert("routeChangeError raised!");
+        //});
+
+        //// previous state handling
+        //$rootScope.previousState = {name: "", params: {}};
+        //$rootScope.$on('$stateChangeSuccess', function (event, toState, toParams, fromState, fromParams) {
+        //    // store previous state in $rootScope
+        //    $rootScope.previousState.name = fromState.name;
+        //    $rootScope.previousState.params = fromParams;
+        //});
 
         $rootScope.goBack = function () {
             $window.history.back();
@@ -66,8 +60,6 @@ module app.run {
         $rootScope.addNew = function () {
             $rootScope.$broadcast(appRootScopeEvent.addNew);
         }
-
-        $rootScope.headerTitle = "";
     
     }
 

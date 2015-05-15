@@ -1,4 +1,12 @@
-﻿module app.views.register {
+﻿
+    module appState {
+        "use strict";
+
+        export var logoutState: string = "logout";
+        export var logoutUrl: string = "/logout";
+    }
+
+module app.views.logout {
     "use strict";
 
     route.$inject = [
@@ -6,13 +14,13 @@
     ];
     function route($stateProvider: ng.ui.IStateProvider) {
         $stateProvider
-            .state("register", {
-            url: "/register",
+            .state(appState.logoutState, {
+            url: appState.logoutUrl,
             views: {
                 'header': {},
                 'container': {
-                    templateUrl: "app/views/register/register.html",
-                    controller: "app.views.register.RegisterController",
+                    templateUrl: app.logout.logoutTemplate_StringName,
+                    controller: app.logout.logoutController_StringName,
                     controllerAs: "vm"
                 },
                 'footer': {}

@@ -1,6 +1,6 @@
 ﻿module appState{
     export var users: string = "users";
-    export var usersUrl: string = "/adm/users";
+    export var usersUrl: string = "/users";
     export var user: string = "user";
 }
 
@@ -27,8 +27,8 @@ module app.adm.users {
             url: appState.usersUrl,
                 views: {
                     'header': {
-                        templateUrl: app.header.headerMainTemplate_StringName, 
-                        controller: app.header.headerMainController_StringName,
+                        templateUrl: app.header.headerTemplate_StringName, 
+                        controller: app.header.headerController_StringName,
                         controllerAs: "vm"
                     },
                     'container': {
@@ -43,8 +43,8 @@ module app.adm.users {
             url: appState.usersUrl + "/{userId}",
             views: {
                 'header': {
-                    templateUrl: app.header.headerBackDeleteSaveTemplate_StringName,
-                    controller: app.header.HeaderBackDeleteSaveController,
+                    templateUrl: app.header.headerTemplate_StringName,
+                    controller: app.header.HeaderController,
                     controllerAs: "vm"
                 },
                 'container': {

@@ -1,7 +1,7 @@
 ﻿module app.users{
     "use strict";
 
-    export var usersTemplate_StringName = "app/views/adm/users/users.html";
+    export var usersTemplate_StringName = "app/users/users.html";
     export var usersController_StringName = "app.users.UsersController";
 
 
@@ -20,6 +20,7 @@
 
         static $inject = [
             "$scope",
+            "$rootScope",
             "$http",
             "CST_API_URL",
             "NotificationService",
@@ -31,6 +32,7 @@
         ];
         constructor(
             private $scope: ng.IScope,
+            private $rootScope: ng.IRootScopeService,
             private $http: ng.IHttpService,
             private CST_API_URL,
             private NotificationService: app.services.NotificationService,
@@ -40,16 +42,13 @@
             private $state: ng.ui.IStateService,
             private UserService:app.services.IUserService) {
 
-            //$http.get(this.CST_API_URL + app.adm.users.CST_URL_Users)
-            //    .error((err) => {
-            //        this.$log.error("Error message: \n" + JSON.stringify(err), "Cannot load uers resources:");
-            //        this.NotificationService.error("Error message: \n" + JSON.stringify(err), "Cannot load users resources:");
-            //    })
-            //    .success((users: IUser[]) => {
-            //        this.users = users;
-            //        this.usersView = [].concat(this.users);
-            //        this.$log.debug("users loaded!");
-            //    });
+            ////header definition
+            this.$rootScope.headerConfiguration = new app.header.HeaderConfiguration("Users", true, false, false, false, false, false);
+
+            this.$scope.$on("$destroy",() => {
+                //clean the header bar configuration
+                this.$rootScope.headerConfiguration = new app.header.HeaderConfiguration();;
+            });
 
             this.UserService.getAll().then((users: app.services.IUsers): void => {
                 this.users = users;
@@ -59,22 +58,6 @@
                 this.$log.error("Error message: \n" + JSON.stringify(err), "Cannot load uers resources:");
                 this.NotificationService.error("Error message: \n" + JSON.stringify(err), "Cannot load users resources:");
             });
-
-            //this.UserService.getAll().catch((err) => {
-            //    this.$log.error("Error message: \n" + JSON.stringify(err), "Cannot load uers resources:");
-            //    this.NotificationService.error("Error message: \n" + JSON.stringify(err), "Cannot load users resources:");
-            //}).then((users: app.services.IUsers):void => {
-            //        this.users = users;
-            //        this.usersView = [].concat(this.users);
-            //        this.$log.debug("users loaded!");
-            //});
-
-
-                //.then((users: IUser[]) => {
-                //    this.users = users;
-                //    this.usersView = [].concat(this.users);
-                //    this.$log.debug("users loaded!");
-                //});
 
             this.$log.debug("UsersController: Constructor");
         }

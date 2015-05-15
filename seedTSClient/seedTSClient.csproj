@@ -18,26 +18,20 @@
     <IISExpressUseClassicPipelineMode />
   </PropertyGroup>
   <ItemGroup>
+    <Content Include="app\header\header.html" />
     <Content Include="app\index.html" />
-    <Content Include="app\views\adm\users\userFooter.html" />
-    <Content Include="app\views\adm\users\user.html" />
-    <Content Include="app\views\adm\users\users.html" />
-    <Content Include="app\views\headerAdd\headerAdd.html" />
-    <Content Include="app\views\pictures\pictures.html" />
-    <Content Include="app\views\pictures\picturesUpload.html" />
-    <Content Include="app\views\pictures\picture.html" />
-    <Content Include="app\views\setup\setup.html" />
-    <Content Include="app\views\headerBackDeleteSave\headerBackDeleteSave.html" />
-    <Content Include="app\views\headerBackSave\headerBackSave.html" />
-    <Content Include="app\views\logout\logout.html" />
-    <Content Include="app\views\dnd\dnd.html" />
-    <Content Include="app\views\sidenav\sidenav.html" />
-    <Content Include="app\views\sitesettings\sitesettings.html" />
-    <Content Include="app\views\headerMain\headerMain.html" />
-    <Content Include="app\views\paints\paints.html" />
-    <Content Include="app\views\login\login.html" />
-    <Content Include="app\views\main\main.html" />
-    <Content Include="app\views\register\register.html" />
+    <Content Include="app\users\userFooter.html" />
+    <Content Include="app\users\user.html" />
+    <Content Include="app\users\users.html" />
+    <Content Include="app\pictures\pictures.html" />
+    <Content Include="app\pictures\picturesUpload.html" />
+    <Content Include="app\pictures\picture.html" />
+    <Content Include="app\logout\logout.html" />
+    <Content Include="app\sidenav\sidenav.html" />
+    <Content Include="app\paints\paints.html" />
+    <Content Include="app\login\login.html" />
+    <Content Include="app\main\main.html" />
+    <Content Include="app\register\register.html" />
     <Content Include="fonts\glyphicons-halflings-regular.svg" />
     <Content Include="fonts\glyphicons-halflings-regular.eot" />
     <Content Include="fonts\glyphicons-halflings-regular.ttf" />
@@ -81,43 +75,33 @@
     <TypeScriptCompile Include="app\authentication\authInterceptor.ts" />
     <TypeScriptCompile Include="app\authentication\authToken.ts" />
     <TypeScriptCompile Include="app\authentication\auth.ts" />
+    <TypeScriptCompile Include="app\header\headerController.ts" />
     <TypeScriptCompile Include="app\indexController.ts" />
     <TypeScriptCompile Include="app\services\notificationService.ts" />
     <TypeScriptCompile Include="app\services\sitesettings.service.ts" />
-    <TypeScriptCompile Include="app\views\headerAdd\headerAddController.ts" />
-    <TypeScriptCompile Include="app\views\pictures\pictures.service.ts" />
+    <TypeScriptCompile Include="app\pictures\pictures.service.ts" />
     <TypeScriptCompile Include="app\services\userLogged.ts" />
-    <TypeScriptCompile Include="app\views\adm\users\usersService.ts" />
+    <TypeScriptCompile Include="app\users\usersService.ts" />
     <TypeScriptCompile Include="app\app.route.ts" />
-    <TypeScriptCompile Include="app\views\adm\users\userController.ts" />
-    <TypeScriptCompile Include="app\views\adm\users\usersController.ts" />
-    <TypeScriptCompile Include="app\views\adm\users\usersRoute.ts" />
-    <TypeScriptCompile Include="app\views\pictures\picturesController.ts" />
-    <TypeScriptCompile Include="app\views\pictures\picturesUploadController.ts" />
-    <TypeScriptCompile Include="app\views\pictures\picturesRoute.ts" />
-    <TypeScriptCompile Include="app\views\pictures\pictureController.ts" />
-    <TypeScriptCompile Include="app\views\setup\setupController.ts" />
-    <TypeScriptCompile Include="app\views\setup\setupRoute.ts" />
-    <TypeScriptCompile Include="app\views\headerBackDeleteSave\headerBackDeleteSaveController.ts" />
-    <TypeScriptCompile Include="app\views\headerBackSave\headerBackSaveController.ts" />
-    <TypeScriptCompile Include="app\views\dnd\dndController.ts" />
-    <TypeScriptCompile Include="app\views\dnd\dndRoute.ts" />
-    <TypeScriptCompile Include="app\views\paints\paintsRoute.ts" />
-    <TypeScriptCompile Include="app\views\login\loginRoute.ts" />
-    <TypeScriptCompile Include="app\views\logout\logoutRoute.ts" />
-    <TypeScriptCompile Include="app\views\main\mainController.ts" />
-    <TypeScriptCompile Include="app\views\main\mainRoute.ts" />
-    <TypeScriptCompile Include="app\views\register\registerRoute.ts" />
-    <TypeScriptCompile Include="app\views\sidenav\sidenavController.ts" />
-    <TypeScriptCompile Include="app\views\sitesettings\sitesettings.controller.ts" />
-    <TypeScriptCompile Include="app\views\sitesettings\sitesettings.module.ts" />
-    <TypeScriptCompile Include="app\views\sitesettings\sitesettings.routes.ts" />
-    <TypeScriptCompile Include="app\views\headerMain\headerMainController.ts" />
-    <TypeScriptCompile Include="app\views\paints\paintsController.ts" />
-    <TypeScriptCompile Include="app\views\login\loginController.ts" />
-    <TypeScriptCompile Include="app\views\logout\logoutController.ts" />
-    <TypeScriptCompile Include="app\views\register\registerController.ts" />
-    <TypeScriptCompile Include="app\views\register\validateEqualsDirective.ts" />
+    <TypeScriptCompile Include="app\users\userController.ts" />
+    <TypeScriptCompile Include="app\users\usersController.ts" />
+    <TypeScriptCompile Include="app\users\usersRoute.ts" />
+    <TypeScriptCompile Include="app\pictures\picturesController.ts" />
+    <TypeScriptCompile Include="app\pictures\picturesUploadController.ts" />
+    <TypeScriptCompile Include="app\pictures\picturesRoute.ts" />
+    <TypeScriptCompile Include="app\pictures\pictureController.ts" />
+    <TypeScriptCompile Include="app\paints\paintsRoute.ts" />
+    <TypeScriptCompile Include="app\login\loginRoute.ts" />
+    <TypeScriptCompile Include="app\logout\logoutRoute.ts" />
+    <TypeScriptCompile Include="app\main\mainController.ts" />
+    <TypeScriptCompile Include="app\main\mainRoute.ts" />
+    <TypeScriptCompile Include="app\register\registerRoute.ts" />
+    <TypeScriptCompile Include="app\sidenav\sidenavController.ts" />
+    <TypeScriptCompile Include="app\paints\paintsController.ts" />
+    <TypeScriptCompile Include="app\login\loginController.ts" />
+    <TypeScriptCompile Include="app\logout\logoutController.ts" />
+    <TypeScriptCompile Include="app\register\registerController.ts" />
+    <TypeScriptCompile Include="app\register\validateEqualsDirective.ts" />
     <TypeScriptCompile Include="scripts\typings\angular-file-upload.missing.d.ts" />
     <TypeScriptCompile Include="scripts\typings\angular.missing.ts" />
     <TypeScriptCompile Include="scripts\typings\angular-material.missing.d.ts" />
@@ -133,9 +117,7 @@
     <TypeScriptCompile Include="scripts\typings\satelizer-missing.d.ts" />
     <TypeScriptCompile Include="_references.ts" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="app\widgets\" />
-  </ItemGroup>
+  <ItemGroup />
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">12.0</VisualStudioVersion>
   </PropertyGroup>

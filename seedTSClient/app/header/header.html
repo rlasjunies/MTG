@@ -1,0 +1,59 @@
+﻿<div class="md-toolbar-tools">
+
+    <md-button ng-show="headerConfiguration.headerButtonMenuActivated"
+               class="md-icon-button"
+               ng-click="vmIndex.toggleLeft()"
+               aria-label="Settings"
+               style="vertical-align:middle">
+        <md-icon class="fa fa-bars fa-2x menu"></md-icon>
+    </md-button>
+    <md-button ng-show="headerConfiguration.headerButtonBackActivated"
+               ng-click="goBack()"
+               aria-label="back"
+               layout="column">
+        <md-icon class="fa fa-chevron-left fa-2x menu"></md-icon>
+    </md-button>
+
+    <!-- Header -->
+    <span flex></span>
+
+    <!--<span>CORINNE PAIRE LASJUNIES</span>-->
+    <img ng-show="!headerTitle" ng-src="/pictures/0logoBlanc.png" style="height:64px;" />
+    <span class="md-title">{{headerTitle}}</span>
+
+    <span flex></span>
+
+    <!-- login / logout button-->
+    <md-button ng-show="headerConfiguration.headerButtonLoginActivated"
+               class="md-icon-button"
+               ng-href="/login"
+               ng-hide="vmIndex.isAuthenticated()"
+               aria-label="login">
+        <md-icon class="fa fa-sign-in fa-2x"></md-icon>
+    </md-button>
+    <!-- add button-->
+    <md-button ng-show="headerConfiguration.headerButtonAddActivated"
+               class="md-icon-button"
+               ng-click="addNew()"
+               layout="column"
+               aria-label="add">
+        <md-icon class="fa fa-plus fa-2x menu"></md-icon>
+    </md-button>
+    <!-- delete button-->
+    <md-button ng-show="headerConfiguration.headerButtonDeleteActivated"
+               class="md-icon-button"
+               ng-click="delete()"
+               layout="column"
+               aria-label="delete">
+        <md-icon class="fa fa-trash-o fa-2x menu"></md-icon>
+    </md-button>
+    <!-- save button-->
+    <md-button ng-show="headerConfiguration.headerButtonSaveActivated"
+               class="md-icon-button"
+               ng-click="save()"
+               layout="column"
+               aria-label="save"
+               ng-disabled="vm.invalid">
+        <md-icon class="fa fa-check fa-2x menu"></md-icon>
+    </md-button>
+</div>

@@ -1,5 +1,8 @@
-﻿module app.views.register {
+﻿module app.register {
     "use strict";
+
+    export var registerTemplate_StringName = "app/register/register.html";
+    export var registerController_StringName = "app.register.RegisterController";
 
     export interface IController {
         submit: () => void;
@@ -32,6 +35,14 @@
             this.$scope.$watch(() => this.password, this.checkPasswords);
             this.$scope.$watch(() => this.passwordConfirm, this.checkPasswords);
 
+            this.$rootScope.headerConfiguration = new app.header.HeaderConfiguration("", false, true);
+
+            this.$scope.$on("$destroy",() => {
+                //clean the header bar configuration
+                this.$rootScope.headerConfiguration = new app.header.HeaderConfiguration();;
+            });
+
+
             this.$log.debug("RegisterController: Constructor");
         }
 
@@ -61,5 +72,5 @@
 
     angular
         .module("app")
-        .controller("app.views.register.RegisterController", app.views.register.RegisterController);
+        .controller(app.register.registerController_StringName, app.register.RegisterController);
 }

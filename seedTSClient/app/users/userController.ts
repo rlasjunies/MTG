@@ -1,7 +1,7 @@
 ﻿module app.users {
     "use strict";
 
-    export var userTemplate_StringName = "app/views/adm/users/user.html";
+    export var userTemplate_StringName = "app/users/user.html";
     export var userController_StringName = "app.users.UserController";
 
     interface IUserScope extends ng.IScope {
@@ -40,6 +40,14 @@
                 console.error("UserId is missing to initialize the user detail view!");
             } else {
                 //userID exists
+
+                ////header definition
+                this.$rootScope.headerConfiguration = new app.header.HeaderConfiguration("User detail", false, true, false, false, true, true);
+
+                this.$scope.$on("$destroy",() => {
+                    //clean the header bar configuration
+                    this.$rootScope.headerConfiguration = new app.header.HeaderConfiguration();;
+                });
 
                 //call the back end to retrieve the val
                 this.UserService.getById(this.$stateParams.userId).then((user: app.services.IUser) => {
