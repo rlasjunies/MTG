@@ -67,23 +67,21 @@ exports.app.post("/auth/facebook", xAuthFacebook.facebookAuth);
 exports.app.post("/auth/google", xAuthGoogle.googleAuth);
 //authorization
 var $AuthorizationRoutes = require("./api/authorization/authorizationRoutes");
-rootRoute = "/api/authorization/accessrights";
-exports.app.get(rootRoute, $AuthLocal.authenticationCheck, $AuthorizationRoutes.getAllAccessRight);
 rootRoute = "/api/authorization/roles";
-exports.app.get(rootRoute, $AuthLocal.authenticationCheck, $AuthorizationRoutes.getAllRoles);
+exports.app.get(rootRoute, $AuthLocal.authenticationCheck, $Authorization.hasRole("ADMIN"), $AuthorizationRoutes.getAllRoles);
 //pictures routes
 var $PicturesRoutes = require("./api/pictures/picturesRoutes");
 rootRoute = "/api/pictures/";
-exports.app.post(rootRoute + "upload", $AuthLocal.authenticationCheck, $PicturesRoutes.uploadPicture);
+exports.app.post(rootRoute + "upload", $AuthLocal.authenticationCheck, $Authorization.hasRole("ARTIST"), $PicturesRoutes.uploadPicture);
 exports.app.get(rootRoute, $AuthLocal.authenticationCheck, $PicturesRoutes.getAllPictures);
-exports.app.delete(rootRoute + ":id", $AuthLocal.authenticationCheck, $PicturesRoutes.deletePicture);
+exports.app.delete(rootRoute + ":id", $AuthLocal.authenticationCheck, $Authorization.hasRole("ARTIST"), $PicturesRoutes.deletePicture);
 //users routes
 var $UsersRoutes = require("./api/users/usersRoutes");
 rootRoute = "/api/adm/users/";
-exports.app.post(rootRoute, $AuthLocal.authenticationCheck, $UsersRoutes.create);
+exports.app.post(rootRoute, $AuthLocal.authenticationCheck, $Authorization.hasRole("ADMIN"), $UsersRoutes.create);
 exports.app.get(rootRoute + ":id?", $AuthLocal.authenticationCheck, $UsersRoutes.find);
-exports.app.delete(rootRoute + ":id?", $AuthLocal.authenticationCheck, $UsersRoutes.remove);
-exports.app.put(rootRoute + ":id?", $AuthLocal.authenticationCheck, $UsersRoutes.update);
+exports.app.delete(rootRoute + ":id?", $AuthLocal.authenticationCheck, $Authorization.hasRole("ADMIN"), $UsersRoutes.remove);
+exports.app.put(rootRoute + ":id?", $AuthLocal.authenticationCheck, $Authorization.hasRole("ADMIN"), $UsersRoutes.update);
 //paints routes
 var $PaintsRoutes = require("./api/paints/paintsRoutes");
 var rootRoute = "/api/paints/";
