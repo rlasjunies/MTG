@@ -123,8 +123,8 @@ var app;
 })(app || (app = {}));
 var app;
 (function (app) {
-    var services;
-    (function (services) {
+    var users;
+    (function (users) {
         "use strict";
         var Config = (function () {
             function Config() {
@@ -169,21 +169,21 @@ var app;
             };
             return NotificationService;
         })();
-        services.NotificationService = NotificationService;
+        users.NotificationService = NotificationService;
         factory.$inject = [
             "$mdToast",
             "$log"
         ];
         function factory($mdToast, $log) {
-            return new app.services.NotificationService($mdToast, $log);
+            return new app.users.NotificationService($mdToast, $log);
         }
         angular.module("app").factory("NotificationService", factory);
-    })(services = app.services || (app.services = {}));
+    })(users = app.users || (app.users = {}));
 })(app || (app = {}));
 var app;
 (function (app) {
-    var services;
-    (function (services) {
+    var users;
+    (function (users) {
         "use strict";
         var SiteSettingsService = (function () {
             function SiteSettingsService($http, CST_API_URL) {
@@ -213,7 +213,7 @@ var app;
             return new SiteSettingsService($http, CST_API_URL);
         }
         angular.module("app").factory("app.services.SiteSettingsService", factory);
-    })(services = app.services || (app.services = {}));
+    })(users = app.users || (app.users = {}));
 })(app || (app = {}));
 var app;
 (function (app) {
@@ -349,17 +349,25 @@ var app;
         main.mainTemplate_StringName = "app/main/main.html";
         main.mainController_StringName = "app.main.MainController";
         var MainController = (function () {
-            function MainController($rootScope, $scope, $log, $mdSidenav) {
+            function MainController($rootScope, $scope, $log, $mdSidenav, picturesService, NotificationService) {
                 var _this = this;
                 this.$rootScope = $rootScope;
                 this.$scope = $scope;
                 this.$log = $log;
                 this.$mdSidenav = $mdSidenav;
+                this.picturesService = picturesService;
+                this.NotificationService = NotificationService;
                 this.$log.debug(app.main.mainController_StringName + " loaded!");
                 this.$rootScope.headerConfiguration = new app.header.HeaderConfiguration("", true);
                 this.$scope.$on("$destroy", function () {
                     _this.$rootScope.headerConfiguration = new app.header.HeaderConfiguration();
                     ;
+                });
+                picturesService.getAll().then(function (picturesFromServer) {
+                    _this.pictures = picturesFromServer.files;
+                }).catch(function (reason) {
+                    _this.$log.warn("Error message: \n" + JSON.stringify(reason), "Cannot load pictures resources:");
+                    _this.NotificationService.error("Error message: \n" + JSON.stringify(reason), "Cannot load paints resources:");
                 });
             }
             MainController.$inject = [
@@ -367,6 +375,8 @@ var app;
                 "$scope",
                 "$log",
                 "$mdSidenav",
+                "picturesService",
+                "NotificationService"
             ];
             return MainController;
         })();
@@ -576,9 +586,10 @@ angular.module("app").directive("x", function () {
 });
 var app;
 (function (app) {
-    var services;
-    (function (services) {
+    var users;
+    (function (users) {
         "use strict";
+        users.userService_StringName = "UserService";
         var UserService = (function () {
             function UserService($http) {
                 this.$http = $http;
@@ -606,8 +617,8 @@ var app;
             UserService.$inject = ["$http"];
             return UserService;
         })();
-        angular.module("app").service("UserService", UserService);
-    })(services = app.services || (app.services = {}));
+        angular.module("app").service(app.users.userService_StringName, UserService);
+    })(users = app.users || (app.users = {}));
 })(app || (app = {}));
 var app;
 (function (app) {
@@ -617,7 +628,7 @@ var app;
         users.userTemplate_StringName = "app/users/user.html";
         users.userController_StringName = "app.users.UserController";
         var UserController = (function () {
-            function UserController($scope, $rootScope, $http, CST_API_URL, NotificationService, $log, $stateParams, $mdBottomSheet, UserService, $mdDialog) {
+            function UserController($scope, $rootScope, $http, CST_API_URL, NotificationService, $log, $stateParams, $mdBottomSheet, UserService, AuthorizationService, $mdDialog, $q) {
                 var _this = this;
                 this.$scope = $scope;
                 this.$rootScope = $rootScope;
@@ -628,10 +639,61 @@ var app;
                 this.$stateParams = $stateParams;
                 this.$mdBottomSheet = $mdBottomSheet;
                 this.UserService = UserService;
+                this.AuthorizationService = AuthorizationService;
                 this.$mdDialog = $mdDialog;
+                this.$q = $q;
+                this.UIRoles = [];
+                this.allowRole = function (role) {
+                    if (role.allowed) {
+                        _this.AuthorizationService.addRole(_this.user.allowedRoles, role.code);
+                        _this.$log.info("role:" + role.code + " selected: allowed");
+                    }
+                    else {
+                        _this.AuthorizationService.removeRole(_this.user.allowedRoles, role.code);
+                        _this.$log.info("role:" + role.code + " selected: NOT allowed");
+                    }
+                };
+                this.saveUSer = function () {
+                    _this.UserService.update(_this.user).then(function (user) {
+                        _this.$log.debug("user saved!:" + JSON.stringify(user));
+                    }).catch(function (err) {
+                        _this.$log.error("Error message: \n" + JSON.stringify(err), "Cannot save uers resources:");
+                        _this.NotificationService.error("Error message: \n" + JSON.stringify(err), "Cannot save users resources:");
+                    });
+                    _this.$rootScope.goBack();
+                };
+                this.deleteUser = function () {
+                    var confirm = _this.$mdDialog.confirm().title('Confirm deletion').content('You are going to delete the user:' + _this.user.displayName).ariaLabel('Lucky day').ok('Cancel').cancel('Delete');
+                    _this.$mdDialog.show(confirm).then(function () {
+                    }, function () {
+                        _this.UserService.delete(_this.$stateParams.userId).then(function (user) {
+                            _this.$log.debug("user deleted!:" + JSON.stringify(user));
+                        }).catch(function (err) {
+                            _this.$log.error("Error message: \n" + JSON.stringify(err), "Cannot save uers resources:");
+                            _this.NotificationService.error("Error message: \n" + JSON.stringify(err), "Cannot save users resources:");
+                        });
+                        _this.$rootScope.goBack();
+                    });
+                };
+                this.loadRoles = function () {
+                    _this.AuthorizationService.getAllRoles().then(function (roles) {
+                        _this.$log.debug("roles loaded!");
+                        _this.user.allowedRoles = _this.user.allowedRoles === undefined ? [] : _this.user.allowedRoles;
+                        for (var i = 0; i < roles.length; i++) {
+                            _this.UIRoles.push({
+                                allowed: _this.AuthorizationService.hasGotRole(_this.user.allowedRoles, roles[i].id),
+                                code: roles[i].id,
+                            });
+                        }
+                    }).catch(function (err) {
+                        _this.$log.error("Error message: \n" + JSON.stringify(err), "Cannot load roles resources:");
+                        _this.NotificationService.error("Error message: \n" + JSON.stringify(err), "Cannot load roles resources:");
+                    });
+                };
                 if (!this.$stateParams.userId) {
-                    alert("UserId is missing to initialize the user detail view!");
-                    console.error("UserId is missing to initialize the user detail view!");
+                    var msg = "UserId is missing to initialize the user detail view!";
+                    alert(msg);
+                    console.error(msg);
                 }
                 else {
                     this.$rootScope.headerConfiguration = new app.header.HeaderConfiguration("User detail", false, true, false, false, true, true);
@@ -641,33 +703,16 @@ var app;
                     });
                     this.UserService.getById(this.$stateParams.userId).then(function (user) {
                         _this.user = user;
-                        _this.$log.debug("user loaded!:" + JSON.stringify(users));
+                        _this.$log.debug("user loaded!:" + JSON.stringify(_this.user));
+                    }).then(function () {
+                        _this.loadRoles();
                     }).catch(function (err) {
-                        _this.$log.error("Error message: \n" + JSON.stringify(err), "Cannot load uers resources:");
-                        _this.NotificationService.error("Error message: \n" + JSON.stringify(err), "Cannot load users resources:");
+                        var msg = "Error message: \n" + JSON.stringify(err) + "\nCannot load uers resources:";
+                        _this.$log.error(msg);
+                        _this.NotificationService.error(msg);
                     });
-                    this.$scope.$on("save", function () {
-                        _this.UserService.update(_this.user).then(function (user) {
-                            _this.$log.debug("user saved!:" + JSON.stringify(user));
-                        }).catch(function (err) {
-                            _this.$log.error("Error message: \n" + JSON.stringify(err), "Cannot save uers resources:");
-                            _this.NotificationService.error("Error message: \n" + JSON.stringify(err), "Cannot save users resources:");
-                        });
-                        _this.$rootScope.goBack();
-                    });
-                    this.$scope.$on("delete", function () {
-                        var confirm = $mdDialog.confirm().title('Confirm deletion').content('Are going to delete the user:' + _this.user.displayName).ariaLabel('Lucky day').ok('Cancel').cancel('Delete');
-                        $mdDialog.show(confirm).then(function () {
-                        }, function () {
-                            _this.UserService.delete(_this.$stateParams.userId).then(function (user) {
-                                _this.$log.debug("user deleted!:" + JSON.stringify(user));
-                            }).catch(function (err) {
-                                _this.$log.error("Error message: \n" + JSON.stringify(err), "Cannot save uers resources:");
-                                _this.NotificationService.error("Error message: \n" + JSON.stringify(err), "Cannot save users resources:");
-                            });
-                            _this.$rootScope.goBack();
-                        });
-                    });
+                    this.$scope.$on("save", this.saveUSer);
+                    this.$scope.$on("delete", this.deleteUser);
                     this.$scope.$watch(function () { return _this.$scope.userForm.$invalid; }, function (newValue, oldValue) {
                         if (newValue) {
                             _this.$scope.$emit(appRootScopeEvent.invalidForm);
@@ -689,7 +734,9 @@ var app;
                 "$stateParams",
                 "$mdBottomSheet",
                 "UserService",
-                "$mdDialog"
+                "AuthorizationService",
+                "$mdDialog",
+                "$q"
             ];
             return UserController;
         })();
@@ -733,7 +780,7 @@ var app;
                     _this.usersView = [].concat(_this.users);
                     _this.$log.debug("users loaded!");
                 }).catch(function (err) {
-                    _this.$log.error("Error message: \n" + JSON.stringify(err), "Cannot load uers resources:");
+                    _this.$log.error("Error message: \n" + JSON.stringify(err), "Cannot load users resources:");
                     _this.NotificationService.error("Error message: \n" + JSON.stringify(err), "Cannot load users resources:");
                 });
                 this.$log.debug("UsersController: Constructor");
@@ -1184,6 +1231,44 @@ var app;
 })(app || (app = {}));
 var app;
 (function (app) {
+    var authorization;
+    (function (authorization) {
+        "use strict";
+        authorization.authorizatinService_StringName = "AuthorizationService";
+        var AuthorizationService = (function () {
+            function AuthorizationService($http) {
+                this.$http = $http;
+            }
+            AuthorizationService.prototype.getAllAccessRights = function () {
+                return this.$http.get("/api/authorization/accessrights").then(function (response) {
+                    return response.data;
+                });
+            };
+            AuthorizationService.prototype.getAllRoles = function () {
+                return this.$http.get("/api/authorization/roles").then(function (response) {
+                    return response.data;
+                });
+            };
+            AuthorizationService.prototype.addRole = function (roles, roleID) {
+                if (roles[roleID] === undefined) {
+                    roles.push(roleID);
+                }
+            };
+            AuthorizationService.prototype.removeRole = function (roles, roleID) {
+                var index = roles.indexOf(roleID);
+                roles.splice(index, 1);
+            };
+            AuthorizationService.prototype.hasGotRole = function (roles, roleID) {
+                return roles.indexOf(roleID) === -1 ? false : true;
+            };
+            AuthorizationService.$inject = ["$http"];
+            return AuthorizationService;
+        })();
+        angular.module("app").service(app.authorization.authorizatinService_StringName, AuthorizationService);
+    })(authorization = app.authorization || (app.authorization = {}));
+})(app || (app = {}));
+var app;
+(function (app) {
     var views;
     (function (views) {
         var index;
@@ -1416,8 +1501,8 @@ var app;
 })(app || (app = {}));
 var app;
 (function (app) {
-    var services;
-    (function (services) {
+    var users;
+    (function (users) {
         "use strict";
         var UserLoggedService = (function () {
             function UserLoggedService($http, $auth) {
@@ -1450,7 +1535,7 @@ var app;
             return UserLoggedService;
         })();
         angular.module("app").service("UserLoggedService", UserLoggedService);
-    })(services = app.services || (app.services = {}));
+    })(users = app.users || (app.users = {}));
 })(app || (app = {}));
 var app;
 (function (app) {

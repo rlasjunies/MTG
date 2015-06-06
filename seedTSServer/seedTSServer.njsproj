@@ -39,8 +39,12 @@
     <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
+    <Content Include="api\authorization\roles.json" />
+    <Content Include="api\authorization\accessRights.json" />
     <Content Include="test-api\run.bat" />
     <Content Include="test-app\run.bat" />
+    <TypeScriptCompile Include="api\authorization\authorizationService.ts" />
+    <TypeScriptCompile Include="api\authorization\authorizationRoutes.ts" />
     <TypeScriptCompile Include="api\paints\paintsData.ts" />
     <TypeScriptCompile Include="api\pictures\picturesRoutes.ts" />
     <TypeScriptCompile Include="api\users\usersRoutes.ts" />
@@ -112,6 +116,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="api\" />
+    <Folder Include="api\authorization\" />
     <Folder Include="api\pictures\" />
     <Folder Include="api\users\" />
     <Folder Include="api\paints\" />

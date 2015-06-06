@@ -1,0 +1,14 @@
+﻿[
+    { "id": "USERS_POST_CREATE", "description": "Create a new User." },
+    { "id": "USERS_GET_ID", "description": "Get details of an User" },
+    { "id": "USERS_DELETE_ID", "description": "Delete a specific User" },
+    { "id": "USERS_PUT_ID", "description": "Update a specific User" },
+    
+    { "id": "PICTURES_POST_UPLOAD", "description": "Upload a picture on the server." },
+    { "id": "PICTURES_GET_ALL", "description": "Return all the pictures from the server." },
+    { "id": "PICTURES_DELETE_ID", "description": "Delete a picture from the server" },
+        
+    { "id": "PAINTS_POST_UPLOAD", "description": "Upload a paint on the server." },
+    { "id": "PAINTS_GET_ALL", "description": "Return all paints from the server." },
+    { "id": "PAINTS_DELETE_ID", "description": "Delete a paint from the server" }
+]

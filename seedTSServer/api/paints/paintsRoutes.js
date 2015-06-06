@@ -23,6 +23,10 @@ exports.create = create;
 //find
 function find(expReq, expRes, next) {
     $log.profile(moduleName + "@find");
+    //if (!$authorization.isAuthorized(expReq.user, "PAINTS_GET_ALL")) {
+    //    $log.warn("not authorized!!!");
+    //    return expRes.status(403).write({ message: "Not authorized!" });
+    //} else {
     var paints = $paintsModel.paintModel();
     var qry = {};
     if (expReq.params.id) {
@@ -36,6 +40,7 @@ function find(expReq, expRes, next) {
         $log.profile(moduleName + "@find");
         expRes.status(200).send(paint);
     });
+    //}
 }
 exports.find = find;
 ;

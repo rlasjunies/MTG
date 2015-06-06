@@ -15,8 +15,8 @@
     //    displayName: string;
     //}
     export class UsersController {
-        public users: app.services.IUsers = [];
-        public usersView: app.services.IUser[] = [];
+        public users: app.users.IUsers = [];
+        public usersView: app.users.IUser[] = [];
 
         static $inject = [
             "$scope",
@@ -35,12 +35,12 @@
             private $rootScope: ng.IRootScopeService,
             private $http: ng.IHttpService,
             private CST_API_URL,
-            private NotificationService: app.services.NotificationService,
+            private NotificationService: app.users.NotificationService,
             private $log: ng.ILogService,
             private $mdDialog,
             private $filter,
             private $state: ng.ui.IStateService,
-            private UserService:app.services.IUserService) {
+            private UserService: app.users.IUserService) {
 
             ////header definition
             this.$rootScope.headerConfiguration = new app.header.HeaderConfiguration("Users", true, false, false, false, false, false);
@@ -50,14 +50,14 @@
                 this.$rootScope.headerConfiguration = new app.header.HeaderConfiguration();;
             });
 
-            this.UserService.getAll().then((users: app.services.IUsers): void => {
+            this.UserService.getAll().then((users: app.users.IUsers): void => {
                 this.users = users;
                 this.usersView = [].concat(this.users);
                 this.$log.debug("users loaded!");
             }).catch((err) => {
-                this.$log.error("Error message: \n" + JSON.stringify(err), "Cannot load uers resources:");
+                this.$log.error("Error message: \n" + JSON.stringify(err), "Cannot load users resources:");
                 this.NotificationService.error("Error message: \n" + JSON.stringify(err), "Cannot load users resources:");
-            });
+                });
 
             this.$log.debug("UsersController: Constructor");
         }

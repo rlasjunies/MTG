@@ -4,6 +4,7 @@ var morgan = require("morgan");
 var passport = require("passport");
 var xLocalStrategy = require("./auth/localStrategy");
 var $AuthLocal = require("./auth/localAuth");
+var $Authorization = require("./api/authorization/authorizationService");
 var xAuthFacebook = require("./auth/facebookAuth");
 var xAuthGoogle = require("./auth/googleAuth");
 var xEmailVerif = require("./auth/emailVerification");
@@ -14,6 +15,8 @@ var $ = require("./services/mtg");
 $.server.rootPath = __dirname;
 $.server.dataPath = path.join($.server.rootPath, "data");
 $.server.picturesPath = path.join($.server.dataPath, "pictures");
+$.server.accessRightFileName = path.join($.server.rootPath, "api/authorization/accessRights.json");
+$.server.rolesFileName = path.join($.server.rootPath, "api/authorization/roles.json");
 exports.app = express();
 process.env.NODE_ENV = process.env.NODE_ENV || "development";
 var xDb = require("./services/db");
@@ -62,6 +65,12 @@ exports.app.post("/auth/login", passport.authenticate("local-login"), $AuthLocal
 exports.app.get("/auth/verifyemail", xEmailVerif.verify);
 exports.app.post("/auth/facebook", xAuthFacebook.facebookAuth);
 exports.app.post("/auth/google", xAuthGoogle.googleAuth);
+//authorization
+var $AuthorizationRoutes = require("./api/authorization/authorizationRoutes");
+rootRoute = "/api/authorization/accessrights";
+exports.app.get(rootRoute, $AuthLocal.authenticationCheck, $AuthorizationRoutes.getAllAccessRight);
+rootRoute = "/api/authorization/roles";
+exports.app.get(rootRoute, $AuthLocal.authenticationCheck, $AuthorizationRoutes.getAllRoles);
 //pictures routes
 var $PicturesRoutes = require("./api/pictures/picturesRoutes");
 rootRoute = "/api/pictures/";
@@ -79,9 +88,9 @@ exports.app.put(rootRoute + ":id?", $AuthLocal.authenticationCheck, $UsersRoutes
 var $PaintsRoutes = require("./api/paints/paintsRoutes");
 var rootRoute = "/api/paints/";
 exports.app.post(rootRoute, $AuthLocal.authenticationCheck, $PaintsRoutes.create);
-exports.app.get(rootRoute + ":id?", $AuthLocal.authenticationCheck, $PaintsRoutes.find);
-exports.app.delete(rootRoute + ":id?", $AuthLocal.authenticationCheck, $PaintsRoutes.remove);
-exports.app.put(rootRoute + ":id?", $AuthLocal.authenticationCheck, $PaintsRoutes.update);
+exports.app.get(rootRoute + ":id?", $AuthLocal.authenticationCheck, $Authorization.hasRole("GUEST"), $PaintsRoutes.find);
+exports.app.delete(rootRoute + ":id?", $AuthLocal.authenticationCheck, $Authorization.hasRole(""), $PaintsRoutes.remove);
+exports.app.put(rootRoute + ":id?", $AuthLocal.authenticationCheck, $Authorization.hasRole(""), $PaintsRoutes.update);
 if (process.env.NODE_ENV === "development") {
 }
 exports.app.get("*", function (req, res, next) {

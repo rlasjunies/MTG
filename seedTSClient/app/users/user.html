@@ -17,8 +17,20 @@
     <md-checkbox ng-model="vm.user.active" aria-label="active user">
         Activated
     </md-checkbox>
-    <md-input-container ng-model="vm.user.role" aria-label="active role">
+    <!--<md-input-container ng-model="vm.user.role" aria-label="active role">
         <label>role</label>
         <input type="text" ng-model="vm.user.role" name="role" autofocus>
-    </md-input-container>
+    </md-input-container>-->
+
+    <md-list>
+        <md-subheader class="md-no-saticky">Roles</md-subheader>
+        <md-list-item ng-repeat="UIRole in vm.UIRoles">
+            <div>
+                <md-checkbox ng-model="UIRole.allowed"
+                             ng-change="vm.allowRole(UIRole)">
+                    {{UIRole.code}}
+                </md-checkbox>
+            </div>
+        </md-list-item>
+    </md-list>
 </form>

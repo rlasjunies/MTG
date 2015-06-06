@@ -75,11 +75,12 @@
     <TypeScriptCompile Include="app\authentication\authInterceptor.ts" />
     <TypeScriptCompile Include="app\authentication\authToken.ts" />
     <TypeScriptCompile Include="app\authentication\auth.ts" />
+    <TypeScriptCompile Include="app\authorization\authorizationService.ts" />
     <TypeScriptCompile Include="app\header\headerController.ts" />
     <TypeScriptCompile Include="app\indexController.ts" />
     <TypeScriptCompile Include="app\services\notificationService.ts" />
     <TypeScriptCompile Include="app\services\sitesettings.service.ts" />
-    <TypeScriptCompile Include="app\pictures\pictures.service.ts" />
+    <TypeScriptCompile Include="app\pictures\picturesService.ts" />
     <TypeScriptCompile Include="app\services\userLogged.ts" />
     <TypeScriptCompile Include="app\users\usersService.ts" />
     <TypeScriptCompile Include="app\app.route.ts" />

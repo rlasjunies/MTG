@@ -3,46 +3,46 @@
 import $ = require("../../services/mtg");
 
 import $usersModel = require("../../models/user");
+import $authorization = require("../authorization/authorizationService");
 
 var moduleName = "usersRoutes@";
 
 //Create
 export function create(expReq: e.xRequest<e.IRouteParamId>, expRes: e.Response, next) {
     $.log.profile(moduleName + "@create");
+        var user = $usersModel.userModel();
+        var newUser = new user(expReq.body);
+        newUser.validate(function (err: any) {
+            newUser.save<$usersModel.IUserDocument>((err, user) => {
+                if (err) { return expRes.status(500).write({ message: "Error writing job!" }); }
 
-    var user = $usersModel.userModel();
-    var newUser = new user(expReq.body);
-    newUser.validate(function (err: any) {
-        newUser.save<$usersModel.IUserDocument>((err, user) => {
-            if (err) { return expRes.status(500).write({ message: "Error writing job!" }); }
-
-            $.log.debug(moduleName + "@create:\n" + user);
-            $.log.profile(moduleName + "@create");
-            return expRes.status(200).send(user);
+                $.log.debug(moduleName + "@create:\n" + user);
+                $.log.profile(moduleName + "@create");
+                return expRes.status(200).send(user);
+            });
         });
-    });
 };
 
 //find
 export function find(expReq: e.xRequest<e.IRouteParamId>, expRes: e.Response, next) {
     $.log.profile(moduleName + "@find");
+        var users: $usersModel.IUserModel = $usersModel.userModel();
 
-    var users: $usersModel.IUserModel = $usersModel.userModel();
-
-    var qry = {};
-    if (expReq.params.id) {
-        qry = { _id: expReq.params.id };
-    }
-
-    users.find(qry, (err, user) => {
-        if (err) {
-            return expRes.status(500).write({ message: "Error getting jobs!" });
+        var qry = {};
+        if (expReq.params.id) {
+            qry = { _id: expReq.params.id };
         }
 
-        $.log.debug("expReq.params.id:" + expReq.params.id);
-        $.log.profile(moduleName + "@find");
-        expRes.status(200).send(user);
-    });
+        users.find(qry,(err, user) => {
+            if (err) {
+                return expRes.status(500).write({ message: "Error getting jobs!" });
+            }
+
+            $.log.debug("expReq.params.id:" + expReq.params.id);
+            $.log.profile(moduleName + "@find");
+            expRes.status(200).send(user);
+        });
+    //}
 };
 
 //remove

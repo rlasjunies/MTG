@@ -35,6 +35,7 @@ function find(expReq, expRes, next) {
         $.log.profile(moduleName + "@find");
         expRes.status(200).send(user);
     });
+    //}
 }
 exports.find = find;
 ;

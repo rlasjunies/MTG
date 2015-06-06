@@ -1,4 +1,4 @@
-﻿module app.services {
+﻿module app.users {
     "use strict";
 
     //interface IToastr {
@@ -89,7 +89,7 @@
         "$log"
     ];
     function factory($mdToast, $log) {
-        return new app.services.NotificationService($mdToast,$log);
+        return new app.users.NotificationService($mdToast,$log);
     }
 
     angular

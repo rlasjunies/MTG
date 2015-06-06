@@ -3,6 +3,7 @@
 import $log = require("../../services/logger");
 
 import $paintsModel = require("../../models/paints");
+import $authorization = require("../authorization/authorizationService");
 
 var moduleName = "paintsRoutes@";
 
@@ -27,23 +28,28 @@ export function create(expReq: e.xRequest<e.IRouteParamId>, expRes: e.Response, 
 //find
 export function find(expReq: e.xRequest<e.IRouteParamId>, expRes: e.Response, next) {
     $log.profile(moduleName + "@find");
+    //if (!$authorization.isAuthorized(expReq.user, "PAINTS_GET_ALL")) {
+    //    $log.warn("not authorized!!!");
+    //    return expRes.status(403).write({ message: "Not authorized!" });
+    //} else {
 
-    var paints: $paintsModel.IPaintModel = $paintsModel.paintModel();
+        var paints: $paintsModel.IPaintModel = $paintsModel.paintModel();
 
-    var qry = {};
-    if (expReq.params.id) {
-        qry = { _id: expReq.params.id };
-    }
-
-    paints.find(qry, (err, paint) => {
-        if (err) {
-            return expRes.status(500).write({ message: "Error getting jobs!" });
+        var qry = {};
+        if (expReq.params.id) {
+            qry = { _id: expReq.params.id };
         }
 
-        $log.debug("expReq.params.id:" + expReq.params.id);
-        $log.profile(moduleName + "@find");
-        expRes.status(200).send(paint);
-    });
+        paints.find(qry,(err, paint) => {
+            if (err) {
+                return expRes.status(500).write({ message: "Error getting jobs!" });
+            }
+
+            $log.debug("expReq.params.id:" + expReq.params.id);
+            $log.profile(moduleName + "@find");
+            expRes.status(200).send(paint);
+        });
+    //}
 };
 
 //remove

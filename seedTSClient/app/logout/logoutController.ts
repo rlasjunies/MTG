@@ -21,9 +21,9 @@
             private $rootScope: ILogoutRootSCope,
             private $auth : satellizer.IAuthService,
             private $state: ng.ui.IStateService,
-            private NotificationService: app.services.NotificationService,
+            private NotificationService: app.users.NotificationService,
             private $log: ng.ILogService,
-            private UserLoggedService:app.services.IUserLoggedService) {
+            private UserLoggedService:app.users.IUserLoggedService) {
 
             //clean the sanitizer authentication and the app global service userLogged
             this.$auth.logout();

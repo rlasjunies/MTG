@@ -5,6 +5,7 @@ import passport = require("passport");
 
 import xLocalStrategy = require("./auth/localStrategy");
 import $AuthLocal = require("./auth/localAuth");
+import $Authorization = require("./api/authorization/authorizationService");
 import xAuthFacebook = require("./auth/facebookAuth");
 import xAuthGoogle = require("./auth/googleAuth");
 import xEmailVerif = require("./auth/emailVerification");
@@ -16,6 +17,9 @@ import $ = require("./services/mtg");
 $.server.rootPath = __dirname;
 $.server.dataPath = path.join($.server.rootPath, "data");
 $.server.picturesPath = path.join($.server.dataPath, "pictures");
+$.server.accessRightFileName = path.join($.server.rootPath, "api/authorization/accessRights.json");
+$.server.rolesFileName = path.join($.server.rootPath, "api/authorization/roles.json");
+
 
 export var app = express();
 process.env.NODE_ENV = process.env.NODE_ENV || "development";
@@ -69,28 +73,33 @@ app.get("/auth/verifyemail", xEmailVerif.verify);
 app.post("/auth/facebook", xAuthFacebook.facebookAuth);
 app.post("/auth/google", xAuthGoogle.googleAuth);
 
+//authorization
+import $AuthorizationRoutes = require("./api/authorization/authorizationRoutes");
+rootRoute = "/api/authorization/roles";
+app.get(rootRoute, $AuthLocal.authenticationCheck, $Authorization.hasRole("ADMIN"), $AuthorizationRoutes.getAllRoles);
+
 //pictures routes
 import $PicturesRoutes = require("./api/pictures/picturesRoutes");
 rootRoute = "/api/pictures/";
-app.post(rootRoute + "upload", $AuthLocal.authenticationCheck, $PicturesRoutes.uploadPicture);
+app.post(rootRoute + "upload", $AuthLocal.authenticationCheck, $Authorization.hasRole("ARTIST"), $PicturesRoutes.uploadPicture);
 app.get(rootRoute, $AuthLocal.authenticationCheck, $PicturesRoutes.getAllPictures);
-app.delete(rootRoute + ":id", $AuthLocal.authenticationCheck, $PicturesRoutes.deletePicture);
+app.delete(rootRoute + ":id", $AuthLocal.authenticationCheck, $Authorization.hasRole("ARTIST"), $PicturesRoutes.deletePicture);
 
 //users routes
 import $UsersRoutes = require("./api/users/usersRoutes");
 rootRoute = "/api/adm/users/";
-app.post(rootRoute, $AuthLocal.authenticationCheck, $UsersRoutes.create);
+app.post(rootRoute, $AuthLocal.authenticationCheck, $Authorization.hasRole("ADMIN"), $UsersRoutes.create);
 app.get(rootRoute + ":id?", $AuthLocal.authenticationCheck, $UsersRoutes.find);
-app.delete(rootRoute + ":id?", $AuthLocal.authenticationCheck, $UsersRoutes.remove);
-app.put(rootRoute + ":id?", $AuthLocal.authenticationCheck, $UsersRoutes.update);
+app.delete(rootRoute + ":id?", $AuthLocal.authenticationCheck, $Authorization.hasRole("ADMIN"), $UsersRoutes.remove);
+app.put(rootRoute + ":id?", $AuthLocal.authenticationCheck, $Authorization.hasRole("ADMIN"), $UsersRoutes.update);
 
 //paints routes
 import $PaintsRoutes = require("./api/paints/paintsRoutes");
 var rootRoute = "/api/paints/";
 app.post(rootRoute, $AuthLocal.authenticationCheck, $PaintsRoutes.create);
-app.get(rootRoute + ":id?", $AuthLocal.authenticationCheck, $PaintsRoutes.find);
-app.delete(rootRoute + ":id?", $AuthLocal.authenticationCheck, $PaintsRoutes.remove);
-app.put(rootRoute + ":id?", $AuthLocal.authenticationCheck, $PaintsRoutes.update);
+app.get(rootRoute + ":id?", $AuthLocal.authenticationCheck, $Authorization.hasRole("GUEST"), $PaintsRoutes.find);
+app.delete(rootRoute + ":id?", $AuthLocal.authenticationCheck, $Authorization.hasRole(""), $PaintsRoutes.remove);
+app.put(rootRoute + ":id?", $AuthLocal.authenticationCheck, $Authorization.hasRole(""), $PaintsRoutes.update);
 
 if (process.env.NODE_ENV === "development") {
     // configure stuff here

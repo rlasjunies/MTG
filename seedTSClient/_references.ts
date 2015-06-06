@@ -27,9 +27,7 @@
 
 /// <reference path="app/paints/paintscontroller.ts" />
 
-
-
-/// <reference path="app/pictures/pictures.service.ts" />
+/// <reference path="app/pictures/picturesService.ts" />
 /// <reference path="app/pictures/picturecontroller.ts" />
 /// <reference path="app/pictures/picturescontroller.ts" />
 /// <reference path="app/pictures/picturesuploadcontroller.ts" />

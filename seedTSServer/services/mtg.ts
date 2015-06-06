@@ -5,6 +5,8 @@ class Server{
     rootPath: string;
     picturesPath: string;
     dataPath: string;
+    accessRightFileName: string;
+    rolesFileName: string;
 }
 
 class Util{

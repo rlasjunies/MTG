@@ -11,6 +11,7 @@ export interface IUserDocument extends mongoose.Document {
     facebookId: string;
     displayName: string;
     picture: string;
+    allowedRoles: string[];
     // toJSON(): void;
     //firstName: string;
     //lastName: string;
@@ -37,6 +38,7 @@ export interface IUserObject {
     facebookId: string;
     displayName: string;
     picture: string;
+    allowedRoles: string[];
 }
 
 export interface IUserModel extends mongoose.Model<IUserDocument> {
@@ -58,7 +60,8 @@ userSchema.add({
     googleId: String,
     facebookId: String,
     displayName: String,
-    picture: String
+    picture: String,
+    allowedRoles: [String]
 });
 
 userSchema.pre("save", function (next) {

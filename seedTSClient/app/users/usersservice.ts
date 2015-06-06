@@ -1,5 +1,6 @@
-﻿module app.services {
+﻿module app.users {
     "use strict";
+    export var userService_StringName = "UserService";
 
     export interface IUserService {
         getById(uniqueId: string): ng.IPromise<IUser>;
@@ -8,12 +9,18 @@
         delete(uniqueId:string): ng.IPromise<IUser>;
     }
 
+    //export class AllowedAccessRights{
+    //    [key:string]:boolean;
+    //} 
+
     export interface IUser {
         _id: string;
         email: string;
         displayName: string;
         picture: string;
         active: boolean;
+        //allowedRoles: app.authorization.IRole[];
+        allowedRoles: string[];
     }
 
     export interface IUsers {
@@ -50,9 +57,10 @@
                 return <IUser> response.data;
             });
         }
+
     }
 
     angular
         .module("app")
-        .service("UserService", UserService);
+        .service(app.users.userService_StringName, UserService);
 }

@@ -8,7 +8,8 @@ userSchema.add({
     googleId: String,
     facebookId: String,
     displayName: String,
-    picture: String
+    picture: String,
+    allowedRoles: [String]
 });
 userSchema.pre("save", function (next) {
     var user = this;

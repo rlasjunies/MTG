@@ -29,7 +29,8 @@ var newUser: $userCol.IUserObject = {
     facebookId:"facebookid",
     displayName: $faker.internet.userName(),
     password: $faker.internet.password(8, true),
-    picture: $faker.internet.avatar()
+    picture: $faker.internet.avatar(),
+    allowedRoles: []
 };
 
 describe("Users ", () => {

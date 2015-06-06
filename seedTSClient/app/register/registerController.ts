@@ -24,7 +24,7 @@
         constructor(
             private $rootScope: ng.IScope,
             private $scope: ng.IScope,
-            private NotificationService: app.services.NotificationService,
+            private NotificationService: app.users.NotificationService,
             private $auth : satellizer.IAuthService,
             private $state: ng.ui.IStateService,
             private $log:ng.ILogService) {

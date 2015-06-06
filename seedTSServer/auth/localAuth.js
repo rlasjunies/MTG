@@ -4,6 +4,8 @@ var $Token = require("./token");
 var $EmailVerification = require("./emailVerification");
 var $log = require("../services/logger");
 var $configSecret = require("../services/configSecret");
+var $ = require("../services/mtg");
+var $usersModel = require("../models/user");
 var moduleName = "localAuth";
 function register(expReq, expRes, info) {
     $EmailVerification.send(expReq.body.email, expRes);
@@ -35,7 +37,19 @@ function authenticationCheck(expReq, expRes, next) {
             if (moment.unix(payload.exp).diff(moment(), 'second') < 0) {
                 console.log("!!!!token expired!!!");
             }
-            next();
+            //load user info
+            var users = $usersModel.userModel();
+            var qry = { _id: payload.sub };
+            users.find(qry, function (err, user) {
+                if (err) {
+                    return expRes.status(500).write({ message: "Error trying to find the user." + JSON.stringify(err) });
+                }
+                $.log.debug("expReq.params.id:" + expReq.params.id);
+                $.log.profile(moduleName + "@find");
+                //expRes.status(200).send(user);
+                expReq.user = user[0]._doc;
+                next();
+            });
         }
     }
 }

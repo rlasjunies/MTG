@@ -1,4 +1,4 @@
-﻿module app.services {
+﻿module app.users {
     "use strict";
 
     export interface ISiteSettings {
