@@ -25,7 +25,7 @@ var logger = new (winston.Logger)({
     colors: myCustomLevels.colors,
     transports: [
         new (winston.transports.Console)({
-            level: "info",
+            level: "warn",
             colorize: true,
             timestamp: true
         })

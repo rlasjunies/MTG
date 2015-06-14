@@ -1,0 +1,33 @@
+﻿[
+  {
+    "id": "GUEST",
+    "accessrights": [
+      "PICTURES_GET_ALL" 
+    ]
+  },
+  {
+    "id": "ARTIST",
+    "accessrights": [
+      "PICTURES_POST_UPLOAD",
+      "PICTURES_GET_ALL",
+      "PICTURES_DELETE_ID",
+      "PAINTS_GET_ID",
+      "PAINTS_POST",
+      "PAINTS_DELETE_ID",
+      "PAINTS_PUT_ID"
+    ]
+  },
+  {
+    "id": "ADMIN",
+    "accessrights": [
+      "PICTURES_POST_UPLOAD",
+      "PICTURES_GET_ALL",
+      "PICTURES_DELETE_ID",
+      "USERS_POST_CREATE",
+      "USERS_GET_ID",
+      "USERS_DELETE_ID",
+      "USERS_PUT_ID",
+      "ROLES_GET_ALL"
+    ]
+  }
+]

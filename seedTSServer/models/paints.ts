@@ -31,7 +31,7 @@ export function paintModel(): IPaintModel {
     return <IPaintModel>mongoose.model<IPaintDocument>("paint", paintSchema);
 }
 
-export function findPaints(query) {
+export function findPaints(query:any) {
     return Promise.cast(paintModel().find(query).exec());
 }
 

@@ -39,6 +39,8 @@ Format email using zurb.inliner
 
 ### Karma
 
+    at the root of the project: 'webdriver-manager install --dev'
+
     start selenium by: 'webdriver-manager start'
     in another cmd line, move to the folder 'test-app' and start the file 'run.bat' (it's doing 'protractor _config.js')
 

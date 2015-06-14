@@ -1,4 +1,0 @@
-﻿//Message
-//content
-//ipadress
-//datetime

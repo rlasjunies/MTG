@@ -1,3 +1,4 @@
 ﻿REM
 cls
-mocha ".\**\*-specs.js"
+REM mocha ".\**\*-specs.js"
+mocha "..\_app\test-api\**\*-specs.js"

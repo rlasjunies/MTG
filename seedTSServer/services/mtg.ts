@@ -7,6 +7,7 @@ class Server{
     dataPath: string;
     accessRightFileName: string;
     rolesFileName: string;
+    emailVerificationFileName: string;
 }
 
 class Util{

@@ -3,23 +3,24 @@ import bodyparser = require("body-parser");
 import morgan = require("morgan");
 import passport = require("passport");
 
-import xLocalStrategy = require("./auth/localStrategy");
-import $AuthLocal = require("./auth/localAuth");
-import $Authorization = require("./api/authorization/authorizationService");
-import xAuthFacebook = require("./auth/facebookAuth");
-import xAuthGoogle = require("./auth/googleAuth");
-import xEmailVerif = require("./auth/emailVerification");
+import xLocalStrategy = require("./authentication/localStrategy");
+import $AuthLocal = require("./authentication/localAuth");
+import $Authorization = require("./authorization/authorization.middleware");
+import xAuthFacebook = require("./authentication/facebookAuth");
+import xAuthGoogle = require("./authentication/googleAuth");
+import xEmailVerif = require("./authentication/emailVerification");
 import $log = require("./services/logger");
-import path = require("path");
+import path = require("path"); 
+
 
 //Initialisation of the $
-import $ = require("./services/mtg");
+import $ = require("./services/mtg"); 
 $.server.rootPath = __dirname;
-$.server.dataPath = path.join($.server.rootPath, "data");
+$.server.dataPath = path.join($.server.rootPath, "../_app_data");
 $.server.picturesPath = path.join($.server.dataPath, "pictures");
-$.server.accessRightFileName = path.join($.server.rootPath, "api/authorization/accessRights.json");
-$.server.rolesFileName = path.join($.server.rootPath, "api/authorization/roles.json");
-
+$.server.rolesFileName = path.join($.server.dataPath, "authorization/roles.json");
+$.server.accessRightFileName = path.join($.server.dataPath, "authorization/accessRight.json");
+$.server.emailVerificationFileName = path.join($.server.rootPath, "../authentication/emailVerification.html");
 
 export var app = express();
 process.env.NODE_ENV = process.env.NODE_ENV || "development";
@@ -50,16 +51,16 @@ app.use(function (req: express.Request, res: express.Response, next) {
     res.header("Access-Control-Allow-Methods", "GET,PUT,POST,DELETE");
     res.header("Access-Control-Allow-Headers", "Content-Type, Authorization");
     next();
-});
+}); 
 
 //static files routes
-app.use("/", express.static(__dirname + "/../seedTSClient/app"));
-app.use("/Scripts", express.static(__dirname + "/../seedTSClient/Scripts"));
-app.use("/bower_components", express.static(__dirname + "/../seedTSClient/bower_components"));
-app.use("/app", express.static(__dirname + "/../seedTSClient/app"));
-app.use("/styles", express.static(__dirname + "/../seedTSClient/styles"));
-app.use("/fonts", express.static(__dirname + "/../seedTSClient/fonts"));
-app.use("/images", express.static(__dirname + "/../seedTSClient/images"));
+app.use("/", express.static(__dirname + "/../../seedTSClient/app"));
+app.use("/Scripts", express.static(__dirname + "/../../seedTSClient/Scripts"));
+app.use("/bower_components", express.static(__dirname + "/../../seedTSClient/bower_components"));
+app.use("/app", express.static(__dirname + "/../../seedTSClient/app"));
+app.use("/styles", express.static(__dirname + "/../../seedTSClient/styles"));
+app.use("/fonts", express.static(__dirname + "/../../seedTSClient/fonts"));
+app.use("/images", express.static(__dirname + "/../../seedTSClient/images"));
 app.use("/pictures", express.static($.server.picturesPath));
 
 //authentication strategy
@@ -74,32 +75,36 @@ app.post("/auth/facebook", xAuthFacebook.facebookAuth);
 app.post("/auth/google", xAuthGoogle.googleAuth);
 
 //authorization
-import $AuthorizationRoutes = require("./api/authorization/authorizationRoutes");
+import $AuthorizationRoutes = require("./authorization/authorizationRoutes");
 rootRoute = "/api/authorization/roles";
-app.get(rootRoute, $AuthLocal.authenticationCheck, $Authorization.hasRole("ADMIN"), $AuthorizationRoutes.getAllRoles);
+app.get(rootRoute, $AuthLocal.authenticationCheck, $Authorization.checksAccessRight("ROLES_GET_ALL"), $AuthorizationRoutes.getAllRoles);
 
 //pictures routes
-import $PicturesRoutes = require("./api/pictures/picturesRoutes");
+import $PicturesRoutes = require("./pictures/picturesRoutes");
 rootRoute = "/api/pictures/";
-app.post(rootRoute + "upload", $AuthLocal.authenticationCheck, $Authorization.hasRole("ARTIST"), $PicturesRoutes.uploadPicture);
-app.get(rootRoute, $AuthLocal.authenticationCheck, $PicturesRoutes.getAllPictures);
-app.delete(rootRoute + ":id", $AuthLocal.authenticationCheck, $Authorization.hasRole("ARTIST"), $PicturesRoutes.deletePicture);
+app.post(rootRoute + "upload", $AuthLocal.authenticationCheck, $Authorization.checksAccessRight("PICTURES_POST_UPLOAD"), $PicturesRoutes.uploadPicture);
+app.get(rootRoute, $AuthLocal.authenticationCheck, $Authorization.checksAccessRight("PICTURES_GET_ALL"), $PicturesRoutes.getAllPictures);
+app.delete(rootRoute + ":id", $AuthLocal.authenticationCheck, $Authorization.checksAccessRight("PICTURES_DELETE_ID"), $PicturesRoutes.deletePicture);
 
 //users routes
-import $UsersRoutes = require("./api/users/usersRoutes");
+import $UsersRoutes = require("./users/usersRoutes");
 rootRoute = "/api/adm/users/";
-app.post(rootRoute, $AuthLocal.authenticationCheck, $Authorization.hasRole("ADMIN"), $UsersRoutes.create);
-app.get(rootRoute + ":id?", $AuthLocal.authenticationCheck, $UsersRoutes.find);
-app.delete(rootRoute + ":id?", $AuthLocal.authenticationCheck, $Authorization.hasRole("ADMIN"), $UsersRoutes.remove);
-app.put(rootRoute + ":id?", $AuthLocal.authenticationCheck, $Authorization.hasRole("ADMIN"), $UsersRoutes.update);
+app.post(rootRoute, $AuthLocal.authenticationCheck, $Authorization.checksAccessRight("USERS_POST_CREATE"), $UsersRoutes.create);
+app.get(rootRoute + ":id?", $AuthLocal.authenticationCheck, $Authorization.checksAccessRight("USERS_GET_ID"), $UsersRoutes.find);
+app.delete(rootRoute + ":id?", $AuthLocal.authenticationCheck, $Authorization.checksAccessRight("USERS_DELETE_ID"), $UsersRoutes.remove);
+app.put(rootRoute + ":id?", $AuthLocal.authenticationCheck, $Authorization.checksAccessRight("USERS_PUT_ID"), $UsersRoutes.update);
+
+rootRoute = "/api/adm/users/me";
+app.get(rootRoute, $AuthLocal.authenticationCheck, $UsersRoutes.findMe);
+app.put(rootRoute, $AuthLocal.authenticationCheck, $UsersRoutes.updateMe);
 
 //paints routes
-import $PaintsRoutes = require("./api/paints/paintsRoutes");
+import $PaintsRoutes = require("./paints/paintsRoutes");
 var rootRoute = "/api/paints/";
-app.post(rootRoute, $AuthLocal.authenticationCheck, $PaintsRoutes.create);
-app.get(rootRoute + ":id?", $AuthLocal.authenticationCheck, $Authorization.hasRole("GUEST"), $PaintsRoutes.find);
-app.delete(rootRoute + ":id?", $AuthLocal.authenticationCheck, $Authorization.hasRole(""), $PaintsRoutes.remove);
-app.put(rootRoute + ":id?", $AuthLocal.authenticationCheck, $Authorization.hasRole(""), $PaintsRoutes.update);
+app.post(rootRoute, $AuthLocal.authenticationCheck, $Authorization.checksAccessRight("PAINTS_POST"),$PaintsRoutes.create);
+app.get(rootRoute + ":id?", $AuthLocal.authenticationCheck, $Authorization.checksAccessRight("PAINTS_GET_ID"), $PaintsRoutes.find);
+app.delete(rootRoute + ":id?", $AuthLocal.authenticationCheck, $Authorization.checksAccessRight("PAINTS_DELETE_ID"), $PaintsRoutes.remove);
+app.put(rootRoute + ":id?", $AuthLocal.authenticationCheck, $Authorization.checksAccessRight("PAINTS_PUT_ID"), $PaintsRoutes.update);
 
 if (process.env.NODE_ENV === "development") {
     // configure stuff here

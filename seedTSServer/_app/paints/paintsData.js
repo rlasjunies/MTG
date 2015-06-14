@@ -1,0 +1,1 @@
+//# sourceMappingURL=paintsData.js.map

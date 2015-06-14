@@ -3,7 +3,7 @@ import bcrypt = require("bcrypt-nodejs");
 
 // user    
 export interface IUserDocument extends mongoose.Document {
-    _id: string;
+    //_id: string;
     email: string;
     password: string;
     active: boolean;
@@ -20,7 +20,7 @@ export interface IUserDocument extends mongoose.Document {
     //createDate?: number;
     //modifiedDate?: number;
     //socialNetworks: ISocialNetwork[];
-    comparePasswords(pwd, callback);
+    comparePasswords(pwd:string, callback:(err:Error,isMatching:boolean)=>{});
 }
 
 //export interface ISocialNetwork {
@@ -64,7 +64,7 @@ userSchema.add({
     allowedRoles: [String]
 });
 
-userSchema.pre("save", function (next) {
+userSchema.pre("save", function (next:Function) {
     var user: IUserDocument = this;
 
     if (!user.isModified("password")) {
@@ -86,7 +86,7 @@ userSchema.pre("save", function (next) {
     });
 });
 
-userSchema.methods.comparePasswords = function (password, callback) {
+userSchema.methods.comparePasswords = function (password:string, callback:(err:Error, isMatching:boolean)=>{}) {
     bcrypt.compare(password, this.password, callback);
 };
 

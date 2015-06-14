@@ -1,5 +1,4 @@
-﻿// Use the external Chai As Promised to deal with resolving promises in
-// expectations.
+﻿// Use the external Chai As Promised to deal with resolving promises in expectations.
 import chai = require("chai");
 import chaiAsPromised = require("chai-as-promised");
 chai.use(chaiAsPromised);
@@ -11,7 +10,7 @@ describe("simple Mocha test, without protractor instanciated", function () {
     it("should still do normal tests", function () {
         expect(true).to.be.equal(true);
     });
-});
+}); 
 describe("test protractor library", function () {
     it.skip("should be able to skip tests", function () {
         expect(true).to.equal(false);
@@ -28,3 +27,4 @@ describe("test protractor library", function () {
         expect(browser.getTitle()).to.eventually.equal("pluralsight-ci");
     });
 });
+ 

@@ -35,7 +35,6 @@
     "faker": "^2.1.2",
     "mocha": "^2.1.0",
     "phantomjs": "^1.9.13",
-    "sprintf": "^0.1.5",
     "superagent": "^0.21.0",
     "supertest": "^0.15.0"
   },

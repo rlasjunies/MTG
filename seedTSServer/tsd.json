@@ -1,0 +1,99 @@
+{
+  "version": "v4",
+  "repo": "borisyankov/DefinitelyTyped",
+  "ref": "master",
+  "path": "typings",
+  "bundle": "typings/tsd.d.ts",
+  "installed": {
+    "angular-material/angular-material.d.ts": {
+      "commit": "230b346dad577c91af8db9f0a1db26697d2dd5bd"
+    },
+    "bluebird/bluebird.d.ts": {
+      "commit": "230b346dad577c91af8db9f0a1db26697d2dd5bd"
+    },
+    "body-parser/body-parser.d.ts": {
+      "commit": "230b346dad577c91af8db9f0a1db26697d2dd5bd"
+    },
+    "chai/chai.d.ts": {
+      "commit": "230b346dad577c91af8db9f0a1db26697d2dd5bd"
+    },
+    "chai-as-promised/chai-as-promised.d.ts": {
+      "commit": "230b346dad577c91af8db9f0a1db26697d2dd5bd"
+    },
+    "express/express.d.ts": {
+      "commit": "230b346dad577c91af8db9f0a1db26697d2dd5bd"
+    },
+    "form-data/form-data.d.ts": {
+      "commit": "230b346dad577c91af8db9f0a1db26697d2dd5bd"
+    },
+    "formidable/formidable.d.ts": {
+      "commit": "230b346dad577c91af8db9f0a1db26697d2dd5bd"
+    },
+    "fs-extra/fs-extra.d.ts": {
+      "commit": "230b346dad577c91af8db9f0a1db26697d2dd5bd"
+    },
+    "jwt-simple/jwt-simple.d.ts": {
+      "commit": "230b346dad577c91af8db9f0a1db26697d2dd5bd"
+    },
+    "mocha/mocha.d.ts": {
+      "commit": "230b346dad577c91af8db9f0a1db26697d2dd5bd"
+    },
+    "moment/moment.d.ts": {
+      "commit": "230b346dad577c91af8db9f0a1db26697d2dd5bd"
+    },
+    "mongoose/mongoose.d.ts": {
+      "commit": "230b346dad577c91af8db9f0a1db26697d2dd5bd"
+    },
+    "morgan/morgan.d.ts": {
+      "commit": "230b346dad577c91af8db9f0a1db26697d2dd5bd"
+    },
+    "nedb/nedb.d.ts": {
+      "commit": "230b346dad577c91af8db9f0a1db26697d2dd5bd"
+    },
+    "node/node.d.ts": {
+      "commit": "230b346dad577c91af8db9f0a1db26697d2dd5bd"
+    },
+    "nodemailer/nodemailer.d.ts": {
+      "commit": "230b346dad577c91af8db9f0a1db26697d2dd5bd"
+    },
+    "passport/passport.d.ts": {
+      "commit": "230b346dad577c91af8db9f0a1db26697d2dd5bd"
+    },
+    "passport-local/passport-local.d.ts": {
+      "commit": "230b346dad577c91af8db9f0a1db26697d2dd5bd"
+    },
+    "request/request.d.ts": {
+      "commit": "230b346dad577c91af8db9f0a1db26697d2dd5bd"
+    },
+    "selenium-webdriver/selenium-webdriver.d.ts": {
+      "commit": "230b346dad577c91af8db9f0a1db26697d2dd5bd"
+    },
+    "angular-protractor/angular-protractor.d.ts": {
+      "commit": "230b346dad577c91af8db9f0a1db26697d2dd5bd"
+    },
+    "superagent/superagent.d.ts": {
+      "commit": "230b346dad577c91af8db9f0a1db26697d2dd5bd"
+    },
+    "supertest/supertest.d.ts": {
+      "commit": "230b346dad577c91af8db9f0a1db26697d2dd5bd"
+    },
+    "underscore/underscore.d.ts": {
+      "commit": "230b346dad577c91af8db9f0a1db26697d2dd5bd"
+    },
+    "winston/winston.d.ts": {
+      "commit": "230b346dad577c91af8db9f0a1db26697d2dd5bd"
+    },
+    "nodemailer/nodemailer-types.d.ts": {
+      "commit": "230b346dad577c91af8db9f0a1db26697d2dd5bd"
+    },
+    "nodemailer-direct-transport/nodemailer-direct-transport.d.ts": {
+      "commit": "230b346dad577c91af8db9f0a1db26697d2dd5bd"
+    },
+    "nodemailer-smtp-transport/nodemailer-smtp-transport.d.ts": {
+      "commit": "230b346dad577c91af8db9f0a1db26697d2dd5bd"
+    },
+    "moment/moment-node.d.ts": {
+      "commit": "230b346dad577c91af8db9f0a1db26697d2dd5bd"
+    }
+  }
+}

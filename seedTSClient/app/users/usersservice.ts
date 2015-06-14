@@ -4,8 +4,10 @@
 
     export interface IUserService {
         getById(uniqueId: string): ng.IPromise<IUser>;
+        getMe():ng.IPromise<IUser>;
         getAll(): ng.IPromise<IUsers>;
         update(user: IUser): ng.IPromise<IUser>;
+        updateMe(user: IUser): ng.IPromise<IUser>;
         delete(uniqueId:string): ng.IPromise<IUser>;
     }
 
@@ -32,6 +34,13 @@
         constructor(private $http: ng.IHttpService) {
         }
 
+		getMe(): ng.IPromise<IUser> {
+            return this.$http.get("/api/adm/users/me" + uniqueId)
+                .then((response: ng.IHttpPromiseCallbackArg<IUser>): IUser => {
+                    return <IUser>response.data[0];
+                });
+        }
+
         getById(uniqueId: string): ng.IPromise<IUser> {
             return this.$http.get("/api/adm/users/" + uniqueId)
                 .then((response: ng.IHttpPromiseCallbackArg<IUser>): IUser => {
@@ -48,6 +57,12 @@
 
         update(user:IUser): ng.IPromise<IUser>{
             return this.$http.put("/api/adm/users/" + user._id, user).then((response: ng.IHttpPromiseCallbackArg<IUser>): IUser => {
+                return <IUser> response.data;
+            });
+        }
+
+        updateMe(user:IUser): ng.IPromise<IUser>{
+            return this.$http.put("/api/adm/users/me", user).then((response: ng.IHttpPromiseCallbackArg<IUser>): IUser => {
                 return <IUser> response.data;
             });
         }
